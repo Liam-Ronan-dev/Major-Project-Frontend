@@ -1,0 +1,51 @@
+name: Deploy Front-end to S3
+
+on:
+  push:
+    branches:
+      - develop # Deploy to Dev S3 bucket 
+      - main 
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+        # Checkout code
+      - name: Checkout
+        uses: actions/checkout@v3
+        
+        # Configure Credentials
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-west-1
+
+        # Install modules - Clean Installation
+      - name: Install modules
+        run: npm ci
+        
+        # Build front-end
+      - name: Build Front-end
+        run: npm run build
+
+        # Determine env
+      - name: Determine environemnt
+        run: |
+          if [ "${{ github.ref }}" == "refs/heads/main" ]; then
+            echo "BUCKET_ID=health-service.click" >> $GITHUB_ENV
+            echo "RUN_INVALIDATION=true" >> $GITHUB_ENV
+            echo "DISTRIBUTION_ID=${{ secrets.DISTRIBUTION_ID }}" >> $GITHUB_ENV
+          else
+            echo "BUCKET_ID=dev-health-service-app" >> $GITHUB_ENV
+            echo "RUN_INVALIDATION=false" >> $GITHUB_ENV
+
+        # Deploy to S3 Bucket 
+      - name: Deploy to S3
+        run: aws s3 sync ./dist/ s3://$BUCKET_ID --delete
+
+        # Only runs if the deploy is to main
+      - name: Create CloudFront invalidation
+        if: env.RUN_INVALIDATION == 'true'  # Prod
+        run: aws cloudfront create-invalidation --distribution-id ${{ secrets.DISTRIBUTION_ID }} --paths "/*"
