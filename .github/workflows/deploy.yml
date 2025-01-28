@@ -31,15 +31,16 @@ jobs:
         run: npm run build
 
         # Determine env
-      - name: Determine environemnt
+      - name: Determine environment
         run: |
-          if [ "${{ github.ref }}" == "refs/heads/main" ]; then
+          if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
             echo "BUCKET_ID=health-service.click" >> $GITHUB_ENV
             echo "RUN_INVALIDATION=true" >> $GITHUB_ENV
             echo "DISTRIBUTION_ID=${{ secrets.DISTRIBUTION_ID }}" >> $GITHUB_ENV
           else
             echo "BUCKET_ID=dev-health-service-app" >> $GITHUB_ENV
             echo "RUN_INVALIDATION=false" >> $GITHUB_ENV
+          fi
 
         # Deploy to S3 Bucket 
       - name: Deploy to S3
