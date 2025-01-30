@@ -1,0 +1,34 @@
+name: Continuous Integration
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+
+jobs:
+  lint-format-test:
+    name: Lint, Format, and Test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 🛠 Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: 🔧 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'npm'
+
+      - name: 📦 Install Dependencies
+        run: npm ci 
+
+      - name: 🎨 Run Prettier Formatting Check
+        run: npm run format
+
+      - name: 🔍 Run ESLint
+        run: npm run lint
+
+      - name: Run Vitest
+        run: npm run test
