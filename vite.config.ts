@@ -1,7 +1,13 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
+import { defineConfig } from 'vitest/config';
 
-// https://vite.dev/config/
 export default defineConfig({
-  plugins: [react()],
-})
+  test: {
+    globals: true, // ✅ Enables global expect() & test() functions
+    environment: 'jsdom', // ✅ Simulates browser-like environment for React testing
+    exclude: ['tests/e2e/**', 'node_modules', 'dist'], // ✅ Excludes Playwright tests
+    coverage: {
+      provider: 'istanbul', // ✅ Generates coverage report
+      reporter: ['text', 'json', 'html'], // ✅ Output formats
+    },
+  },
+});
