@@ -1,4 +1,4 @@
-name: Continuous Integration
+name: ⚙️ Continuous Integration
 
 on:
   push:
@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: 🛠 Checkout Repository
+      - name: 🛠️ Checkout Repository
         uses: actions/checkout@v4
 
       - name: 🔧 Setup Node.js
