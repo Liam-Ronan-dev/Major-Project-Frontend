@@ -1,7 +1,8 @@
 name: 🎭 Playwright Tests
+
 on:
   push:
-    branches: 
+    branches:
       - main
       - develop
 
@@ -12,8 +13,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      name: 📥 Checkout Repository
-      uses: actions/checkout@v4
+      - name: 📥 Checkout Repository
+        uses: actions/checkout@v4
 
       - name: 🔧 Setup Node.js
         uses: actions/setup-node@v4
@@ -27,11 +28,11 @@ jobs:
       - name: 🌐 Install Playwright Browsers
         run: npx playwright install --with-deps
 
-      - name: 🎭 Run Playwright E2E tests
+      - name: 🎭 Run Playwright E2E Tests
         run: npx playwright test
 
       - name: 📊 Upload Playwright Test Report
-      - uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
         with:
           name: playwright-report
