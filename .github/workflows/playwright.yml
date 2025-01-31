@@ -37,7 +37,7 @@ jobs:
         run: npx playwright install --with-deps
 
       - name: 🎭 Run Playwright E2E Tests
-        run: npx playwright test
+        run: npm run e2e
 
       - name: 📊 Upload Playwright Test Report
         uses: actions/upload-artifact@v4
