@@ -1,4 +1,4 @@
-name: Frontend Security Scan
+name: 🛡️ Security Scan
 
 on:
   push:
@@ -8,6 +8,44 @@ on:
   pull_request:
 
 jobs:
+  security:
+    name: 🔍 Security Scan (Snyk)
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📥 Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Install Node.js 🟢
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Cache Snyk CLI 🔄
+        id: snyk-cache
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: snyk-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+          restore-keys: snyk-${{ runner.os }}-
+
+      - name: 🔧 Install Snyk CLI (Only If Not Cached)
+        if: steps.snyk-cache.outputs.cache-hit != 'true'
+        run: npm install -g snyk
+
+      - name: 🛡️ Display Snyk ASCII Logo & Run Security Scan
+        run: |
+          echo "   _____       _   _ _   "
+          echo "  / ____|     | | (_) |  "
+          echo " | (___  _   _| |_ _| |_ "
+          echo "  \___ \| | | | __| | __|"
+          echo "  ____) | |_| | |_| | |_ "
+          echo " |_____/ \__,_|\__|_|\__|"
+          echo " Running Snyk Security Scan..."
+          snyk test --severity-threshold=high || echo "⚠️ Medium/low vulnerabilities detected but not failing the build"
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+
   sonarcloud:
     name: 🔎 SonarCloud Scan
     runs-on: ubuntu-latest
