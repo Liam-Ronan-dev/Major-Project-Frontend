@@ -1,0 +1,48 @@
+name: 🎭 Playwright Tests
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+
+jobs:
+  test:
+    name: 🧪 Run Playwright Tests
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: 🔧 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'npm'
+
+      - name: 📦 Install Dependencies
+        run: npm ci
+
+      - name: 🗄️ Cache Playwright Browsers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}
+          restore-keys: |
+            playwright-
+
+      - name: 🌐 Install Playwright Browsers (If Not Cached)
+        run: npx playwright install --with-deps
+
+      - name: 🎭 Run Playwright E2E Tests
+        run: npm run e2e
+
+      - name: 📊 Upload Playwright Test Report
+        uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30

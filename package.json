@@ -10,14 +10,25 @@
     "lint:fix": "eslint src --fix",
     "format": "prettier --write \"src/**/*.{ts,tsx}\"",
     "preview": "vite preview",
-    "test": "vitest"
+    "test": "vitest",
+    "test:unit": "vitest tests/unit",
+    "test:watch": "vitest tests/unit --watch",
+    "e2e": "npx playwright test",
+    "e2e:ui": "npx playwright test --ui",
+    "e2e:headed": "npx playwright test --headed",
+    "e2e:debug": "npx playwright test --debug",
+    "prepare": "husky"
   },
   "dependencies": {
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },
   "devDependencies": {
+    "@commitlint/cli": "^19.6.1",
+    "@commitlint/config-conventional": "^19.6.0",
     "@eslint/js": "^9.17.0",
+    "@playwright/test": "^1.50.0",
+    "@types/node": "^22.12.0",
     "@types/react": "^18.3.18",
     "@types/react-dom": "^18.3.5",
     "@typescript-eslint/eslint-plugin": "^8.22.0",
@@ -32,10 +43,20 @@
     "eslint-plugin-react-hooks": "^5.1.0",
     "eslint-plugin-react-refresh": "^0.4.16",
     "globals": "^15.14.0",
+    "husky": "^9.1.7",
+    "jsdom": "^26.0.0",
+    "lint-staged": "^15.4.3",
     "prettier": "^3.4.2",
     "typescript": "~5.6.2",
     "typescript-eslint": "^8.18.2",
     "vite": "^6.0.5",
     "vitest": "^3.0.4"
+  },
+  "lint-staged": {
+    "*.js": [
+      "prettier --write \"src/**/*.{js,ts}\" \"tests/**/*.{js,ts}\"",
+      "eslint --fix",
+      "git add ."
+    ]
   }
 }
