@@ -17,7 +17,8 @@
     "e2e:ui": "npx playwright test --ui",
     "e2e:headed": "npx playwright test --headed",
     "e2e:debug": "npx playwright test --debug",
-    "prepare": "husky"
+    "prepare": "husky",
+    "commitlint": "commitlint --edit"
   },
   "dependencies": {
     "react": "^18.3.1",
@@ -54,7 +55,7 @@
   },
   "lint-staged": {
     "*.js": [
-      "prettier --write \"src/**/*.{js,ts}\" \"tests/**/*.{js,ts}\"",
+      "prettier --write \"src/**/*.{js,ts,jsx,tsx}\" \"tests/**/*.{js,ts}\"",
       "eslint --fix",
       "git add ."
     ]
