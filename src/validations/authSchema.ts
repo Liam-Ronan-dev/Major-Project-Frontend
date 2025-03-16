@@ -20,5 +20,20 @@ export const registerSchema = z.object({
   role: z.enum(['doctor', 'pharmacist']), // Must be exactly "doctor" or "pharmacist"
 });
 
-// ✅ Export inferred TypeScript type
+export const loginSchema = z.object({
+  email: z.string().email('Invalid email format'),
+  password: z.string().min(8, 'Password must be at least 8 characters'),
+});
+// 🔹 MFA Schema
+export const mfaSchema = z.object({
+  tempToken: z.string().uuid(), // Backend sends a UUID tempToken
+  totp: z
+    .string()
+    .length(6, 'TOTP must be exactly 6 digits')
+    .regex(/^\d+$/, 'TOTP must contain only numbers'),
+});
+
+// Export inferred TypeScript types
+export type MfaFormData = z.infer<typeof mfaSchema>;
+export type LoginFormData = z.infer<typeof loginSchema>;
 export type RegisterFormData = z.infer<typeof registerSchema>;

@@ -14,6 +14,7 @@ import { Route as rootRoute } from './routes/__root';
 import { Route as RegisterImport } from './routes/register';
 import { Route as SetupMfaImport } from './routes/Setup-mfa';
 import { Route as LoginImport } from './routes/Login';
+import { Route as InputTotpImport } from './routes/Input-totp';
 import { Route as IndexImport } from './routes/index';
 
 // Create/Update Routes
@@ -36,6 +37,12 @@ const LoginRoute = LoginImport.update({
   getParentRoute: () => rootRoute,
 } as any);
 
+const InputTotpRoute = InputTotpImport.update({
+  id: '/Input-totp',
+  path: '/Input-totp',
+  getParentRoute: () => rootRoute,
+} as any);
+
 const IndexRoute = IndexImport.update({
   id: '/',
   path: '/',
@@ -51,6 +58,13 @@ declare module '@tanstack/react-router' {
       path: '/';
       fullPath: '/';
       preLoaderRoute: typeof IndexImport;
+      parentRoute: typeof rootRoute;
+    };
+    '/Input-totp': {
+      id: '/Input-totp';
+      path: '/Input-totp';
+      fullPath: '/Input-totp';
+      preLoaderRoute: typeof InputTotpImport;
       parentRoute: typeof rootRoute;
     };
     '/Login': {
@@ -81,6 +95,7 @@ declare module '@tanstack/react-router' {
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute;
+  '/Input-totp': typeof InputTotpRoute;
   '/Login': typeof LoginRoute;
   '/Setup-mfa': typeof SetupMfaRoute;
   '/register': typeof RegisterRoute;
@@ -88,6 +103,7 @@ export interface FileRoutesByFullPath {
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute;
+  '/Input-totp': typeof InputTotpRoute;
   '/Login': typeof LoginRoute;
   '/Setup-mfa': typeof SetupMfaRoute;
   '/register': typeof RegisterRoute;
@@ -96,6 +112,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRoute;
   '/': typeof IndexRoute;
+  '/Input-totp': typeof InputTotpRoute;
   '/Login': typeof LoginRoute;
   '/Setup-mfa': typeof SetupMfaRoute;
   '/register': typeof RegisterRoute;
@@ -103,15 +120,16 @@ export interface FileRoutesById {
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath;
-  fullPaths: '/' | '/Login' | '/Setup-mfa' | '/register';
+  fullPaths: '/' | '/Input-totp' | '/Login' | '/Setup-mfa' | '/register';
   fileRoutesByTo: FileRoutesByTo;
-  to: '/' | '/Login' | '/Setup-mfa' | '/register';
-  id: '__root__' | '/' | '/Login' | '/Setup-mfa' | '/register';
+  to: '/' | '/Input-totp' | '/Login' | '/Setup-mfa' | '/register';
+  id: '__root__' | '/' | '/Input-totp' | '/Login' | '/Setup-mfa' | '/register';
   fileRoutesById: FileRoutesById;
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute;
+  InputTotpRoute: typeof InputTotpRoute;
   LoginRoute: typeof LoginRoute;
   SetupMfaRoute: typeof SetupMfaRoute;
   RegisterRoute: typeof RegisterRoute;
@@ -119,6 +137,7 @@ export interface RootRouteChildren {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  InputTotpRoute: InputTotpRoute,
   LoginRoute: LoginRoute,
   SetupMfaRoute: SetupMfaRoute,
   RegisterRoute: RegisterRoute,
@@ -135,6 +154,7 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/",
+        "/Input-totp",
         "/Login",
         "/Setup-mfa",
         "/register"
@@ -142,6 +162,9 @@ export const routeTree = rootRoute
     },
     "/": {
       "filePath": "index.tsx"
+    },
+    "/Input-totp": {
+      "filePath": "Input-totp.tsx"
     },
     "/Login": {
       "filePath": "Login.tsx"

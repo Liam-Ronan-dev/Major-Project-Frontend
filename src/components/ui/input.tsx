@@ -1,10 +1,13 @@
 import * as React from 'react';
-
 import { cn } from '@/lib/utils';
 
-function Input({ className, type, ...props }: React.ComponentProps<'input'>) {
+const Input = React.forwardRef<
+  HTMLInputElement,
+  React.InputHTMLAttributes<HTMLInputElement>
+>(({ className, type, ...props }, ref) => {
   return (
     <input
+      ref={ref} // Forward ref to support RHF
       type={type}
       data-slot="input"
       className={cn(
@@ -16,6 +19,9 @@ function Input({ className, type, ...props }: React.ComponentProps<'input'>) {
       {...props}
     />
   );
-}
+});
+
+// ✅ Add a display name to avoid console warnings
+Input.displayName = 'Input';
 
 export { Input };

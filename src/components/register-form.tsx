@@ -32,9 +32,8 @@ export function RegisterForm({
     },
   });
 
-  // ✅ Handle Form Submission
+  // Handle Form Submission
   const onSubmit = (data: RegisterFormData) => {
-    console.log('📤 Submitting Form Data:', data); // Debugging Log
     registerUser(data);
   };
 
@@ -56,7 +55,9 @@ export function RegisterForm({
                   {...register('email')}
                 />
                 {errors.email && (
-                  <p className="text-red-400">{errors.email.message}</p>
+                  <p className="text-red-400 text-sm font-light">
+                    {errors.email.message}
+                  </p>
                 )}
               </div>
 
@@ -71,7 +72,9 @@ export function RegisterForm({
                   {...register('password')}
                 />
                 {errors.password && (
-                  <p className="text-red-400">{errors.password.message}</p>
+                  <p className="text-red-400 text-sm font-light">
+                    {errors.password.message}
+                  </p>
                 )}
               </div>
 
@@ -82,7 +85,9 @@ export function RegisterForm({
                 </Label>
                 <Input id="licenseNumber" {...register('licenseNumber')} />
                 {errors.licenseNumber && (
-                  <p className="text-red-400">{errors.licenseNumber.message}</p>
+                  <p className="text-red-400 text-sm font-light">
+                    {errors.licenseNumber.message}
+                  </p>
                 )}
               </div>
 
@@ -105,7 +110,9 @@ export function RegisterForm({
                   </div>
                 </RadioGroup>
                 {errors.role && (
-                  <p className="text-red-400">{errors.role.message}</p>
+                  <p className="text-red-400 text-sm font-light">
+                    {errors.role.message}
+                  </p>
                 )}
               </div>
 
@@ -127,7 +134,9 @@ export function RegisterForm({
                 Login
               </Link>
               {registerStatus === 'error' && (
-                <p className="text-red-400">Registration failed. Try again.</p>
+                <p className="text-red-400 text-sm font-light">
+                  Registration failed. Try again.
+                </p>
               )}
             </div>
           </form>
