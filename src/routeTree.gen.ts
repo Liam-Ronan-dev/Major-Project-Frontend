@@ -11,11 +11,18 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root';
+import { Route as SetupMfaImport } from './routes/Setup-mfa';
 import { Route as RegisterImport } from './routes/Register';
 import { Route as LoginImport } from './routes/Login';
 import { Route as IndexImport } from './routes/index';
 
 // Create/Update Routes
+
+const SetupMfaRoute = SetupMfaImport.update({
+  id: '/Setup-mfa',
+  path: '/Setup-mfa',
+  getParentRoute: () => rootRoute,
+} as any);
 
 const RegisterRoute = RegisterImport.update({
   id: '/Register',
@@ -60,6 +67,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RegisterImport;
       parentRoute: typeof rootRoute;
     };
+    '/Setup-mfa': {
+      id: '/Setup-mfa';
+      path: '/Setup-mfa';
+      fullPath: '/Setup-mfa';
+      preLoaderRoute: typeof SetupMfaImport;
+      parentRoute: typeof rootRoute;
+    };
   }
 }
 
@@ -69,12 +83,14 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute;
   '/Login': typeof LoginRoute;
   '/Register': typeof RegisterRoute;
+  '/Setup-mfa': typeof SetupMfaRoute;
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute;
   '/Login': typeof LoginRoute;
   '/Register': typeof RegisterRoute;
+  '/Setup-mfa': typeof SetupMfaRoute;
 }
 
 export interface FileRoutesById {
@@ -82,14 +98,15 @@ export interface FileRoutesById {
   '/': typeof IndexRoute;
   '/Login': typeof LoginRoute;
   '/Register': typeof RegisterRoute;
+  '/Setup-mfa': typeof SetupMfaRoute;
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath;
-  fullPaths: '/' | '/Login' | '/Register';
+  fullPaths: '/' | '/Login' | '/Register' | '/Setup-mfa';
   fileRoutesByTo: FileRoutesByTo;
-  to: '/' | '/Login' | '/Register';
-  id: '__root__' | '/' | '/Login' | '/Register';
+  to: '/' | '/Login' | '/Register' | '/Setup-mfa';
+  id: '__root__' | '/' | '/Login' | '/Register' | '/Setup-mfa';
   fileRoutesById: FileRoutesById;
 }
 
@@ -97,12 +114,14 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute;
   LoginRoute: typeof LoginRoute;
   RegisterRoute: typeof RegisterRoute;
+  SetupMfaRoute: typeof SetupMfaRoute;
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   LoginRoute: LoginRoute,
   RegisterRoute: RegisterRoute,
+  SetupMfaRoute: SetupMfaRoute,
 };
 
 export const routeTree = rootRoute
@@ -117,7 +136,8 @@ export const routeTree = rootRoute
       "children": [
         "/",
         "/Login",
-        "/Register"
+        "/Register",
+        "/Setup-mfa"
       ]
     },
     "/": {
@@ -128,6 +148,9 @@ export const routeTree = rootRoute
     },
     "/Register": {
       "filePath": "Register.tsx"
+    },
+    "/Setup-mfa": {
+      "filePath": "Setup-mfa.tsx"
     }
   }
 }
