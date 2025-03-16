@@ -11,21 +11,35 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root';
-import { Route as RegisterImport } from './routes/Register';
+import { Route as RegisterImport } from './routes/register';
+import { Route as SetupMfaImport } from './routes/Setup-mfa';
 import { Route as LoginImport } from './routes/Login';
+import { Route as InputTotpImport } from './routes/Input-totp';
 import { Route as IndexImport } from './routes/index';
 
 // Create/Update Routes
 
 const RegisterRoute = RegisterImport.update({
-  id: '/Register',
-  path: '/Register',
+  id: '/register',
+  path: '/register',
+  getParentRoute: () => rootRoute,
+} as any);
+
+const SetupMfaRoute = SetupMfaImport.update({
+  id: '/Setup-mfa',
+  path: '/Setup-mfa',
   getParentRoute: () => rootRoute,
 } as any);
 
 const LoginRoute = LoginImport.update({
   id: '/Login',
   path: '/Login',
+  getParentRoute: () => rootRoute,
+} as any);
+
+const InputTotpRoute = InputTotpImport.update({
+  id: '/Input-totp',
+  path: '/Input-totp',
   getParentRoute: () => rootRoute,
 } as any);
 
@@ -46,6 +60,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexImport;
       parentRoute: typeof rootRoute;
     };
+    '/Input-totp': {
+      id: '/Input-totp';
+      path: '/Input-totp';
+      fullPath: '/Input-totp';
+      preLoaderRoute: typeof InputTotpImport;
+      parentRoute: typeof rootRoute;
+    };
     '/Login': {
       id: '/Login';
       path: '/Login';
@@ -53,10 +74,17 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginImport;
       parentRoute: typeof rootRoute;
     };
-    '/Register': {
-      id: '/Register';
-      path: '/Register';
-      fullPath: '/Register';
+    '/Setup-mfa': {
+      id: '/Setup-mfa';
+      path: '/Setup-mfa';
+      fullPath: '/Setup-mfa';
+      preLoaderRoute: typeof SetupMfaImport;
+      parentRoute: typeof rootRoute;
+    };
+    '/register': {
+      id: '/register';
+      path: '/register';
+      fullPath: '/register';
       preLoaderRoute: typeof RegisterImport;
       parentRoute: typeof rootRoute;
     };
@@ -67,41 +95,51 @@ declare module '@tanstack/react-router' {
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute;
+  '/Input-totp': typeof InputTotpRoute;
   '/Login': typeof LoginRoute;
-  '/Register': typeof RegisterRoute;
+  '/Setup-mfa': typeof SetupMfaRoute;
+  '/register': typeof RegisterRoute;
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute;
+  '/Input-totp': typeof InputTotpRoute;
   '/Login': typeof LoginRoute;
-  '/Register': typeof RegisterRoute;
+  '/Setup-mfa': typeof SetupMfaRoute;
+  '/register': typeof RegisterRoute;
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute;
   '/': typeof IndexRoute;
+  '/Input-totp': typeof InputTotpRoute;
   '/Login': typeof LoginRoute;
-  '/Register': typeof RegisterRoute;
+  '/Setup-mfa': typeof SetupMfaRoute;
+  '/register': typeof RegisterRoute;
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath;
-  fullPaths: '/' | '/Login' | '/Register';
+  fullPaths: '/' | '/Input-totp' | '/Login' | '/Setup-mfa' | '/register';
   fileRoutesByTo: FileRoutesByTo;
-  to: '/' | '/Login' | '/Register';
-  id: '__root__' | '/' | '/Login' | '/Register';
+  to: '/' | '/Input-totp' | '/Login' | '/Setup-mfa' | '/register';
+  id: '__root__' | '/' | '/Input-totp' | '/Login' | '/Setup-mfa' | '/register';
   fileRoutesById: FileRoutesById;
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute;
+  InputTotpRoute: typeof InputTotpRoute;
   LoginRoute: typeof LoginRoute;
+  SetupMfaRoute: typeof SetupMfaRoute;
   RegisterRoute: typeof RegisterRoute;
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  InputTotpRoute: InputTotpRoute,
   LoginRoute: LoginRoute,
+  SetupMfaRoute: SetupMfaRoute,
   RegisterRoute: RegisterRoute,
 };
 
@@ -116,18 +154,26 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/",
+        "/Input-totp",
         "/Login",
-        "/Register"
+        "/Setup-mfa",
+        "/register"
       ]
     },
     "/": {
       "filePath": "index.tsx"
     },
+    "/Input-totp": {
+      "filePath": "Input-totp.tsx"
+    },
     "/Login": {
       "filePath": "Login.tsx"
     },
-    "/Register": {
-      "filePath": "Register.tsx"
+    "/Setup-mfa": {
+      "filePath": "Setup-mfa.tsx"
+    },
+    "/register": {
+      "filePath": "register.tsx"
     }
   }
 }

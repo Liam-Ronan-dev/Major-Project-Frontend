@@ -44,7 +44,7 @@ export function LoginForm({
               Don't have an account?{' '}
               <Link
                 className="font-semibold underline underline-offset-4"
-                to="/Register"
+                to="/register"
               >
                 Sign Up
               </Link>
