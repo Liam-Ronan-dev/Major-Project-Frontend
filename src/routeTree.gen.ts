@@ -11,15 +11,15 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root';
-import { Route as RegisterImport } from './routes/Register';
+import { Route as RegisterImport } from './routes/register';
 import { Route as LoginImport } from './routes/Login';
 import { Route as IndexImport } from './routes/index';
 
 // Create/Update Routes
 
 const RegisterRoute = RegisterImport.update({
-  id: '/Register',
-  path: '/Register',
+  id: '/register',
+  path: '/register',
   getParentRoute: () => rootRoute,
 } as any);
 
@@ -53,10 +53,10 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginImport;
       parentRoute: typeof rootRoute;
     };
-    '/Register': {
-      id: '/Register';
-      path: '/Register';
-      fullPath: '/Register';
+    '/register': {
+      id: '/register';
+      path: '/register';
+      fullPath: '/register';
       preLoaderRoute: typeof RegisterImport;
       parentRoute: typeof rootRoute;
     };
@@ -68,28 +68,28 @@ declare module '@tanstack/react-router' {
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute;
   '/Login': typeof LoginRoute;
-  '/Register': typeof RegisterRoute;
+  '/register': typeof RegisterRoute;
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute;
   '/Login': typeof LoginRoute;
-  '/Register': typeof RegisterRoute;
+  '/register': typeof RegisterRoute;
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute;
   '/': typeof IndexRoute;
   '/Login': typeof LoginRoute;
-  '/Register': typeof RegisterRoute;
+  '/register': typeof RegisterRoute;
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath;
-  fullPaths: '/' | '/Login' | '/Register';
+  fullPaths: '/' | '/Login' | '/register';
   fileRoutesByTo: FileRoutesByTo;
-  to: '/' | '/Login' | '/Register';
-  id: '__root__' | '/' | '/Login' | '/Register';
+  to: '/' | '/Login' | '/register';
+  id: '__root__' | '/' | '/Login' | '/register';
   fileRoutesById: FileRoutesById;
 }
 
@@ -117,7 +117,7 @@ export const routeTree = rootRoute
       "children": [
         "/",
         "/Login",
-        "/Register"
+        "/register"
       ]
     },
     "/": {
@@ -126,8 +126,8 @@ export const routeTree = rootRoute
     "/Login": {
       "filePath": "Login.tsx"
     },
-    "/Register": {
-      "filePath": "Register.tsx"
+    "/register": {
+      "filePath": "register.tsx"
     }
   }
 }
