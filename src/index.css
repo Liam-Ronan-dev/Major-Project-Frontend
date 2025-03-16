@@ -4,10 +4,6 @@
 
 @custom-variant dark (&:is(.dark *));
 
-body {
-  background-color: #09090b; /* Change to your preferred color */
-}
-
 :root {
   --radius: 0.625rem;
   --background: oklch(1 0 0);

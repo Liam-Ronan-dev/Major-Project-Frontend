@@ -4,9 +4,8 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Link } from '@tanstack/react-router';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 
-export function RegisterForm({
+export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<'div'>) {
@@ -35,35 +34,6 @@ export function RegisterForm({
                 </div>
                 <Input id="password" type="password" required />
               </div>
-              <div className="grid gap-3">
-                <div className="flex items-center">
-                  <Label className="font-semibold" htmlFor="password">
-                    License Number
-                  </Label>
-                </div>
-                <Input id="password" type="password" required />
-              </div>
-              <div className="grid gap-3">
-                <div className="flex items-center">
-                  <Label className="font-semibold" htmlFor="password">
-                    Role
-                  </Label>
-                </div>
-                <RadioGroup defaultValue="option-one">
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="option-one" id="option-one" />
-                    <Label className="font-semibold" htmlFor="option-one">
-                      Doctor
-                    </Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="option-two" id="option-two" />
-                    <Label className="font-semibold" htmlFor="option-two">
-                      Pharmacist
-                    </Label>
-                  </div>
-                </RadioGroup>
-              </div>
               <div className="flex flex-col gap-3">
                 <Button type="submit" className="w-full">
                   Login
@@ -71,12 +41,12 @@ export function RegisterForm({
               </div>
             </div>
             <div className="mt-5 text-center text-md">
-              Already have an account?{' '}
+              Don't have an account?{' '}
               <Link
                 className="font-semibold underline underline-offset-4"
-                to="/Login"
+                to="/Register"
               >
-                Login
+                Sign Up
               </Link>
             </div>
           </form>
