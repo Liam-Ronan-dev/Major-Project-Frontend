@@ -1,14 +1,14 @@
 import { RegisterForm } from '@/components/register-form';
 import { createFileRoute } from '@tanstack/react-router';
 
-export const Route = createFileRoute('/Register')({
+export const Route = createFileRoute('/register')({
   component: Register,
 });
 
 function Register() {
   return (
     <div className="flex min-h-svh w-full items-center justify-center md:p-10">
-      <div className="w-full max-w-lg">
+      <div className="w-full max-w-md">
         <h1 className="text-center w-full scroll-m-20 text-4xl font-extrabold lg:text-5xl">
           Create an account
         </h1>
