@@ -12,23 +12,17 @@
 
 import { Route as rootRoute } from './routes/__root';
 import { Route as RegisterImport } from './routes/register';
-import { Route as DashboardImport } from './routes/dashboard';
 import { Route as SetupMfaImport } from './routes/Setup-mfa';
 import { Route as LoginImport } from './routes/Login';
 import { Route as InputTotpImport } from './routes/Input-totp';
 import { Route as IndexImport } from './routes/index';
+import { Route as DashboardPageImport } from './routes/dashboard/page';
 
 // Create/Update Routes
 
 const RegisterRoute = RegisterImport.update({
   id: '/register',
   path: '/register',
-  getParentRoute: () => rootRoute,
-} as any);
-
-const DashboardRoute = DashboardImport.update({
-  id: '/dashboard',
-  path: '/dashboard',
   getParentRoute: () => rootRoute,
 } as any);
 
@@ -53,6 +47,12 @@ const InputTotpRoute = InputTotpImport.update({
 const IndexRoute = IndexImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRoute,
+} as any);
+
+const DashboardPageRoute = DashboardPageImport.update({
+  id: '/dashboard/page',
+  path: '/dashboard/page',
   getParentRoute: () => rootRoute,
 } as any);
 
@@ -88,18 +88,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SetupMfaImport;
       parentRoute: typeof rootRoute;
     };
-    '/dashboard': {
-      id: '/dashboard';
-      path: '/dashboard';
-      fullPath: '/dashboard';
-      preLoaderRoute: typeof DashboardImport;
-      parentRoute: typeof rootRoute;
-    };
     '/register': {
       id: '/register';
       path: '/register';
       fullPath: '/register';
       preLoaderRoute: typeof RegisterImport;
+      parentRoute: typeof rootRoute;
+    };
+    '/dashboard/page': {
+      id: '/dashboard/page';
+      path: '/dashboard/page';
+      fullPath: '/dashboard/page';
+      preLoaderRoute: typeof DashboardPageImport;
       parentRoute: typeof rootRoute;
     };
   }
@@ -112,8 +112,8 @@ export interface FileRoutesByFullPath {
   '/Input-totp': typeof InputTotpRoute;
   '/Login': typeof LoginRoute;
   '/Setup-mfa': typeof SetupMfaRoute;
-  '/dashboard': typeof DashboardRoute;
   '/register': typeof RegisterRoute;
+  '/dashboard/page': typeof DashboardPageRoute;
 }
 
 export interface FileRoutesByTo {
@@ -121,8 +121,8 @@ export interface FileRoutesByTo {
   '/Input-totp': typeof InputTotpRoute;
   '/Login': typeof LoginRoute;
   '/Setup-mfa': typeof SetupMfaRoute;
-  '/dashboard': typeof DashboardRoute;
   '/register': typeof RegisterRoute;
+  '/dashboard/page': typeof DashboardPageRoute;
 }
 
 export interface FileRoutesById {
@@ -131,8 +131,8 @@ export interface FileRoutesById {
   '/Input-totp': typeof InputTotpRoute;
   '/Login': typeof LoginRoute;
   '/Setup-mfa': typeof SetupMfaRoute;
-  '/dashboard': typeof DashboardRoute;
   '/register': typeof RegisterRoute;
+  '/dashboard/page': typeof DashboardPageRoute;
 }
 
 export interface FileRouteTypes {
@@ -142,24 +142,24 @@ export interface FileRouteTypes {
     | '/Input-totp'
     | '/Login'
     | '/Setup-mfa'
-    | '/dashboard'
-    | '/register';
+    | '/register'
+    | '/dashboard/page';
   fileRoutesByTo: FileRoutesByTo;
   to:
     | '/'
     | '/Input-totp'
     | '/Login'
     | '/Setup-mfa'
-    | '/dashboard'
-    | '/register';
+    | '/register'
+    | '/dashboard/page';
   id:
     | '__root__'
     | '/'
     | '/Input-totp'
     | '/Login'
     | '/Setup-mfa'
-    | '/dashboard'
-    | '/register';
+    | '/register'
+    | '/dashboard/page';
   fileRoutesById: FileRoutesById;
 }
 
@@ -168,8 +168,8 @@ export interface RootRouteChildren {
   InputTotpRoute: typeof InputTotpRoute;
   LoginRoute: typeof LoginRoute;
   SetupMfaRoute: typeof SetupMfaRoute;
-  DashboardRoute: typeof DashboardRoute;
   RegisterRoute: typeof RegisterRoute;
+  DashboardPageRoute: typeof DashboardPageRoute;
 }
 
 const rootRouteChildren: RootRouteChildren = {
@@ -177,8 +177,8 @@ const rootRouteChildren: RootRouteChildren = {
   InputTotpRoute: InputTotpRoute,
   LoginRoute: LoginRoute,
   SetupMfaRoute: SetupMfaRoute,
-  DashboardRoute: DashboardRoute,
   RegisterRoute: RegisterRoute,
+  DashboardPageRoute: DashboardPageRoute,
 };
 
 export const routeTree = rootRoute
@@ -195,8 +195,8 @@ export const routeTree = rootRoute
         "/Input-totp",
         "/Login",
         "/Setup-mfa",
-        "/dashboard",
-        "/register"
+        "/register",
+        "/dashboard/page"
       ]
     },
     "/": {
@@ -211,11 +211,11 @@ export const routeTree = rootRoute
     "/Setup-mfa": {
       "filePath": "Setup-mfa.tsx"
     },
-    "/dashboard": {
-      "filePath": "dashboard.tsx"
-    },
     "/register": {
       "filePath": "register.tsx"
+    },
+    "/dashboard/page": {
+      "filePath": "dashboard/page.tsx"
     }
   }
 }

@@ -85,9 +85,11 @@ export function useAuth() {
       // ✅ Store JWTs
       localStorage.setItem('accessToken', data.accessToken);
       localStorage.setItem('refreshToken', data.refreshToken);
+      localStorage.setItem('role', data.user.role); // Store role
+      localStorage.setItem('email', data.user.email);
 
       // ✅ Redirect to dashboard
-      navigate({ to: '/dashboard' });
+      navigate({ to: '/dashboard/page' });
     },
   });
 

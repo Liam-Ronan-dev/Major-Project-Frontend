@@ -21,7 +21,7 @@ const Input = React.forwardRef<
   );
 });
 
-// ✅ Add a display name to avoid console warnings
+// Add a display name to avoid console warnings
 Input.displayName = 'Input';
 
 export { Input };
