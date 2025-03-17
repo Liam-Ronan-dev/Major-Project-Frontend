@@ -26,11 +26,11 @@ export const loginSchema = z.object({
 });
 // 🔹 MFA Schema
 export const mfaSchema = z.object({
-  tempToken: z.string().uuid(), // Backend sends a UUID tempToken
+  tempToken: z.string().nonempty('Missing tempToken'),
   totp: z
     .string()
-    .length(6, 'TOTP must be exactly 6 digits')
-    .regex(/^\d+$/, 'TOTP must contain only numbers'),
+    .length(6, 'TOTP must be 6 digits')
+    .regex(/^\d{6}$/, 'Invalid TOTP format'),
 });
 
 // Export inferred TypeScript types

@@ -1,4 +1,6 @@
 import { createFileRoute, useSearch } from '@tanstack/react-router';
+import { Button } from '@/components/ui/button';
+import { Link } from '@tanstack/react-router';
 
 export const Route = createFileRoute('/Setup-mfa')({
   component: SetupMfa,
@@ -22,13 +24,21 @@ function SetupMfa() {
 
       {/* Display QR Code if available */}
       {qrCode ? (
-        <img
-          src={qrCode}
-          alt="MFA QR Code"
-          className="mt-4 border rounded-lg shadow-md"
-        />
+        <>
+          <img
+            src={qrCode}
+            alt="MFA QR Code"
+            className="border rounded-lg shadow-md mt-5"
+          />
+
+          <Button type="submit" className="w-md mt-5">
+            <Link to="/Login" className="font-semibold">
+              Continue
+            </Link>
+          </Button>
+        </>
       ) : (
-        <p className="text-red-500 mt-4">QR Code not found.</p>
+        <p className="text-red-400 mt-4 font-semibold">QR Code not found.</p>
       )}
     </div>
   );

@@ -1,7 +1,10 @@
 import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
-import { RegisterFormData } from '@/validations/authSchema';
-import { LoginFormData } from '@/validations/authSchema';
+import {
+  RegisterFormData,
+  LoginFormData,
+  MfaFormData,
+} from '@/validations/authSchema';
 
 const BASE_API_URL = import.meta.env.VITE_HEALTH_SERVICE_BASE_API;
 
@@ -51,13 +54,40 @@ export function useAuth() {
       return response.json();
     },
     onSuccess: (data) => {
+      if (!data.tempToken) {
+        console.error('❌ No tempToken received from backend.');
+        return;
+      }
+
       navigate({
         to: '/Input-totp',
-        search: { tempToken: data.tempToken },
+        search: { tempToken: data.tempToken }, // ✅ Ensure this is passed correctly
       });
     },
     onError: (error) => {
       console.error('Login error:', error);
+    },
+  });
+
+  const verifyMfaMutation = useMutation({
+    mutationFn: async (mfaData: MfaFormData) => {
+      const response = await fetch(`${BASE_API_URL}/auth/login/mfa`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(mfaData),
+      });
+
+      if (!response.ok) throw new Error('Invalid MFA code');
+
+      return response.json();
+    },
+    onSuccess: (data) => {
+      // ✅ Store JWTs
+      localStorage.setItem('accessToken', data.accessToken);
+      localStorage.setItem('refreshToken', data.refreshToken);
+
+      // ✅ Redirect to dashboard
+      navigate({ to: '/dashboard' });
     },
   });
 
@@ -66,5 +96,7 @@ export function useAuth() {
     registerStatus: registerMutation.status,
     loginUser: loginMutation.mutate,
     loginStatus: loginMutation.status,
+    verifyMfa: verifyMfaMutation.mutate,
+    mfaStatus: verifyMfaMutation.status,
   };
 }

@@ -12,6 +12,7 @@
 
 import { Route as rootRoute } from './routes/__root';
 import { Route as RegisterImport } from './routes/register';
+import { Route as DashboardImport } from './routes/dashboard';
 import { Route as SetupMfaImport } from './routes/Setup-mfa';
 import { Route as LoginImport } from './routes/Login';
 import { Route as InputTotpImport } from './routes/Input-totp';
@@ -22,6 +23,12 @@ import { Route as IndexImport } from './routes/index';
 const RegisterRoute = RegisterImport.update({
   id: '/register',
   path: '/register',
+  getParentRoute: () => rootRoute,
+} as any);
+
+const DashboardRoute = DashboardImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
   getParentRoute: () => rootRoute,
 } as any);
 
@@ -81,6 +88,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SetupMfaImport;
       parentRoute: typeof rootRoute;
     };
+    '/dashboard': {
+      id: '/dashboard';
+      path: '/dashboard';
+      fullPath: '/dashboard';
+      preLoaderRoute: typeof DashboardImport;
+      parentRoute: typeof rootRoute;
+    };
     '/register': {
       id: '/register';
       path: '/register';
@@ -98,6 +112,7 @@ export interface FileRoutesByFullPath {
   '/Input-totp': typeof InputTotpRoute;
   '/Login': typeof LoginRoute;
   '/Setup-mfa': typeof SetupMfaRoute;
+  '/dashboard': typeof DashboardRoute;
   '/register': typeof RegisterRoute;
 }
 
@@ -106,6 +121,7 @@ export interface FileRoutesByTo {
   '/Input-totp': typeof InputTotpRoute;
   '/Login': typeof LoginRoute;
   '/Setup-mfa': typeof SetupMfaRoute;
+  '/dashboard': typeof DashboardRoute;
   '/register': typeof RegisterRoute;
 }
 
@@ -115,15 +131,35 @@ export interface FileRoutesById {
   '/Input-totp': typeof InputTotpRoute;
   '/Login': typeof LoginRoute;
   '/Setup-mfa': typeof SetupMfaRoute;
+  '/dashboard': typeof DashboardRoute;
   '/register': typeof RegisterRoute;
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath;
-  fullPaths: '/' | '/Input-totp' | '/Login' | '/Setup-mfa' | '/register';
+  fullPaths:
+    | '/'
+    | '/Input-totp'
+    | '/Login'
+    | '/Setup-mfa'
+    | '/dashboard'
+    | '/register';
   fileRoutesByTo: FileRoutesByTo;
-  to: '/' | '/Input-totp' | '/Login' | '/Setup-mfa' | '/register';
-  id: '__root__' | '/' | '/Input-totp' | '/Login' | '/Setup-mfa' | '/register';
+  to:
+    | '/'
+    | '/Input-totp'
+    | '/Login'
+    | '/Setup-mfa'
+    | '/dashboard'
+    | '/register';
+  id:
+    | '__root__'
+    | '/'
+    | '/Input-totp'
+    | '/Login'
+    | '/Setup-mfa'
+    | '/dashboard'
+    | '/register';
   fileRoutesById: FileRoutesById;
 }
 
@@ -132,6 +168,7 @@ export interface RootRouteChildren {
   InputTotpRoute: typeof InputTotpRoute;
   LoginRoute: typeof LoginRoute;
   SetupMfaRoute: typeof SetupMfaRoute;
+  DashboardRoute: typeof DashboardRoute;
   RegisterRoute: typeof RegisterRoute;
 }
 
@@ -140,6 +177,7 @@ const rootRouteChildren: RootRouteChildren = {
   InputTotpRoute: InputTotpRoute,
   LoginRoute: LoginRoute,
   SetupMfaRoute: SetupMfaRoute,
+  DashboardRoute: DashboardRoute,
   RegisterRoute: RegisterRoute,
 };
 
@@ -157,6 +195,7 @@ export const routeTree = rootRoute
         "/Input-totp",
         "/Login",
         "/Setup-mfa",
+        "/dashboard",
         "/register"
       ]
     },
@@ -171,6 +210,9 @@ export const routeTree = rootRoute
     },
     "/Setup-mfa": {
       "filePath": "Setup-mfa.tsx"
+    },
+    "/dashboard": {
+      "filePath": "dashboard.tsx"
     },
     "/register": {
       "filePath": "register.tsx"
