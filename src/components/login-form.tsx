@@ -6,7 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Link } from '@tanstack/react-router';
 
 import { loginSchema, LoginFormData } from '@/validations/authSchema';
-import { useAuth } from '@/hooks/useAuth';
+import { useAuthAPI } from '@/hooks/useAuth';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 
@@ -14,7 +14,7 @@ export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<'div'>) {
-  const { loginUser, loginStatus } = useAuth();
+  const { loginUser, loginStatus } = useAuthAPI();
 
   // ✅ React Hook Form Setup
   const {

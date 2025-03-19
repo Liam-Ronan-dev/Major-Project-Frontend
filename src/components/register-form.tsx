@@ -1,7 +1,7 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { registerSchema, RegisterFormData } from '@/validations/authSchema';
-import { useAuth } from '@/hooks/useAuth';
+import { useAuthAPI } from '@/hooks/useAuth';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -14,7 +14,7 @@ export function RegisterForm({
   className,
   ...props
 }: React.ComponentProps<'div'>) {
-  const { registerUser, registerStatus } = useAuth();
+  const { registerUser, registerStatus } = useAuthAPI();
 
   // ✅ React Hook Form (RHF) Setup
   const {

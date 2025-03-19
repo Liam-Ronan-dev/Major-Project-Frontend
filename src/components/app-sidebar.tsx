@@ -34,8 +34,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const email = localStorage.getItem('email') || '';
-    const role = localStorage.getItem('role') || '';
+    const email = sessionStorage.getItem('email') || '';
+    const role = sessionStorage.getItem('role') || '';
     const name = email.split('@')[0]; // Extract username from email
 
     if (email && role) {

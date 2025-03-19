@@ -2,7 +2,7 @@ import { createFileRoute, useSearch } from '@tanstack/react-router';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { mfaSchema, MfaFormData } from '@/validations/authSchema';
-import { useAuth } from '@/hooks/useAuth';
+import { useAuthAPI } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/button';
 import {
   InputOTP,
@@ -17,7 +17,7 @@ export const Route = createFileRoute('/Input-totp')({
 });
 
 function Inputtotp() {
-  const { verifyMfa, mfaStatus } = useAuth();
+  const { verifyMfa, mfaStatus } = useAuthAPI();
   const searchParams = useSearch({ strict: false });
   const tempToken = searchParams?.tempToken || '';
 

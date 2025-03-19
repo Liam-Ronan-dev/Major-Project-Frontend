@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client';
 import { RouterProvider, createRouter } from '@tanstack/react-router';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ThemeProvider } from '@/components/theme-provider';
+// import { AuthProvider } from '@/contexts/AuthContext'; // Import AuthProvider
 import './index.css';
 
 // Import the generated route tree
@@ -30,7 +31,9 @@ if (!rootElement.innerHTML) {
     <StrictMode>
       <ThemeProvider>
         <QueryClientProvider client={queryClient}>
-          <RouterProvider router={router} />
+          <AuthProvider>
+            <RouterProvider router={router} />
+          </AuthProvider>
         </QueryClientProvider>
       </ThemeProvider>
     </StrictMode>

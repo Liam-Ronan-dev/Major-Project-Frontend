@@ -5,13 +5,14 @@ import {
   LoginFormData,
   MfaFormData,
 } from '@/validations/authSchema';
+import { useAuth } from '@/contexts/AuthContext';
 
 const BASE_API_URL = import.meta.env.VITE_HEALTH_SERVICE_BASE_API;
 
-export function useAuth() {
+export function useAuthAPI() {
   const navigate = useNavigate();
+  const { login } = useAuth();
 
-  // Register a User
   const registerMutation = useMutation({
     mutationFn: async (userData: RegisterFormData) => {
       const response = await fetch(`${BASE_API_URL}/auth/register`, {
@@ -23,22 +24,16 @@ export function useAuth() {
       if (!response.ok) {
         throw new Error('Registration failed');
       }
-
       return response.json();
     },
     onSuccess: (data) => {
-      // Redirect user to MFA setup after successful registration
       navigate({
         to: '/Setup-mfa',
         search: { qrCode: encodeURIComponent(data.qrCode) },
       });
     },
-    onError: (error) => {
-      console.error('Registration error:', error);
-    },
   });
 
-  // 🔹 Login Mutation
   const loginMutation = useMutation({
     mutationFn: async (credentials: LoginFormData) => {
       const response = await fetch(`${BASE_API_URL}/auth/login`, {
@@ -58,14 +53,7 @@ export function useAuth() {
         console.error('❌ No tempToken received from backend.');
         return;
       }
-
-      navigate({
-        to: '/Input-totp',
-        search: { tempToken: data.tempToken }, // ✅ Ensure this is passed correctly
-      });
-    },
-    onError: (error) => {
-      console.error('Login error:', error);
+      navigate({ to: '/Input-totp', search: { tempToken: data.tempToken } });
     },
   });
 
@@ -75,21 +63,15 @@ export function useAuth() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(mfaData),
+        credentials: 'include', // Sends cookies
       });
 
       if (!response.ok) throw new Error('Invalid MFA code');
-
       return response.json();
     },
     onSuccess: (data) => {
-      // ✅ Store JWTs
-      localStorage.setItem('accessToken', data.accessToken);
-      localStorage.setItem('refreshToken', data.refreshToken);
-      localStorage.setItem('role', data.user.role); // Store role
-      localStorage.setItem('email', data.user.email);
-
-      // ✅ Redirect to dashboard
-      navigate({ to: '/dashboard/page' });
+      login(data.accessToken, { email: data.user.email, role: data.user.role });
+      navigate({ to: '/dashboard' });
     },
   });
 
