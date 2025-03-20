@@ -1,38 +1,57 @@
 import { cn } from '@/lib/utils';
+
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Link } from '@tanstack/react-router';
 
-import { loginSchema, LoginFormData } from '@/validations/authSchema';
-import { useAuthAPI } from '@/hooks/useAuth';
+import { useNavigate, Link } from '@tanstack/react-router';
+
+import { login } from '@/lib/api';
+
+import { useMutation } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from 'zod';
+
+const loginSchema = z.object({
+  email: z.string().email('Invalid email format'),
+  password: z.string().min(8, 'Password must be at least 8 characters'),
+});
+
+type LoginFormData = z.infer<typeof loginSchema>;
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<'div'>) {
-  const { loginUser, loginStatus } = useAuthAPI();
+  const navigate = useNavigate();
 
-  // ✅ React Hook Form Setup
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
-    defaultValues: {
-      email: '',
-      password: '',
+  });
+
+  // Mutation for Login API
+  const loginMutation = useMutation({
+    mutationFn: ({ email, password }: LoginFormData) => login(email, password),
+    onSuccess: () => {
+      console.log('Navigating to OTP page');
+      navigate({ to: '/input-totp' }); // Redirect to OTP page
+    },
+    onError: (error: { response?: { data?: { message?: string } } }) => {
+      console.error(
+        'Login failed:',
+        error.response?.data?.message || 'Unknown error'
+      );
     },
   });
 
-  // Handle Form Submission
   const onSubmit = (data: LoginFormData) => {
-    console.log('📤 Submitting Login Data:', data); // Debugging Log
-    loginUser(data);
+    loginMutation.mutate(data);
   };
 
   return (
@@ -78,10 +97,20 @@ export function LoginForm({
 
               {/* Submit Button */}
               <div className="flex flex-col gap-3">
-                <Button type="submit" className="w-full font-semibold">
-                  {loginStatus === 'pending' ? 'Logging in...' : 'Login'}
+                <Button
+                  type="submit"
+                  className="w-full"
+                  disabled={loginMutation.isPending}
+                >
+                  {loginMutation.isPending ? 'Logging in...' : 'Login'}
                 </Button>
               </div>
+
+              {loginMutation.isError && (
+                <p className="text-red-500 text-center text-sm mt-2">
+                  Login failed. Please check your credentials.
+                </p>
+              )}
             </div>
 
             {/* Register Link */}
@@ -93,11 +122,6 @@ export function LoginForm({
               >
                 Register
               </Link>
-              {loginStatus === 'error' && (
-                <p className="text-red-400 text-sm font-light">
-                  Login failed. Try again.
-                </p>
-              )}
             </div>
           </form>
         </CardContent>

@@ -1,22 +1,43 @@
 import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { registerSchema, RegisterFormData } from '@/validations/authSchema';
-import { useAuthAPI } from '@/hooks/useAuth';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Link } from '@tanstack/react-router';
+import { Link, useNavigate } from '@tanstack/react-router';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from 'zod';
+import { useMutation } from '@tanstack/react-query';
+import { registerUser } from '@/lib/api';
+
+const registerSchema = z.object({
+  email: z.string().email('Invalid email format'),
+  password: z
+    .string()
+    .min(8, 'Password must be at least 8 characters long')
+    .max(128, 'Password cannot exceed 128 characters')
+    .regex(/\d/, 'Password must contain at least one number')
+    .regex(/[A-Z]/, 'Password must contain at least one uppercase letter')
+    .regex(
+      /[!@#$%^&*(),.?":{}|<>]/,
+      'Password must contain at least one special character'
+    ),
+  licenseNumber: z
+    .string()
+    .length(6, 'License number must be exactly 6 digits')
+    .regex(/^\d+$/, 'License number must contain only numbers'),
+  role: z.enum(['doctor', 'pharmacist']), // Must be exactly "doctor" or "pharmacist"
+});
+
+export type RegisterFormData = z.infer<typeof registerSchema>;
 
 export function RegisterForm({
   className,
   ...props
 }: React.ComponentProps<'div'>) {
-  const { registerUser, registerStatus } = useAuthAPI();
+  const navigate = useNavigate();
 
-  // ✅ React Hook Form (RHF) Setup
   const {
     register,
     handleSubmit,
@@ -32,9 +53,30 @@ export function RegisterForm({
     },
   });
 
-  // Handle Form Submission
+  // Mutation for Register API
+  const registerMutation = useMutation({
+    mutationFn: (data: RegisterFormData) => registerUser(data),
+    onSuccess: (data) => {
+      if (data.qrCode) {
+        navigate({
+          to: '/Setup-mfa',
+          search: { qrCode: encodeURIComponent(data.qrCode) },
+        });
+      } else {
+        console.error('QR Code missing from response');
+      }
+    },
+    onError: (error: { response?: { data?: { message?: string } } }) => {
+      console.error(
+        'Registration failed:',
+        error.response?.data?.message || 'Unknown error'
+      );
+    },
+  });
+
+  // ✅ Form Submission
   const onSubmit = (data: RegisterFormData) => {
-    registerUser(data);
+    registerMutation.mutate(data);
   };
 
   return (
@@ -118,26 +160,32 @@ export function RegisterForm({
 
               {/* Submit Button */}
               <div className="flex flex-col gap-3">
-                <Button type="submit" className="w-full font-semibold">
-                  {registerStatus === 'pending' ? 'Registering...' : 'Register'}
+                <Button
+                  type="submit"
+                  className="w-full"
+                  disabled={registerMutation.isPending}
+                >
+                  {registerMutation.isPending ? 'Registering...' : 'Register'}
                 </Button>
               </div>
+
+              {registerMutation.isError && (
+                <p className="text-red-500 text-center text-sm mt-2">
+                  {registerMutation.error?.response?.data?.message ||
+                    'Registration failed. Try again.'}
+                </p>
+              )}
             </div>
 
             {/* Login Link */}
-            <div className="mt-5 text-center text-md">
+            <div className="text-center mt-4 text-md">
               Already have an account?{' '}
               <Link
                 className="font-semibold underline underline-offset-4"
-                to="/Login"
+                to="/login"
               >
                 Login
               </Link>
-              {registerStatus === 'error' && (
-                <p className="text-red-400 text-sm font-light">
-                  Registration failed. Try again.
-                </p>
-              )}
             </div>
           </form>
         </CardContent>

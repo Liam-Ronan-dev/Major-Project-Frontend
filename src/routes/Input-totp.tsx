@@ -1,8 +1,4 @@
-import { createFileRoute, useSearch } from '@tanstack/react-router';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { mfaSchema, MfaFormData } from '@/validations/authSchema';
-import { useAuthAPI } from '@/hooks/useAuth';
+import { createFileRoute } from '@tanstack/react-router';
 import { Button } from '@/components/ui/button';
 import {
   InputOTP,
@@ -11,27 +7,55 @@ import {
   InputOTPSeparator,
 } from '@/components/ui/input-otp';
 import { Label } from '@/components/ui/label';
+import * as z from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useMutation } from '@tanstack/react-query';
+import { verifyOTP } from '@/lib/api';
+import { useNavigate } from '@tanstack/react-router';
+import { useForm } from 'react-hook-form';
 
 export const Route = createFileRoute('/Input-totp')({
   component: Inputtotp,
 });
 
+const totpSchema = z.object({
+  totp: z
+    .string()
+    .length(6, 'TOTP must be 6 digits')
+    .regex(/^\d{6}$/, 'Invalid TOTP format'),
+});
+
+export type totpFormData = z.infer<typeof totpSchema>;
+
 function Inputtotp() {
-  const { verifyMfa, mfaStatus } = useAuthAPI();
-  const searchParams = useSearch({ strict: false });
-  const tempToken = searchParams?.tempToken || '';
+  const navigate = useNavigate();
 
   const {
+    register,
     handleSubmit,
-    setValue,
+    setValue, // Used to update OTP dynamically
     formState: { errors },
-  } = useForm<MfaFormData>({
-    resolver: zodResolver(mfaSchema),
-    defaultValues: { tempToken, totp: '' },
+  } = useForm<totpFormData>({
+    resolver: zodResolver(totpSchema),
+    defaultValues: { totp: '' },
   });
 
-  const onSubmit = (data: MfaFormData) => {
-    verifyMfa(data);
+  // ✅ Mutation for OTP Verification
+  const otpMutation = useMutation({
+    mutationFn: (data: totpFormData) => verifyOTP(data.totp),
+    onSuccess: () => {
+      navigate({ to: '/dashboard/page' }); // ✅ Redirect to dashboard on success
+    },
+    onError: (error: { response?: { data?: { message?: string } } }) => {
+      console.error(
+        'OTP Verification Failed:',
+        error.response?.data?.message || 'Invalid OTP'
+      );
+    },
+  });
+
+  const onSubmit = (data: totpFormData) => {
+    otpMutation.mutate(data);
   };
 
   return (
@@ -50,7 +74,8 @@ function Inputtotp() {
           <InputOTP
             id="totp"
             maxLength={6}
-            onChange={(value) => setValue('totp', value)}
+            {...register('totp')} // ✅ Connects the field with useForm
+            onChange={(value) => setValue('totp', value)} // ✅ Updates useForm state
           >
             <InputOTPGroup>
               <InputOTPSlot index={0} />
@@ -64,15 +89,31 @@ function Inputtotp() {
               <InputOTPSlot index={5} />
             </InputOTPGroup>
           </InputOTP>
-          {errors.totp && (
-            <p className="text-red-400 text-center">{errors.totp.message}</p>
-          )}
         </div>
 
+        {/* Display Validation Errors */}
+        {errors.totp && (
+          <p className="text-red-500 text-center text-sm">
+            {errors.totp.message}
+          </p>
+        )}
+
         {/* Submit Button */}
-        <Button type="submit" className="w-full">
-          {mfaStatus === 'pending' ? 'Verifying...' : 'Submit'}
+        <Button
+          type="submit"
+          className="w-full"
+          disabled={otpMutation.isPending}
+        >
+          {otpMutation.isPending ? 'Verifying...' : 'Submit'}
         </Button>
+
+        {/* API Error Message */}
+        {otpMutation.isError && (
+          <p className="text-red-500 text-center text-sm mt-2">
+            {otpMutation.error?.response?.data?.message ||
+              'Invalid or expired OTP. Try again.'}
+          </p>
+        )}
       </form>
     </div>
   );

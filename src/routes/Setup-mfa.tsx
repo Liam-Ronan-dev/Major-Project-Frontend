@@ -31,10 +31,8 @@ function SetupMfa() {
             className="border rounded-lg shadow-md mt-5"
           />
 
-          <Button type="submit" className="w-md mt-5">
-            <Link to="/Login" className="font-semibold">
-              Continue
-            </Link>
+          <Button asChild className="mt-5">
+            <Link to="/login">Continue</Link>
           </Button>
         </>
       ) : (
