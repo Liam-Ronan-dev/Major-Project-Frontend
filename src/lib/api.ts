@@ -1,7 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import axios from 'axios';
 
-const BASE_API_URL = import.meta.env.VITE_HEALTH_SERVICE_BASE_API;
+const BASE_API_URL =
+  import.meta.env.VITE_HEALTH_SERVICE_BASE_API ||
+  'https://health-service-api.click/api';
 
 // Configure Axios with credentials (cookies)
 const api = axios.create({
