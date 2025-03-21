@@ -19,7 +19,7 @@ const handleApiError = (error: {
 // ✅ Fetch Logged-in User
 export const fetchUser = async () => {
   try {
-    const res = await api.get('/api/auth/me');
+    const res = await api.get('/auth/me');
     return res.data;
   } catch (error) {
     handleApiError(error);
@@ -35,7 +35,7 @@ export const registerUser = async (data: {
   role: 'doctor' | 'pharmacist';
 }) => {
   try {
-    const res = await api.post('/api/auth/register', data);
+    const res = await api.post('/auth/register', data);
     return res.data;
   } catch (error) {
     handleApiError(error);
@@ -55,7 +55,7 @@ export const login = async (email: string, password: string) => {
 // ✅ Verify OTP (Step 2)
 export const verifyOTP = async (otp: string) => {
   try {
-    const res = await api.post('/api/auth/login/mfa', { totp: otp });
+    const res = await api.post('/auth/login/mfa', { totp: otp });
     return res.data;
   } catch (error) {
     handleApiError(error);
@@ -65,7 +65,7 @@ export const verifyOTP = async (otp: string) => {
 // ✅ Logout API
 export const logout = async () => {
   try {
-    await api.post('/api//auth/logout');
+    await api.post('/auth/logout');
     return true;
   } catch (error) {
     handleApiError(error);
