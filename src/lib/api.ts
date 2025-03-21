@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import axios from 'axios';
 
 const BASE_API_URL = import.meta.env.VITE_HEALTH_SERVICE_BASE_API;
@@ -9,10 +10,19 @@ const api = axios.create({
 });
 
 // ✅ Function to Log Backend Errors
-const handleApiError = (error: {
-  response?: { data?: { message?: string } };
-}) => {
-  console.error('API Error:', error.response?.data?.message);
+const handleApiError = (error: any) => {
+  console.error('🔥 API Error:', error); // Log full error
+
+  if (error.response) {
+    console.error('📌 Response Data:', error.response.data);
+    console.error('📌 Status:', error.response.status);
+    console.error('📌 Headers:', error.response.headers);
+  } else if (error.request) {
+    console.error('📌 No Response Received:', error.request);
+  } else {
+    console.error('📌 Request Setup Error:', error.message);
+  }
+
   throw error.response?.data || new Error('Unknown error occurred');
 };
 
