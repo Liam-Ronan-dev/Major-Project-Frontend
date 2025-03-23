@@ -2,7 +2,7 @@ import { createContext } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { fetchUser } from '@/lib/api';
 
-// ✅ Define User Type
+// Define User Type
 type User = {
   id: string;
   email: string;
@@ -15,12 +15,12 @@ type AuthContextType = {
   refetchUser: () => void;
 };
 
-// ✅ Create AuthContext
+// Create AuthContext
 export const AuthContext = createContext<AuthContextType | undefined>(
   undefined
 );
 
-// ✅ Auth Provider
+// Auth Provider
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const shouldFetchUser = document.cookie.includes('accessToken');
 
@@ -30,7 +30,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     refetch,
   } = useQuery({
     queryKey: ['user'],
-    queryFn: fetchUser, // ✅ Uses fetchUser from api.ts
+    queryFn: fetchUser, // Uses fetchUser from api.ts
     enabled: shouldFetchUser,
     retry: false, // Don't retry on failure (user not logged in)
   });

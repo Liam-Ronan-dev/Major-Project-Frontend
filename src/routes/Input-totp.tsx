@@ -44,7 +44,7 @@ function Inputtotp() {
   const otpMutation = useMutation({
     mutationFn: (data: totpFormData) => verifyOTP(data.totp),
     onSuccess: () => {
-      navigate({ to: '/dashboard/page' }); // ✅ Redirect to dashboard on success
+      navigate({ to: '/dashboard/page' }); // Redirect to dashboard on success
     },
     onError: (error: { response?: { data?: { message?: string } } }) => {
       console.error(
@@ -74,8 +74,8 @@ function Inputtotp() {
           <InputOTP
             id="totp"
             maxLength={6}
-            {...register('totp')} // ✅ Connects the field with useForm
-            onChange={(value) => setValue('totp', value)} // ✅ Updates useForm state
+            {...register('totp')} // Connects the field with useForm
+            onChange={(value) => setValue('totp', value)} // Updates useForm state
           >
             <InputOTPGroup>
               <InputOTPSlot index={0} />

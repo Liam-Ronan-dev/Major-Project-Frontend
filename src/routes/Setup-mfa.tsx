@@ -7,10 +7,10 @@ export const Route = createFileRoute('/Setup-mfa')({
 });
 
 function SetupMfa() {
-  // 🔹 Get `qrCode` from the URL query parameters
+  // Get `qrCode` from the URL query parameters
   const searchParams = useSearch({ strict: false });
 
-  // 🔹 Decode the QR code URL (if it exists)
+  // Decode the QR code URL (if it exists)
   const qrCode = searchParams.qrCode
     ? decodeURIComponent(searchParams.qrCode)
     : '';
@@ -31,7 +31,7 @@ function SetupMfa() {
             className="border rounded-lg shadow-md mt-5"
           />
 
-          <Button asChild className="mt-5">
+          <Button asChild className="mt-5 w-md font-semibold">
             <Link to="/login">Continue</Link>
           </Button>
         </>

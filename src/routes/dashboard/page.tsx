@@ -3,7 +3,7 @@ import { Outlet } from '@tanstack/react-router';
 //import { AppSidebar } from '@/components/app-sidebar';
 import { SidebarProvider } from '@/components/ui/sidebar';
 
-// ✅ Define the route as a layout
+// Define the route as a layout
 export const Route = createFileRoute('/dashboard/page')({
   component: DashboardLayout,
 });

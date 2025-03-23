@@ -11,24 +11,28 @@ const api = axios.create({
   withCredentials: true, // Ensures cookies are sent
 });
 
-// ✅ Function to Log Backend Errors
+// Function to Log Backend Errors
 const handleApiError = (error: any) => {
-  console.error('🔥 API Error:', error); // Log full error
+  console.error('API Error:', {
+    message: error.message,
+    config: error.config,
+    response: error.response,
+  }); // Log full error
 
   if (error.response) {
-    console.error('📌 Response Data:', error.response.data);
-    console.error('📌 Status:', error.response.status);
-    console.error('📌 Headers:', error.response.headers);
+    console.error('Response Data:', error.response.data);
+    console.error('Status:', error.response.status);
+    console.error('Headers:', error.response.headers);
   } else if (error.request) {
-    console.error('📌 No Response Received:', error.request);
+    console.error('No Response Received:', error.request);
   } else {
-    console.error('📌 Request Setup Error:', error.message);
+    console.error('Request Setup Error:', error.message);
   }
 
   throw error.response?.data || new Error('Unknown error occurred');
 };
 
-// ✅ Fetch Logged-in User
+// Fetch Logged-in User
 export const fetchUser = async () => {
   try {
     const res = await api.get('/auth/me');
@@ -39,7 +43,7 @@ export const fetchUser = async () => {
   }
 };
 
-// ✅ Register User
+// Register User
 export const registerUser = async (data: {
   email: string;
   password: string;
@@ -54,7 +58,7 @@ export const registerUser = async (data: {
   }
 };
 
-// ✅ Login API (Step 1)
+// Login API (Step 1)
 export const login = async (email: string, password: string) => {
   try {
     const res = await api.post('/auth/login', { email, password });
@@ -64,7 +68,7 @@ export const login = async (email: string, password: string) => {
   }
 };
 
-// ✅ Verify OTP (Step 2)
+// Verify OTP (Step 2)
 export const verifyOTP = async (otp: string) => {
   try {
     const res = await api.post('/auth/login/mfa', { totp: otp });
@@ -74,7 +78,7 @@ export const verifyOTP = async (otp: string) => {
   }
 };
 
-// ✅ Logout API
+// Logout API
 export const logout = async () => {
   try {
     await api.post('/auth/logout');
