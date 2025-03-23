@@ -7,7 +7,7 @@ export const Route = createFileRoute('/Login')({
 
 function Login() {
   return (
-    <div className="flex min-h-svh w-full items-center justify-center md:p-10">
+    <div className="flex items-center justify-center min-h-5/6 w-full">
       <div className="w-full max-w-md">
         <h1 className="text-center w-full scroll-m-20 text-4xl font-extrabold lg:text-5xl">
           Login in to your account

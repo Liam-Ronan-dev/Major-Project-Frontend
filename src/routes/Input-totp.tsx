@@ -59,13 +59,13 @@ function Inputtotp() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen p-6">
+    <div className="flex flex-col items-center justify-center min-h-5/6 p-6">
       <h1 className="text-2xl font-bold">Enter MFA Code</h1>
-      <p className="text-gray-600 dark:text-gray-400">
+      <p className="m-5 text-center leading-7 [&:not(:first-child)]:mt-6">
         Enter the one-time password from your Authenticator app.
       </p>
 
-      <form onSubmit={handleSubmit(onSubmit)} className="mt-4 w-96 space-y-8">
+      <form onSubmit={handleSubmit(onSubmit)} className="mt-2 w-96 space-y-8">
         {/* TOTP Input with ShadCN InputOTP */}
         <div className="grid gap-3 flex justify-center">
           <Label htmlFor="totp" className="text-center">
@@ -101,7 +101,7 @@ function Inputtotp() {
         {/* Submit Button */}
         <Button
           type="submit"
-          className="w-full"
+          className="w-full font-semibold"
           disabled={otpMutation.isPending}
         >
           {otpMutation.isPending ? 'Verifying...' : 'Submit'}

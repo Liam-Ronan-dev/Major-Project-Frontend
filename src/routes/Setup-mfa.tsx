@@ -16,9 +16,11 @@ function SetupMfa() {
     : '';
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen p-6">
-      <h1 className="text-2xl font-bold">Setup Multi-Factor Authentication</h1>
-      <p className="text-gray-600 dark:text-gray-400">
+    <div className="flex flex-col items-center justify-center min-h-5/6 p-6">
+      <h1 className="text-2xl font-bold text-center">
+        Setup Multi-Factor Authentication
+      </h1>
+      <p className="m-5 text-center leading-7 [&:not(:first-child)]:mt-6">
         Scan the QR code below in an authenticator app to complete MFA setup.
       </p>
 

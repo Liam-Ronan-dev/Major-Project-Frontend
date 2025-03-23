@@ -55,11 +55,14 @@ export function LoginForm({
   };
 
   return (
-    <div className={cn('flex flex-col gap-6', className)} {...props}>
+    <div
+      className={cn(' md:max-w-lg sm:max-w-sm mx-auto px-4', className)}
+      {...props}
+    >
       <Card>
         <CardContent>
           <form onSubmit={handleSubmit(onSubmit)}>
-            <div className="flex flex-col gap-6">
+            <div className="flex flex-col gap-8">
               {/* Email Field */}
               <div className="grid gap-3">
                 <Label className="font-semibold" htmlFor="email">
@@ -99,7 +102,7 @@ export function LoginForm({
               <div className="flex flex-col gap-3">
                 <Button
                   type="submit"
-                  className="w-full"
+                  className="w-full font-semibold"
                   disabled={loginMutation.isPending}
                 >
                   {loginMutation.isPending ? 'Logging in...' : 'Login'}

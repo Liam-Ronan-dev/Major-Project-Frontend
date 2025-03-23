@@ -80,11 +80,17 @@ export function RegisterForm({
   };
 
   return (
-    <div className={cn('flex flex-col gap-6', className)} {...props}>
+    <div
+      className={cn(
+        'flex flex-col gap-6 md:max-w-lg sm:max-w-sm mx-auto px-4',
+        className
+      )}
+      {...props}
+    >
       <Card>
         <CardContent>
           <form onSubmit={handleSubmit(onSubmit)}>
-            <div className="flex flex-col gap-6">
+            <div className="flex flex-col gap-8">
               {/* Email Field */}
               <div className="grid gap-3">
                 <Label className="font-semibold" htmlFor="email">
@@ -144,11 +150,15 @@ export function RegisterForm({
                 >
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="doctor" id="doctor" />
-                    <Label htmlFor="doctor">Doctor</Label>
+                    <Label className="font-semibold" htmlFor="doctor">
+                      Doctor
+                    </Label>
                   </div>
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="pharmacist" id="pharmacist" />
-                    <Label htmlFor="pharmacist">Pharmacist</Label>
+                    <Label className="font-semibold" htmlFor="pharmacist">
+                      Pharmacist
+                    </Label>
                   </div>
                 </RadioGroup>
                 {errors.role && (
@@ -162,7 +172,7 @@ export function RegisterForm({
               <div className="flex flex-col gap-3">
                 <Button
                   type="submit"
-                  className="w-full"
+                  className="w-full font-semibold"
                   disabled={registerMutation.isPending}
                 >
                   {registerMutation.isPending ? 'Registering...' : 'Register'}
