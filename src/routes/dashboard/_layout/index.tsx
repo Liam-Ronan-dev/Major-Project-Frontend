@@ -13,7 +13,7 @@ function DashboardPage() {
   if (!user) return <div>User not authenticated</div>;
 
   return (
-    <div className="text-start ml-26">
+    <div className="ml-20">
       <h1 className="text-3xl font-bold">
         Welcome back, {user.email.split('@')[0]}
       </h1>

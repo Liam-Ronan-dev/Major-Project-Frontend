@@ -1,4 +1,4 @@
-import { createContext, useEffect } from 'react';
+import { createContext } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { fetchUser } from '@/lib/api';
 
@@ -30,11 +30,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     retry: false,
     staleTime: 1000 * 60 * 5, // Optional: 5 minutes caching
   });
-
-  // Optional: Log user + cookie state for debugging
-  useEffect(() => {
-    console.log('🔐 AuthContext user:', user);
-  }, [user]);
 
   return (
     <AuthContext.Provider value={{ user, isLoading, refetchUser: refetch }}>
