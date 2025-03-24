@@ -44,7 +44,7 @@ function Inputtotp() {
   const otpMutation = useMutation({
     mutationFn: (data: totpFormData) => verifyOTP(data.totp),
     onSuccess: () => {
-      navigate({ to: '/dashboard/page' }); // Redirect to dashboard on success
+      navigate({ to: '/dashboard' }); // Redirect to dashboard on success
     },
     onError: (error: { response?: { data?: { message?: string } } }) => {
       console.error(

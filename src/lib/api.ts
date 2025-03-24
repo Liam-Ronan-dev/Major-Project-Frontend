@@ -34,8 +34,10 @@ const handleApiError = (error: any) => {
 
 // Fetch Logged-in User
 export const fetchUser = async () => {
+  console.log('fetchUser called');
   try {
     const res = await api.get('/auth/me');
+    console.log(res.data);
     return res.data;
   } catch (error) {
     handleApiError(error);

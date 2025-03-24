@@ -8,6 +8,8 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
+import { createFileRoute } from '@tanstack/react-router';
+
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root';
@@ -16,9 +18,20 @@ import { Route as SetupMfaImport } from './routes/Setup-mfa';
 import { Route as LoginImport } from './routes/Login';
 import { Route as InputTotpImport } from './routes/Input-totp';
 import { Route as IndexImport } from './routes/index';
-import { Route as DashboardPageImport } from './routes/dashboard/page';
+import { Route as DashboardLayoutImport } from './routes/dashboard/_layout';
+import { Route as DashboardLayoutIndexImport } from './routes/dashboard/_layout/index';
+
+// Create Virtual Routes
+
+const DashboardImport = createFileRoute('/dashboard')();
 
 // Create/Update Routes
+
+const DashboardRoute = DashboardImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => rootRoute,
+} as any);
 
 const RegisterRoute = RegisterImport.update({
   id: '/register',
@@ -50,10 +63,15 @@ const IndexRoute = IndexImport.update({
   getParentRoute: () => rootRoute,
 } as any);
 
-const DashboardPageRoute = DashboardPageImport.update({
-  id: '/dashboard/page',
-  path: '/dashboard/page',
-  getParentRoute: () => rootRoute,
+const DashboardLayoutRoute = DashboardLayoutImport.update({
+  id: '/_layout',
+  getParentRoute: () => DashboardRoute,
+} as any);
+
+const DashboardLayoutIndexRoute = DashboardLayoutIndexImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => DashboardLayoutRoute,
 } as any);
 
 // Populate the FileRoutesByPath interface
@@ -95,17 +113,55 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RegisterImport;
       parentRoute: typeof rootRoute;
     };
-    '/dashboard/page': {
-      id: '/dashboard/page';
-      path: '/dashboard/page';
-      fullPath: '/dashboard/page';
-      preLoaderRoute: typeof DashboardPageImport;
+    '/dashboard': {
+      id: '/dashboard';
+      path: '/dashboard';
+      fullPath: '/dashboard';
+      preLoaderRoute: typeof DashboardImport;
       parentRoute: typeof rootRoute;
+    };
+    '/dashboard/_layout': {
+      id: '/dashboard/_layout';
+      path: '/dashboard';
+      fullPath: '/dashboard';
+      preLoaderRoute: typeof DashboardLayoutImport;
+      parentRoute: typeof DashboardRoute;
+    };
+    '/dashboard/_layout/': {
+      id: '/dashboard/_layout/';
+      path: '/';
+      fullPath: '/dashboard/';
+      preLoaderRoute: typeof DashboardLayoutIndexImport;
+      parentRoute: typeof DashboardLayoutImport;
     };
   }
 }
 
 // Create and export the route tree
+
+interface DashboardLayoutRouteChildren {
+  DashboardLayoutIndexRoute: typeof DashboardLayoutIndexRoute;
+}
+
+const DashboardLayoutRouteChildren: DashboardLayoutRouteChildren = {
+  DashboardLayoutIndexRoute: DashboardLayoutIndexRoute,
+};
+
+const DashboardLayoutRouteWithChildren = DashboardLayoutRoute._addFileChildren(
+  DashboardLayoutRouteChildren
+);
+
+interface DashboardRouteChildren {
+  DashboardLayoutRoute: typeof DashboardLayoutRouteWithChildren;
+}
+
+const DashboardRouteChildren: DashboardRouteChildren = {
+  DashboardLayoutRoute: DashboardLayoutRouteWithChildren,
+};
+
+const DashboardRouteWithChildren = DashboardRoute._addFileChildren(
+  DashboardRouteChildren
+);
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute;
@@ -113,7 +169,8 @@ export interface FileRoutesByFullPath {
   '/Login': typeof LoginRoute;
   '/Setup-mfa': typeof SetupMfaRoute;
   '/register': typeof RegisterRoute;
-  '/dashboard/page': typeof DashboardPageRoute;
+  '/dashboard': typeof DashboardLayoutRouteWithChildren;
+  '/dashboard/': typeof DashboardLayoutIndexRoute;
 }
 
 export interface FileRoutesByTo {
@@ -122,7 +179,7 @@ export interface FileRoutesByTo {
   '/Login': typeof LoginRoute;
   '/Setup-mfa': typeof SetupMfaRoute;
   '/register': typeof RegisterRoute;
-  '/dashboard/page': typeof DashboardPageRoute;
+  '/dashboard': typeof DashboardLayoutIndexRoute;
 }
 
 export interface FileRoutesById {
@@ -132,7 +189,9 @@ export interface FileRoutesById {
   '/Login': typeof LoginRoute;
   '/Setup-mfa': typeof SetupMfaRoute;
   '/register': typeof RegisterRoute;
-  '/dashboard/page': typeof DashboardPageRoute;
+  '/dashboard': typeof DashboardRouteWithChildren;
+  '/dashboard/_layout': typeof DashboardLayoutRouteWithChildren;
+  '/dashboard/_layout/': typeof DashboardLayoutIndexRoute;
 }
 
 export interface FileRouteTypes {
@@ -143,7 +202,8 @@ export interface FileRouteTypes {
     | '/Login'
     | '/Setup-mfa'
     | '/register'
-    | '/dashboard/page';
+    | '/dashboard'
+    | '/dashboard/';
   fileRoutesByTo: FileRoutesByTo;
   to:
     | '/'
@@ -151,7 +211,7 @@ export interface FileRouteTypes {
     | '/Login'
     | '/Setup-mfa'
     | '/register'
-    | '/dashboard/page';
+    | '/dashboard';
   id:
     | '__root__'
     | '/'
@@ -159,7 +219,9 @@ export interface FileRouteTypes {
     | '/Login'
     | '/Setup-mfa'
     | '/register'
-    | '/dashboard/page';
+    | '/dashboard'
+    | '/dashboard/_layout'
+    | '/dashboard/_layout/';
   fileRoutesById: FileRoutesById;
 }
 
@@ -169,7 +231,7 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute;
   SetupMfaRoute: typeof SetupMfaRoute;
   RegisterRoute: typeof RegisterRoute;
-  DashboardPageRoute: typeof DashboardPageRoute;
+  DashboardRoute: typeof DashboardRouteWithChildren;
 }
 
 const rootRouteChildren: RootRouteChildren = {
@@ -178,7 +240,7 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   SetupMfaRoute: SetupMfaRoute,
   RegisterRoute: RegisterRoute,
-  DashboardPageRoute: DashboardPageRoute,
+  DashboardRoute: DashboardRouteWithChildren,
 };
 
 export const routeTree = rootRoute
@@ -196,7 +258,7 @@ export const routeTree = rootRoute
         "/Login",
         "/Setup-mfa",
         "/register",
-        "/dashboard/page"
+        "/dashboard"
       ]
     },
     "/": {
@@ -214,8 +276,22 @@ export const routeTree = rootRoute
     "/register": {
       "filePath": "register.tsx"
     },
-    "/dashboard/page": {
-      "filePath": "dashboard/page.tsx"
+    "/dashboard": {
+      "filePath": "dashboard",
+      "children": [
+        "/dashboard/_layout"
+      ]
+    },
+    "/dashboard/_layout": {
+      "filePath": "dashboard/_layout.tsx",
+      "parent": "/dashboard",
+      "children": [
+        "/dashboard/_layout/"
+      ]
+    },
+    "/dashboard/_layout/": {
+      "filePath": "dashboard/_layout/index.tsx",
+      "parent": "/dashboard/_layout"
     }
   }
 }
