@@ -1,6 +1,7 @@
 import { createFileRoute, Outlet } from '@tanstack/react-router';
-import { SidebarProvider } from '@/components/ui/sidebar';
+import { SidebarProvider, SidebarInset } from '@/components/ui/sidebar';
 import { AppSidebar } from '@/components/app-sidebar';
+import { SiteHeader } from '@/components/site-header';
 
 export const Route = createFileRoute('/dashboard/_layout')({
   component: dashboardLayout,
@@ -10,11 +11,14 @@ function dashboardLayout() {
   return (
     <div>
       <SidebarProvider>
-        <AppSidebar />
+        <AppSidebar variant="inset" />
+        <SidebarInset>
+          <SiteHeader />
+          <main>
+            <Outlet />
+          </main>
+        </SidebarInset>
       </SidebarProvider>
-      <main>
-        <Outlet />
-      </main>
     </div>
   );
 }

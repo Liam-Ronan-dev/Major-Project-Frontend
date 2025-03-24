@@ -1,4 +1,7 @@
+import * as React from 'react';
 import { useContext } from 'react';
+import { IconInnerShadowTop } from '@tabler/icons-react';
+
 import {
   Home,
   Users,
@@ -8,6 +11,7 @@ import {
   Settings2,
   ClipboardCheck,
 } from 'lucide-react';
+
 import { NavMain } from '@/components/nav-main';
 import { NavUser } from '@/components/nav-user';
 import {
@@ -15,7 +19,9 @@ import {
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
-  SidebarRail,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
 } from '@/components/ui/sidebar';
 import { AuthContext } from '@/contexts/AuthContext';
 
@@ -24,30 +30,40 @@ function extractNameFromEmail(email: string) {
   return name?.charAt(0).toUpperCase() + name?.slice(1);
 }
 
-export function AppSidebar({ ...props }) {
+const commonNav = [
+  { title: 'Dashboard', url: '/dashboard', icon: Home },
+  { title: 'Settings', url: '/settings', icon: Settings2 },
+];
+
+const doctorNav = [
+  { title: 'Prescriptions', url: '/prescriptions', icon: ClipboardCheck },
+  { title: 'Patients', url: '/patients', icon: Users },
+  { title: 'Appointments', url: '/appointments', icon: ClipboardList },
+];
+
+const pharmacistNav = [
+  { title: 'Orders', url: '/orders', icon: Package },
+  { title: 'Medications', url: '/medications', icon: Pill },
+];
+
+export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { user } = useContext(AuthContext);
-
-  const commonNav = [
-    { title: 'Dashboard', url: '/dashboard', icon: Home },
-    { title: 'Settings', url: '/settings', icon: Settings2 },
-  ];
-
-  const doctorNav = [
-    { title: 'Prescriptions', url: '/prescriptions', icon: ClipboardCheck },
-    { title: 'Patients', url: '/patients', icon: Users },
-    { title: 'Appointments', url: '/appointments', icon: ClipboardList },
-  ];
-
-  const pharmacistNav = [
-    { title: 'Orders', url: '/orders', icon: Package },
-    { title: 'Medications', url: '/medications', icon: Pill },
-  ];
-
   return (
-    <Sidebar collapsible="icon" {...props}>
-      <SidebarHeader className="gap-1 p-3">
-        <h1 className="text-4xl font-extrabold">PharmaLink</h1>
-        <p className="text-sm font-light">{user?.role}</p>
+    <Sidebar collapsible="offcanvas" {...props}>
+      <SidebarHeader>
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton
+              asChild
+              className="data-[slot=sidebar-menu-button]:!p-1.5"
+            >
+              <a href="#">
+                <IconInnerShadowTop className="!size-5" />
+                <span className="text-base font-semibold">PharmaLink</span>
+              </a>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={commonNav} />
@@ -59,11 +75,10 @@ export function AppSidebar({ ...props }) {
           user={{
             name: extractNameFromEmail(user?.email || ''),
             email: user?.email,
-            avatar: '/avatars/shadcn.jpg',
+            avatar: 'https://github.com/shadcn.png',
           }}
         />
       </SidebarFooter>
-      <SidebarRail />
     </Sidebar>
   );
 }
