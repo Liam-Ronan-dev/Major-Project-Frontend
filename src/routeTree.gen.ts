@@ -18,7 +18,7 @@ import { Route as SetupMfaImport } from './routes/Setup-mfa';
 import { Route as LoginImport } from './routes/Login';
 import { Route as InputTotpImport } from './routes/Input-totp';
 import { Route as IndexImport } from './routes/index';
-import { Route as DashboardLayoutImport } from './routes/dashboard/_layout';
+import { Route as DashboardLayoutImport } from './routes/dashboard/index';
 import { Route as DashboardLayoutIndexImport } from './routes/dashboard/_layout/index';
 
 // Create Virtual Routes

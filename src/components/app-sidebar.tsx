@@ -24,11 +24,7 @@ import {
   SidebarMenuItem,
 } from '@/components/ui/sidebar';
 import { AuthContext } from '@/contexts/AuthContext';
-
-function extractNameFromEmail(email: string) {
-  const name = email?.split('@')[0];
-  return name?.charAt(0).toUpperCase() + name?.slice(1);
-}
+import { extractNameFromEmail } from '@/helpers/ExtractEmail';
 
 const commonNav = [
   { title: 'Dashboard', url: '/dashboard', icon: Home },

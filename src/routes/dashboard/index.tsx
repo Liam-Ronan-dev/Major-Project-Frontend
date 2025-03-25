@@ -3,11 +3,11 @@ import { SidebarProvider, SidebarInset } from '@/components/ui/sidebar';
 import { AppSidebar } from '@/components/app-sidebar';
 import { SiteHeader } from '@/components/site-header';
 
-export const Route = createFileRoute('/dashboard/_layout')({
-  component: dashboardLayout,
+export const Route = createFileRoute('/dashboard/')({
+  component: dashboardIndex,
 });
 
-function dashboardLayout() {
+function dashboardIndex() {
   return (
     <div>
       <SidebarProvider>

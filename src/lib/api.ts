@@ -20,9 +20,7 @@ const handleApiError = (error: any) => {
   }); // Log full error
 
   if (error.response) {
-    console.error('Response Data:', error.response.data);
-    console.error('Status:', error.response.status);
-    console.error('Headers:', error.response.headers);
+    console.log(error.response);
   } else if (error.request) {
     console.error('No Response Received:', error.request);
   } else {
@@ -87,5 +85,15 @@ export const logout = async () => {
   } catch (error) {
     handleApiError(error);
     return false;
+  }
+};
+
+export const getPrescriptions = async () => {
+  try {
+    const response = await api.get('/prescriptions');
+    return response.data.data; // assumes your backend returns an array of prescriptions
+  } catch (error) {
+    console.error('Failed to fetch prescriptions:', error);
+    throw error;
   }
 };

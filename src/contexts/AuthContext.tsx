@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { fetchUser } from '@/lib/api';
 
 type User = {
-  id: string;
+  _id: string;
   email: string;
   role: string;
 };
