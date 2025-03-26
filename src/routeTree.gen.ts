@@ -19,8 +19,8 @@ import { Route as LoginImport } from './routes/Login';
 import { Route as InputTotpImport } from './routes/Input-totp';
 import { Route as IndexImport } from './routes/index';
 import { Route as DashboardLayoutImport } from './routes/dashboard/_layout';
-import { Route as DashboardPrescriptionsIndexImport } from './routes/dashboard/prescriptions/index';
 import { Route as DashboardLayoutIndexImport } from './routes/dashboard/_layout.index';
+import { Route as DashboardLayoutPrescriptionsImport } from './routes/dashboard/_layout.prescriptions';
 
 // Create Virtual Routes
 
@@ -69,18 +69,18 @@ const DashboardLayoutRoute = DashboardLayoutImport.update({
   getParentRoute: () => DashboardRoute,
 } as any);
 
-const DashboardPrescriptionsIndexRoute =
-  DashboardPrescriptionsIndexImport.update({
-    id: '/prescriptions/',
-    path: '/prescriptions/',
-    getParentRoute: () => DashboardRoute,
-  } as any);
-
 const DashboardLayoutIndexRoute = DashboardLayoutIndexImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => DashboardLayoutRoute,
 } as any);
+
+const DashboardLayoutPrescriptionsRoute =
+  DashboardLayoutPrescriptionsImport.update({
+    id: '/prescriptions',
+    path: '/prescriptions',
+    getParentRoute: () => DashboardLayoutRoute,
+  } as any);
 
 // Populate the FileRoutesByPath interface
 
@@ -135,6 +135,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardLayoutImport;
       parentRoute: typeof DashboardRoute;
     };
+    '/dashboard/_layout/prescriptions': {
+      id: '/dashboard/_layout/prescriptions';
+      path: '/prescriptions';
+      fullPath: '/dashboard/prescriptions';
+      preLoaderRoute: typeof DashboardLayoutPrescriptionsImport;
+      parentRoute: typeof DashboardLayoutImport;
+    };
     '/dashboard/_layout/': {
       id: '/dashboard/_layout/';
       path: '/';
@@ -142,23 +149,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardLayoutIndexImport;
       parentRoute: typeof DashboardLayoutImport;
     };
-    '/dashboard/prescriptions/': {
-      id: '/dashboard/prescriptions/';
-      path: '/prescriptions';
-      fullPath: '/dashboard/prescriptions';
-      preLoaderRoute: typeof DashboardPrescriptionsIndexImport;
-      parentRoute: typeof DashboardImport;
-    };
   }
 }
 
 // Create and export the route tree
 
 interface DashboardLayoutRouteChildren {
+  DashboardLayoutPrescriptionsRoute: typeof DashboardLayoutPrescriptionsRoute;
   DashboardLayoutIndexRoute: typeof DashboardLayoutIndexRoute;
 }
 
 const DashboardLayoutRouteChildren: DashboardLayoutRouteChildren = {
+  DashboardLayoutPrescriptionsRoute: DashboardLayoutPrescriptionsRoute,
   DashboardLayoutIndexRoute: DashboardLayoutIndexRoute,
 };
 
@@ -168,12 +170,10 @@ const DashboardLayoutRouteWithChildren = DashboardLayoutRoute._addFileChildren(
 
 interface DashboardRouteChildren {
   DashboardLayoutRoute: typeof DashboardLayoutRouteWithChildren;
-  DashboardPrescriptionsIndexRoute: typeof DashboardPrescriptionsIndexRoute;
 }
 
 const DashboardRouteChildren: DashboardRouteChildren = {
   DashboardLayoutRoute: DashboardLayoutRouteWithChildren,
-  DashboardPrescriptionsIndexRoute: DashboardPrescriptionsIndexRoute,
 };
 
 const DashboardRouteWithChildren = DashboardRoute._addFileChildren(
@@ -187,8 +187,8 @@ export interface FileRoutesByFullPath {
   '/Setup-mfa': typeof SetupMfaRoute;
   '/register': typeof RegisterRoute;
   '/dashboard': typeof DashboardLayoutRouteWithChildren;
+  '/dashboard/prescriptions': typeof DashboardLayoutPrescriptionsRoute;
   '/dashboard/': typeof DashboardLayoutIndexRoute;
-  '/dashboard/prescriptions': typeof DashboardPrescriptionsIndexRoute;
 }
 
 export interface FileRoutesByTo {
@@ -198,7 +198,7 @@ export interface FileRoutesByTo {
   '/Setup-mfa': typeof SetupMfaRoute;
   '/register': typeof RegisterRoute;
   '/dashboard': typeof DashboardLayoutIndexRoute;
-  '/dashboard/prescriptions': typeof DashboardPrescriptionsIndexRoute;
+  '/dashboard/prescriptions': typeof DashboardLayoutPrescriptionsRoute;
 }
 
 export interface FileRoutesById {
@@ -210,8 +210,8 @@ export interface FileRoutesById {
   '/register': typeof RegisterRoute;
   '/dashboard': typeof DashboardRouteWithChildren;
   '/dashboard/_layout': typeof DashboardLayoutRouteWithChildren;
+  '/dashboard/_layout/prescriptions': typeof DashboardLayoutPrescriptionsRoute;
   '/dashboard/_layout/': typeof DashboardLayoutIndexRoute;
-  '/dashboard/prescriptions/': typeof DashboardPrescriptionsIndexRoute;
 }
 
 export interface FileRouteTypes {
@@ -223,8 +223,8 @@ export interface FileRouteTypes {
     | '/Setup-mfa'
     | '/register'
     | '/dashboard'
-    | '/dashboard/'
-    | '/dashboard/prescriptions';
+    | '/dashboard/prescriptions'
+    | '/dashboard/';
   fileRoutesByTo: FileRoutesByTo;
   to:
     | '/'
@@ -243,8 +243,8 @@ export interface FileRouteTypes {
     | '/register'
     | '/dashboard'
     | '/dashboard/_layout'
-    | '/dashboard/_layout/'
-    | '/dashboard/prescriptions/';
+    | '/dashboard/_layout/prescriptions'
+    | '/dashboard/_layout/';
   fileRoutesById: FileRoutesById;
 }
 
@@ -302,24 +302,24 @@ export const routeTree = rootRoute
     "/dashboard": {
       "filePath": "dashboard",
       "children": [
-        "/dashboard/_layout",
-        "/dashboard/prescriptions/"
+        "/dashboard/_layout"
       ]
     },
     "/dashboard/_layout": {
       "filePath": "dashboard/_layout.tsx",
       "parent": "/dashboard",
       "children": [
+        "/dashboard/_layout/prescriptions",
         "/dashboard/_layout/"
       ]
+    },
+    "/dashboard/_layout/prescriptions": {
+      "filePath": "dashboard/_layout.prescriptions.tsx",
+      "parent": "/dashboard/_layout"
     },
     "/dashboard/_layout/": {
       "filePath": "dashboard/_layout.index.tsx",
       "parent": "/dashboard/_layout"
-    },
-    "/dashboard/prescriptions/": {
-      "filePath": "dashboard/prescriptions/index.tsx",
-      "parent": "/dashboard"
     }
   }
 }
