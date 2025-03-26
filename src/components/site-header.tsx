@@ -10,13 +10,13 @@ import { IconLogout } from '@tabler/icons-react';
 import { extractNameFromEmail } from '@/helpers/ExtractEmail';
 
 export function SiteHeader() {
-  const { refetchUser, user } = useContext(AuthContext);
+  const { user } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const handleLogout = async () => {
     const success = await logout();
     if (success) {
-      refetchUser(); // clears the user in context
+      // clears the user in context
       navigate({ to: '/login' }); // or wherever your login route is
     }
   };

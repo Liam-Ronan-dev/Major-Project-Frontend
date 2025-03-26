@@ -14,6 +14,9 @@ import { verifyOTP } from '@/lib/api';
 import { useNavigate } from '@tanstack/react-router';
 import { useForm } from 'react-hook-form';
 
+import { useContext } from 'react';
+import { AuthContext } from '@/contexts/AuthContext';
+
 export const Route = createFileRoute('/Input-totp')({
   component: Inputtotp,
 });
@@ -29,6 +32,7 @@ export type totpFormData = z.infer<typeof totpSchema>;
 
 function Inputtotp() {
   const navigate = useNavigate();
+  const auth = useContext(AuthContext); // ⬅️ use AuthContext
 
   const {
     register,
@@ -40,12 +44,9 @@ function Inputtotp() {
     defaultValues: { totp: '' },
   });
 
-  // ✅ Mutation for OTP Verification
+  // Mutation for OTP Verification
   const otpMutation = useMutation({
     mutationFn: (data: totpFormData) => verifyOTP(data.totp),
-    onSuccess: () => {
-      navigate({ to: '/dashboard/' }); // Redirect to dashboard on success
-    },
     onError: (error: { response?: { data?: { message?: string } } }) => {
       console.error(
         'OTP Verification Failed:',
@@ -54,8 +55,14 @@ function Inputtotp() {
     },
   });
 
-  const onSubmit = (data: totpFormData) => {
-    otpMutation.mutate(data);
+  const onSubmit = async (data: totpFormData) => {
+    try {
+      await otpMutation.mutateAsync(data); // ⬅️ wait for OTP verification
+      await auth?.refetchUser(); // ⬅️ make sure user is loaded
+      navigate({ to: '/dashboard/overview' }); // ⬅️ THEN navigate
+    } catch (err) {
+      console.error('OTP failed or user fetch failed:', err);
+    }
   };
 
   return (

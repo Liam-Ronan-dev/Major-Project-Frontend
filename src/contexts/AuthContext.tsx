@@ -27,8 +27,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   } = useQuery({
     queryKey: ['user'],
     queryFn: fetchUser,
+    enabled: false,
     retry: false,
-    staleTime: 1000 * 60 * 5, // Optional: 5 minutes caching
   });
 
   return (

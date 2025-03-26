@@ -32,7 +32,11 @@ const commonNav = [
 ];
 
 const doctorNav = [
-  { title: 'Prescriptions', url: '/prescriptions', icon: ClipboardCheck },
+  {
+    title: 'Prescriptions',
+    url: '/dashboard/prescriptions',
+    icon: ClipboardCheck,
+  },
   { title: 'Patients', url: '/patients', icon: Users },
   { title: 'Appointments', url: '/appointments', icon: ClipboardList },
 ];
@@ -55,7 +59,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             >
               <a href="#">
                 <IconInnerShadowTop className="!size-5" />
-                <span className="text-base font-semibold">PharmaLink</span>
+                <span className="text-xl font-semibold">PharmaLink</span>
               </a>
             </SidebarMenuButton>
           </SidebarMenuItem>
