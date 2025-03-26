@@ -59,7 +59,7 @@ function Inputtotp() {
     try {
       await otpMutation.mutateAsync(data); // ⬅️ wait for OTP verification
       await auth?.refetchUser(); // ⬅️ make sure user is loaded
-      navigate({ to: '/dashboard/overview' }); // ⬅️ THEN navigate
+      navigate({ to: '/dashboard/' }); // ⬅️ THEN navigate
     } catch (err) {
       console.error('OTP failed or user fetch failed:', err);
     }

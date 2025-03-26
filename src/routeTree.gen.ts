@@ -18,9 +18,9 @@ import { Route as SetupMfaImport } from './routes/Setup-mfa';
 import { Route as LoginImport } from './routes/Login';
 import { Route as InputTotpImport } from './routes/Input-totp';
 import { Route as IndexImport } from './routes/index';
-import { Route as DashboardOverviewImport } from './routes/dashboard/overview';
 import { Route as DashboardLayoutImport } from './routes/dashboard/_layout';
 import { Route as DashboardPrescriptionsIndexImport } from './routes/dashboard/prescriptions/index';
+import { Route as DashboardLayoutIndexImport } from './routes/dashboard/_layout.index';
 
 // Create Virtual Routes
 
@@ -64,12 +64,6 @@ const IndexRoute = IndexImport.update({
   getParentRoute: () => rootRoute,
 } as any);
 
-const DashboardOverviewRoute = DashboardOverviewImport.update({
-  id: '/overview',
-  path: '/overview',
-  getParentRoute: () => DashboardRoute,
-} as any);
-
 const DashboardLayoutRoute = DashboardLayoutImport.update({
   id: '/_layout',
   getParentRoute: () => DashboardRoute,
@@ -81,6 +75,12 @@ const DashboardPrescriptionsIndexRoute =
     path: '/prescriptions/',
     getParentRoute: () => DashboardRoute,
   } as any);
+
+const DashboardLayoutIndexRoute = DashboardLayoutIndexImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => DashboardLayoutRoute,
+} as any);
 
 // Populate the FileRoutesByPath interface
 
@@ -135,12 +135,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardLayoutImport;
       parentRoute: typeof DashboardRoute;
     };
-    '/dashboard/overview': {
-      id: '/dashboard/overview';
-      path: '/overview';
-      fullPath: '/dashboard/overview';
-      preLoaderRoute: typeof DashboardOverviewImport;
-      parentRoute: typeof DashboardImport;
+    '/dashboard/_layout/': {
+      id: '/dashboard/_layout/';
+      path: '/';
+      fullPath: '/dashboard/';
+      preLoaderRoute: typeof DashboardLayoutIndexImport;
+      parentRoute: typeof DashboardLayoutImport;
     };
     '/dashboard/prescriptions/': {
       id: '/dashboard/prescriptions/';
@@ -154,15 +154,25 @@ declare module '@tanstack/react-router' {
 
 // Create and export the route tree
 
+interface DashboardLayoutRouteChildren {
+  DashboardLayoutIndexRoute: typeof DashboardLayoutIndexRoute;
+}
+
+const DashboardLayoutRouteChildren: DashboardLayoutRouteChildren = {
+  DashboardLayoutIndexRoute: DashboardLayoutIndexRoute,
+};
+
+const DashboardLayoutRouteWithChildren = DashboardLayoutRoute._addFileChildren(
+  DashboardLayoutRouteChildren
+);
+
 interface DashboardRouteChildren {
-  DashboardLayoutRoute: typeof DashboardLayoutRoute;
-  DashboardOverviewRoute: typeof DashboardOverviewRoute;
+  DashboardLayoutRoute: typeof DashboardLayoutRouteWithChildren;
   DashboardPrescriptionsIndexRoute: typeof DashboardPrescriptionsIndexRoute;
 }
 
 const DashboardRouteChildren: DashboardRouteChildren = {
-  DashboardLayoutRoute: DashboardLayoutRoute,
-  DashboardOverviewRoute: DashboardOverviewRoute,
+  DashboardLayoutRoute: DashboardLayoutRouteWithChildren,
   DashboardPrescriptionsIndexRoute: DashboardPrescriptionsIndexRoute,
 };
 
@@ -176,8 +186,8 @@ export interface FileRoutesByFullPath {
   '/Login': typeof LoginRoute;
   '/Setup-mfa': typeof SetupMfaRoute;
   '/register': typeof RegisterRoute;
-  '/dashboard': typeof DashboardLayoutRoute;
-  '/dashboard/overview': typeof DashboardOverviewRoute;
+  '/dashboard': typeof DashboardLayoutRouteWithChildren;
+  '/dashboard/': typeof DashboardLayoutIndexRoute;
   '/dashboard/prescriptions': typeof DashboardPrescriptionsIndexRoute;
 }
 
@@ -187,8 +197,7 @@ export interface FileRoutesByTo {
   '/Login': typeof LoginRoute;
   '/Setup-mfa': typeof SetupMfaRoute;
   '/register': typeof RegisterRoute;
-  '/dashboard': typeof DashboardLayoutRoute;
-  '/dashboard/overview': typeof DashboardOverviewRoute;
+  '/dashboard': typeof DashboardLayoutIndexRoute;
   '/dashboard/prescriptions': typeof DashboardPrescriptionsIndexRoute;
 }
 
@@ -200,8 +209,8 @@ export interface FileRoutesById {
   '/Setup-mfa': typeof SetupMfaRoute;
   '/register': typeof RegisterRoute;
   '/dashboard': typeof DashboardRouteWithChildren;
-  '/dashboard/_layout': typeof DashboardLayoutRoute;
-  '/dashboard/overview': typeof DashboardOverviewRoute;
+  '/dashboard/_layout': typeof DashboardLayoutRouteWithChildren;
+  '/dashboard/_layout/': typeof DashboardLayoutIndexRoute;
   '/dashboard/prescriptions/': typeof DashboardPrescriptionsIndexRoute;
 }
 
@@ -214,7 +223,7 @@ export interface FileRouteTypes {
     | '/Setup-mfa'
     | '/register'
     | '/dashboard'
-    | '/dashboard/overview'
+    | '/dashboard/'
     | '/dashboard/prescriptions';
   fileRoutesByTo: FileRoutesByTo;
   to:
@@ -224,7 +233,6 @@ export interface FileRouteTypes {
     | '/Setup-mfa'
     | '/register'
     | '/dashboard'
-    | '/dashboard/overview'
     | '/dashboard/prescriptions';
   id:
     | '__root__'
@@ -235,7 +243,7 @@ export interface FileRouteTypes {
     | '/register'
     | '/dashboard'
     | '/dashboard/_layout'
-    | '/dashboard/overview'
+    | '/dashboard/_layout/'
     | '/dashboard/prescriptions/';
   fileRoutesById: FileRoutesById;
 }
@@ -295,17 +303,19 @@ export const routeTree = rootRoute
       "filePath": "dashboard",
       "children": [
         "/dashboard/_layout",
-        "/dashboard/overview",
         "/dashboard/prescriptions/"
       ]
     },
     "/dashboard/_layout": {
       "filePath": "dashboard/_layout.tsx",
-      "parent": "/dashboard"
+      "parent": "/dashboard",
+      "children": [
+        "/dashboard/_layout/"
+      ]
     },
-    "/dashboard/overview": {
-      "filePath": "dashboard/overview.tsx",
-      "parent": "/dashboard"
+    "/dashboard/_layout/": {
+      "filePath": "dashboard/_layout.index.tsx",
+      "parent": "/dashboard/_layout"
     },
     "/dashboard/prescriptions/": {
       "filePath": "dashboard/prescriptions/index.tsx",

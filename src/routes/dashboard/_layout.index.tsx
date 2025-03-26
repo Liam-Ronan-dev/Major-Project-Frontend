@@ -6,9 +6,9 @@
 // import { useContext } from 'react';
 // import { getPrescriptions } from '@/lib/api';
 // import { AuthContext } from '@/contexts/AuthContext';
-// // import { prescriptionColumns } from '@/columns/prescription';
+// import { prescriptionColumns } from '@/columns/prescription';
 
-// export const Route = createFileRoute('/dashboard/overview')({
+// export const Route = createFileRoute('/dashboard/_layout/')({
 //   component: DashboardOverview,
 // });
 
@@ -27,15 +27,15 @@
 
 //   const prescriptions = prescriptionsResponse || [];
 
-//   const filteredData = prescriptions.filter((prescription) => {
-//     const doctorId = prescription.doctorId?._id;
-//     const pharmacistId = prescription.pharmacistId?._id;
+//   // const filteredData = prescriptions.filter((prescription) => {
+//   //   const doctorId = prescription.doctorId?._id;
+//   //   const pharmacistId = prescription.pharmacistId?._id;
 
-//     if (user?.role === 'doctor') return doctorId === user._id;
-//     if (user?.role === 'pharmacist') return pharmacistId === user._id;
+//   //   if (user?.role === 'doctor') return doctorId === user._id;
+//   //   if (user?.role === 'pharmacist') return pharmacistId === user._id;
 
-//     return false;
-//   });
+//   //   return false;
+//   // });
 
 //   // const transformedData = filteredData.map((p) => ({
 //   //   id: p._id,
@@ -62,7 +62,7 @@
 //               Failed to load prescriptions.
 //             </p>
 //           ) : (
-//             <div></div>
+//             <p>h</p>
 //             // <DataTable data={transformedData} columns={prescriptionColumns} />
 //           )}
 //         </div>
