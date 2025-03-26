@@ -62,7 +62,8 @@
 //               Failed to load prescriptions.
 //             </p>
 //           ) : (
-//             <DataTable data={transformedData} columns={prescriptionColumns} />
+//             <p>f</p>
+//             // <DataTable data={transformedData} columns={prescriptionColumns} />
 //           )}
 //         </div>
 //       </div>

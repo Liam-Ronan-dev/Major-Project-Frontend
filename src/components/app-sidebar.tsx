@@ -37,11 +37,20 @@ const doctorNav = [
     url: '/dashboard/prescriptions',
     icon: ClipboardCheck,
   },
-  { title: 'Patients', url: '/patients', icon: Users },
-  { title: 'Appointments', url: '/appointments', icon: ClipboardList },
+  { title: 'Patients', url: '/dashboard/patients', icon: Users },
+  {
+    title: 'Appointments',
+    url: '/dashboard/appointments',
+    icon: ClipboardList,
+  },
 ];
 
 const pharmacistNav = [
+  {
+    title: 'Prescriptions',
+    url: '/dashboard/prescriptions',
+    icon: ClipboardCheck,
+  },
   { title: 'Orders', url: '/orders', icon: Package },
   { title: 'Medications', url: '/medications', icon: Pill },
 ];

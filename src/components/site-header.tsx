@@ -17,7 +17,8 @@ export function SiteHeader() {
     const success = await logout();
     if (success) {
       // clears the user in context
-      navigate({ to: '/login' }); // or wherever your login route is
+      navigate({ to: '/login' });
+      console.log(user);
     }
   };
 

@@ -1,31 +1,23 @@
 import { cn } from '@/lib/utils';
-
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-
 import { useNavigate, Link } from '@tanstack/react-router';
-
 import { login } from '@/lib/api';
-
 import { useMutation } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import * as z from 'zod';
-
-const loginSchema = z.object({
-  email: z.string().email('Invalid email format'),
-  password: z.string().min(8, 'Password must be at least 8 characters'),
-});
-
-type LoginFormData = z.infer<typeof loginSchema>;
+import { loginSchema, LoginFormData } from '@/validations/authSchema';
+import { useContext } from 'react';
+import { AuthContext } from '@/contexts/AuthContext';
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<'div'>) {
   const navigate = useNavigate();
+  const auth = useContext(AuthContext);
 
   const {
     register,
@@ -39,8 +31,9 @@ export function LoginForm({
   const loginMutation = useMutation({
     mutationFn: ({ email, password }: LoginFormData) => login(email, password),
     onSuccess: () => {
-      console.log('Navigating to OTP page');
-      navigate({ to: '/input-totp' }); // Redirect to OTP page
+      auth?.refetchUser();
+      console.log('Navigating to Input-totp');
+      navigate({ to: '/input-totp' });
     },
     onError: (error: { response?: { data?: { message?: string } } }) => {
       console.error(
@@ -108,7 +101,8 @@ export function LoginForm({
 
               {loginMutation.isError && (
                 <p className="text-red-500 text-center text-sm mt-2">
-                  Login failed. Please check your credentials.
+                  {loginMutation.error?.response?.data?.message ||
+                    'Login failed, please check credentials'}
                 </p>
               )}
             </div>

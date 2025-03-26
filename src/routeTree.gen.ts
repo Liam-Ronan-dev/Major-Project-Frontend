@@ -21,6 +21,8 @@ import { Route as IndexImport } from './routes/index';
 import { Route as DashboardLayoutImport } from './routes/dashboard/_layout';
 import { Route as DashboardLayoutIndexImport } from './routes/dashboard/_layout.index';
 import { Route as DashboardLayoutPrescriptionsImport } from './routes/dashboard/_layout.prescriptions';
+import { Route as DashboardLayoutPatientsImport } from './routes/dashboard/_layout.patients';
+import { Route as DashboardLayoutAppointmentsImport } from './routes/dashboard/_layout.appointments';
 
 // Create Virtual Routes
 
@@ -82,6 +84,19 @@ const DashboardLayoutPrescriptionsRoute =
     getParentRoute: () => DashboardLayoutRoute,
   } as any);
 
+const DashboardLayoutPatientsRoute = DashboardLayoutPatientsImport.update({
+  id: '/patients',
+  path: '/patients',
+  getParentRoute: () => DashboardLayoutRoute,
+} as any);
+
+const DashboardLayoutAppointmentsRoute =
+  DashboardLayoutAppointmentsImport.update({
+    id: '/appointments',
+    path: '/appointments',
+    getParentRoute: () => DashboardLayoutRoute,
+  } as any);
+
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
@@ -135,6 +150,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardLayoutImport;
       parentRoute: typeof DashboardRoute;
     };
+    '/dashboard/_layout/appointments': {
+      id: '/dashboard/_layout/appointments';
+      path: '/appointments';
+      fullPath: '/dashboard/appointments';
+      preLoaderRoute: typeof DashboardLayoutAppointmentsImport;
+      parentRoute: typeof DashboardLayoutImport;
+    };
+    '/dashboard/_layout/patients': {
+      id: '/dashboard/_layout/patients';
+      path: '/patients';
+      fullPath: '/dashboard/patients';
+      preLoaderRoute: typeof DashboardLayoutPatientsImport;
+      parentRoute: typeof DashboardLayoutImport;
+    };
     '/dashboard/_layout/prescriptions': {
       id: '/dashboard/_layout/prescriptions';
       path: '/prescriptions';
@@ -155,11 +184,15 @@ declare module '@tanstack/react-router' {
 // Create and export the route tree
 
 interface DashboardLayoutRouteChildren {
+  DashboardLayoutAppointmentsRoute: typeof DashboardLayoutAppointmentsRoute;
+  DashboardLayoutPatientsRoute: typeof DashboardLayoutPatientsRoute;
   DashboardLayoutPrescriptionsRoute: typeof DashboardLayoutPrescriptionsRoute;
   DashboardLayoutIndexRoute: typeof DashboardLayoutIndexRoute;
 }
 
 const DashboardLayoutRouteChildren: DashboardLayoutRouteChildren = {
+  DashboardLayoutAppointmentsRoute: DashboardLayoutAppointmentsRoute,
+  DashboardLayoutPatientsRoute: DashboardLayoutPatientsRoute,
   DashboardLayoutPrescriptionsRoute: DashboardLayoutPrescriptionsRoute,
   DashboardLayoutIndexRoute: DashboardLayoutIndexRoute,
 };
@@ -187,6 +220,8 @@ export interface FileRoutesByFullPath {
   '/Setup-mfa': typeof SetupMfaRoute;
   '/register': typeof RegisterRoute;
   '/dashboard': typeof DashboardLayoutRouteWithChildren;
+  '/dashboard/appointments': typeof DashboardLayoutAppointmentsRoute;
+  '/dashboard/patients': typeof DashboardLayoutPatientsRoute;
   '/dashboard/prescriptions': typeof DashboardLayoutPrescriptionsRoute;
   '/dashboard/': typeof DashboardLayoutIndexRoute;
 }
@@ -198,6 +233,8 @@ export interface FileRoutesByTo {
   '/Setup-mfa': typeof SetupMfaRoute;
   '/register': typeof RegisterRoute;
   '/dashboard': typeof DashboardLayoutIndexRoute;
+  '/dashboard/appointments': typeof DashboardLayoutAppointmentsRoute;
+  '/dashboard/patients': typeof DashboardLayoutPatientsRoute;
   '/dashboard/prescriptions': typeof DashboardLayoutPrescriptionsRoute;
 }
 
@@ -210,6 +247,8 @@ export interface FileRoutesById {
   '/register': typeof RegisterRoute;
   '/dashboard': typeof DashboardRouteWithChildren;
   '/dashboard/_layout': typeof DashboardLayoutRouteWithChildren;
+  '/dashboard/_layout/appointments': typeof DashboardLayoutAppointmentsRoute;
+  '/dashboard/_layout/patients': typeof DashboardLayoutPatientsRoute;
   '/dashboard/_layout/prescriptions': typeof DashboardLayoutPrescriptionsRoute;
   '/dashboard/_layout/': typeof DashboardLayoutIndexRoute;
 }
@@ -223,6 +262,8 @@ export interface FileRouteTypes {
     | '/Setup-mfa'
     | '/register'
     | '/dashboard'
+    | '/dashboard/appointments'
+    | '/dashboard/patients'
     | '/dashboard/prescriptions'
     | '/dashboard/';
   fileRoutesByTo: FileRoutesByTo;
@@ -233,6 +274,8 @@ export interface FileRouteTypes {
     | '/Setup-mfa'
     | '/register'
     | '/dashboard'
+    | '/dashboard/appointments'
+    | '/dashboard/patients'
     | '/dashboard/prescriptions';
   id:
     | '__root__'
@@ -243,6 +286,8 @@ export interface FileRouteTypes {
     | '/register'
     | '/dashboard'
     | '/dashboard/_layout'
+    | '/dashboard/_layout/appointments'
+    | '/dashboard/_layout/patients'
     | '/dashboard/_layout/prescriptions'
     | '/dashboard/_layout/';
   fileRoutesById: FileRoutesById;
@@ -309,9 +354,19 @@ export const routeTree = rootRoute
       "filePath": "dashboard/_layout.tsx",
       "parent": "/dashboard",
       "children": [
+        "/dashboard/_layout/appointments",
+        "/dashboard/_layout/patients",
         "/dashboard/_layout/prescriptions",
         "/dashboard/_layout/"
       ]
+    },
+    "/dashboard/_layout/appointments": {
+      "filePath": "dashboard/_layout.appointments.tsx",
+      "parent": "/dashboard/_layout"
+    },
+    "/dashboard/_layout/patients": {
+      "filePath": "dashboard/_layout.patients.tsx",
+      "parent": "/dashboard/_layout"
     },
     "/dashboard/_layout/prescriptions": {
       "filePath": "dashboard/_layout.prescriptions.tsx",

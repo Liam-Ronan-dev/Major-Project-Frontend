@@ -7,13 +7,12 @@ import {
   InputOTPSeparator,
 } from '@/components/ui/input-otp';
 import { Label } from '@/components/ui/label';
-import * as z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
 import { verifyOTP } from '@/lib/api';
 import { useNavigate } from '@tanstack/react-router';
 import { useForm } from 'react-hook-form';
-
+import { totpSchema, totpFormData } from '@/validations/authSchema';
 import { useContext } from 'react';
 import { AuthContext } from '@/contexts/AuthContext';
 
@@ -21,18 +20,9 @@ export const Route = createFileRoute('/Input-totp')({
   component: Inputtotp,
 });
 
-const totpSchema = z.object({
-  totp: z
-    .string()
-    .length(6, 'TOTP must be 6 digits')
-    .regex(/^\d{6}$/, 'Invalid TOTP format'),
-});
-
-export type totpFormData = z.infer<typeof totpSchema>;
-
 function Inputtotp() {
   const navigate = useNavigate();
-  const auth = useContext(AuthContext); // ⬅️ use AuthContext
+  const auth = useContext(AuthContext);
 
   const {
     register,
@@ -47,6 +37,11 @@ function Inputtotp() {
   // Mutation for OTP Verification
   const otpMutation = useMutation({
     mutationFn: (data: totpFormData) => verifyOTP(data.totp),
+    onSuccess: () => {
+      console.log('Navigating to Dashboard');
+      auth?.refetchUser();
+      navigate({ to: '/dashboard' });
+    },
     onError: (error: { response?: { data?: { message?: string } } }) => {
       console.error(
         'OTP Verification Failed:',
@@ -56,13 +51,7 @@ function Inputtotp() {
   });
 
   const onSubmit = async (data: totpFormData) => {
-    try {
-      await otpMutation.mutateAsync(data); // ⬅️ wait for OTP verification
-      await auth?.refetchUser(); // ⬅️ make sure user is loaded
-      navigate({ to: '/dashboard/' }); // ⬅️ THEN navigate
-    } catch (err) {
-      console.error('OTP failed or user fetch failed:', err);
-    }
+    otpMutation.mutate(data);
   };
 
   return (
