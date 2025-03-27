@@ -21,6 +21,7 @@ import { Route as DashboardPrescriptionsIndexImport } from './routes/dashboard/p
 import { Route as DashboardPatientsIndexImport } from './routes/dashboard/patients/index';
 import { Route as DashboardAppointmentsIndexImport } from './routes/dashboard/appointments/index';
 import { Route as DashboardPrescriptionsCreateImport } from './routes/dashboard/prescriptions/create';
+import { Route as DashboardPrescriptionsPrescriptionIdImport } from './routes/dashboard/prescriptions/$prescriptionId';
 
 // Create/Update Routes
 
@@ -88,6 +89,13 @@ const DashboardPrescriptionsCreateRoute =
     getParentRoute: () => rootRoute,
   } as any);
 
+const DashboardPrescriptionsPrescriptionIdRoute =
+  DashboardPrescriptionsPrescriptionIdImport.update({
+    id: '/dashboard/prescriptions/$prescriptionId',
+    path: '/dashboard/prescriptions/$prescriptionId',
+    getParentRoute: () => rootRoute,
+  } as any);
+
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
@@ -134,6 +142,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardIndexImport;
       parentRoute: typeof rootRoute;
     };
+    '/dashboard/prescriptions/$prescriptionId': {
+      id: '/dashboard/prescriptions/$prescriptionId';
+      path: '/dashboard/prescriptions/$prescriptionId';
+      fullPath: '/dashboard/prescriptions/$prescriptionId';
+      preLoaderRoute: typeof DashboardPrescriptionsPrescriptionIdImport;
+      parentRoute: typeof rootRoute;
+    };
     '/dashboard/prescriptions/create': {
       id: '/dashboard/prescriptions/create';
       path: '/dashboard/prescriptions/create';
@@ -174,6 +189,7 @@ export interface FileRoutesByFullPath {
   '/Setup-mfa': typeof SetupMfaRoute;
   '/register': typeof RegisterRoute;
   '/dashboard': typeof DashboardIndexRoute;
+  '/dashboard/prescriptions/$prescriptionId': typeof DashboardPrescriptionsPrescriptionIdRoute;
   '/dashboard/prescriptions/create': typeof DashboardPrescriptionsCreateRoute;
   '/dashboard/appointments': typeof DashboardAppointmentsIndexRoute;
   '/dashboard/patients': typeof DashboardPatientsIndexRoute;
@@ -187,6 +203,7 @@ export interface FileRoutesByTo {
   '/Setup-mfa': typeof SetupMfaRoute;
   '/register': typeof RegisterRoute;
   '/dashboard': typeof DashboardIndexRoute;
+  '/dashboard/prescriptions/$prescriptionId': typeof DashboardPrescriptionsPrescriptionIdRoute;
   '/dashboard/prescriptions/create': typeof DashboardPrescriptionsCreateRoute;
   '/dashboard/appointments': typeof DashboardAppointmentsIndexRoute;
   '/dashboard/patients': typeof DashboardPatientsIndexRoute;
@@ -201,6 +218,7 @@ export interface FileRoutesById {
   '/Setup-mfa': typeof SetupMfaRoute;
   '/register': typeof RegisterRoute;
   '/dashboard/': typeof DashboardIndexRoute;
+  '/dashboard/prescriptions/$prescriptionId': typeof DashboardPrescriptionsPrescriptionIdRoute;
   '/dashboard/prescriptions/create': typeof DashboardPrescriptionsCreateRoute;
   '/dashboard/appointments/': typeof DashboardAppointmentsIndexRoute;
   '/dashboard/patients/': typeof DashboardPatientsIndexRoute;
@@ -216,6 +234,7 @@ export interface FileRouteTypes {
     | '/Setup-mfa'
     | '/register'
     | '/dashboard'
+    | '/dashboard/prescriptions/$prescriptionId'
     | '/dashboard/prescriptions/create'
     | '/dashboard/appointments'
     | '/dashboard/patients'
@@ -228,6 +247,7 @@ export interface FileRouteTypes {
     | '/Setup-mfa'
     | '/register'
     | '/dashboard'
+    | '/dashboard/prescriptions/$prescriptionId'
     | '/dashboard/prescriptions/create'
     | '/dashboard/appointments'
     | '/dashboard/patients'
@@ -240,6 +260,7 @@ export interface FileRouteTypes {
     | '/Setup-mfa'
     | '/register'
     | '/dashboard/'
+    | '/dashboard/prescriptions/$prescriptionId'
     | '/dashboard/prescriptions/create'
     | '/dashboard/appointments/'
     | '/dashboard/patients/'
@@ -254,6 +275,7 @@ export interface RootRouteChildren {
   SetupMfaRoute: typeof SetupMfaRoute;
   RegisterRoute: typeof RegisterRoute;
   DashboardIndexRoute: typeof DashboardIndexRoute;
+  DashboardPrescriptionsPrescriptionIdRoute: typeof DashboardPrescriptionsPrescriptionIdRoute;
   DashboardPrescriptionsCreateRoute: typeof DashboardPrescriptionsCreateRoute;
   DashboardAppointmentsIndexRoute: typeof DashboardAppointmentsIndexRoute;
   DashboardPatientsIndexRoute: typeof DashboardPatientsIndexRoute;
@@ -267,6 +289,8 @@ const rootRouteChildren: RootRouteChildren = {
   SetupMfaRoute: SetupMfaRoute,
   RegisterRoute: RegisterRoute,
   DashboardIndexRoute: DashboardIndexRoute,
+  DashboardPrescriptionsPrescriptionIdRoute:
+    DashboardPrescriptionsPrescriptionIdRoute,
   DashboardPrescriptionsCreateRoute: DashboardPrescriptionsCreateRoute,
   DashboardAppointmentsIndexRoute: DashboardAppointmentsIndexRoute,
   DashboardPatientsIndexRoute: DashboardPatientsIndexRoute,
@@ -289,6 +313,7 @@ export const routeTree = rootRoute
         "/Setup-mfa",
         "/register",
         "/dashboard/",
+        "/dashboard/prescriptions/$prescriptionId",
         "/dashboard/prescriptions/create",
         "/dashboard/appointments/",
         "/dashboard/patients/",
@@ -312,6 +337,9 @@ export const routeTree = rootRoute
     },
     "/dashboard/": {
       "filePath": "dashboard/index.tsx"
+    },
+    "/dashboard/prescriptions/$prescriptionId": {
+      "filePath": "dashboard/prescriptions/$prescriptionId.tsx"
     },
     "/dashboard/prescriptions/create": {
       "filePath": "dashboard/prescriptions/create.tsx"
