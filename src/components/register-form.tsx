@@ -7,30 +7,9 @@ import { Label } from '@/components/ui/label';
 import { Link, useNavigate } from '@tanstack/react-router';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { zodResolver } from '@hookform/resolvers/zod';
-import * as z from 'zod';
 import { useMutation } from '@tanstack/react-query';
 import { registerUser } from '@/lib/api';
-
-const registerSchema = z.object({
-  email: z.string().email('Invalid email format'),
-  password: z
-    .string()
-    .min(8, 'Password must be at least 8 characters long')
-    .max(128, 'Password cannot exceed 128 characters')
-    .regex(/\d/, 'Password must contain at least one number')
-    .regex(/[A-Z]/, 'Password must contain at least one uppercase letter')
-    .regex(
-      /[!@#$%^&*(),.?":{}|<>]/,
-      'Password must contain at least one special character'
-    ),
-  licenseNumber: z
-    .string()
-    .length(6, 'License number must be exactly 6 digits')
-    .regex(/^\d+$/, 'License number must contain only numbers'),
-  role: z.enum(['doctor', 'pharmacist']), // Must be exactly "doctor" or "pharmacist"
-});
-
-export type RegisterFormData = z.infer<typeof registerSchema>;
+import { registerSchema, RegisterFormData } from '@/validations/authSchema';
 
 export function RegisterForm({
   className,
@@ -74,7 +53,6 @@ export function RegisterForm({
     },
   });
 
-  // ✅ Form Submission
   const onSubmit = (data: RegisterFormData) => {
     registerMutation.mutate(data);
   };

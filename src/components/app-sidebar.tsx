@@ -1,102 +1,93 @@
-// import {
-//   Home,
-//   Users,
-//   ClipboardList,
-//   Package,
-//   Pill,
-//   Settings2,
-//   ClipboardCheck,
-// } from 'lucide-react';
-// import { NavMain } from '@/components/nav-main';
-// import { NavUser } from '@/components/nav-user';
-// import {
-//   Sidebar,
-//   SidebarContent,
-//   SidebarFooter,
-//   SidebarHeader,
-//   SidebarRail,
-// } from '@/components/ui/sidebar';
+import * as React from 'react';
+import { useContext } from 'react';
+import { IconInnerShadowTop } from '@tabler/icons-react';
 
-// // user avatar
-// const data = {
-//   user: {
-//     avatar: '/avatars/shadcn.jpg',
-//   },
-// };
+import {
+  Home,
+  Users,
+  ClipboardList,
+  Package,
+  Pill,
+  Settings2,
+  ClipboardCheck,
+} from 'lucide-react';
 
-// export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-//   // 🔹 Common links for all users
-//   const commonNav = [
-//     {
-//       title: 'Dashboard',
-//       url: '/dashboard',
-//       icon: Home,
-//       isActive: true,
-//     },
-//     {
-//       title: 'Settings',
-//       url: '/settings',
-//       icon: Settings2,
-//     },
-//   ];
+import { NavMain } from '@/components/nav-main';
+import { NavUser } from '@/components/nav-user';
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarHeader,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+} from '@/components/ui/sidebar';
+import { AuthContext } from '@/contexts/AuthContext';
+import { extractNameFromEmail } from '@/helpers/ExtractEmail';
 
-//   // 🔹 Doctor-specific links
-//   const doctorNav = [
-//     {
-//       title: 'Prescriptions',
-//       url: '/prescriptions',
-//       icon: ClipboardCheck,
-//     },
-//     {
-//       title: 'Patients',
-//       url: '/patients',
-//       icon: Users,
-//     },
-//     {
-//       title: 'Appointments',
-//       url: '/appointments',
-//       icon: ClipboardList,
-//     },
-//   ];
+const commonNav = [
+  { title: 'Dashboard', url: '/dashboard', icon: Home },
+  { title: 'Settings', url: '/settings', icon: Settings2 },
+];
 
-//   // 🔹 Pharmacist-specific links
-//   const pharmacistNav = [
-//     {
-//       title: 'Orders',
-//       url: '/orders',
-//       icon: Package,
-//     },
-//     {
-//       title: 'Medications',
-//       url: '/medications',
-//       icon: Pill,
-//     },
-//   ];
+const doctorNav = [
+  {
+    title: 'Prescriptions',
+    url: '/dashboard/prescriptions',
+    icon: ClipboardCheck,
+  },
+  { title: 'Patients', url: '/dashboard/patients', icon: Users },
+  {
+    title: 'Appointments',
+    url: '/dashboard/appointments',
+    icon: ClipboardList,
+  },
+];
 
-//   return (
-//     <Sidebar collapsible="icon" {...props}>
-//       <SidebarHeader className="gap-1 p-3">
-//         <h1 className="text-4xl font-extrabold lg:text-4xl">PharmaLink</h1>
-//       </SidebarHeader>
-//       <SidebarContent>
-//         {/* 🔹 Show Common Links */}
-//         <NavMain items={commonNav} />
+const pharmacistNav = [
+  {
+    title: 'Prescriptions',
+    url: '/dashboard/prescriptions',
+    icon: ClipboardCheck,
+  },
+  { title: 'Orders', url: '/orders', icon: Package },
+  { title: 'Medications', url: '/medications', icon: Pill },
+];
 
-//         {/* 🔹 Show Role-Specific Links */}
-//         {/* {user.role === 'doctor' && <NavMain items={doctorNav} />}
-//         {user.role === 'pharmacist' && <NavMain items={pharmacistNav} />} */}
-//       </SidebarContent>
-//       <SidebarFooter>
-//         {/* ✅ User Info with Extracted Name */}
-//         {/* <NavUser
-//           // user={{
-//           //   name: user.name,
-//           //   email: user.email,
-//           //   avatar: data.user.avatar,
-//           // }}
-//         /> */}
-//       </SidebarFooter>
-//       <SidebarRail />
-//     </Sidebar>
-//   );
-// }
+export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const { user } = useContext(AuthContext);
+  return (
+    <Sidebar collapsible="offcanvas" {...props}>
+      <SidebarHeader>
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton
+              asChild
+              className="data-[slot=sidebar-menu-button]:!p-1.5"
+            >
+              <a href="#">
+                <IconInnerShadowTop className="!size-5" />
+                <span className="text-xl font-semibold">PharmaLink</span>
+              </a>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarHeader>
+      <SidebarContent>
+        <NavMain items={commonNav} />
+        {user?.role === 'doctor' && <NavMain items={doctorNav} />}
+        {user?.role === 'pharmacist' && <NavMain items={pharmacistNav} />}
+      </SidebarContent>
+      <SidebarFooter>
+        <NavUser
+          user={{
+            name: extractNameFromEmail(user?.email || ''),
+            email: user?.email,
+            avatar: 'https://github.com/shadcn.png',
+          }}
+        />
+      </SidebarFooter>
+    </Sidebar>
+  );
+}

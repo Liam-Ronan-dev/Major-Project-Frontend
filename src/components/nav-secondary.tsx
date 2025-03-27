@@ -1,3 +1,8 @@
+'use client';
+
+import * as React from 'react';
+import { type Icon } from '@tabler/icons-react';
+
 import {
   SidebarGroup,
   SidebarGroupContent,
@@ -5,32 +10,28 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from '@/components/ui/sidebar';
-import { Link } from '@tanstack/react-router';
 
-export function NavMain({
+export function NavSecondary({
   items,
+  ...props
 }: {
   items: {
     title: string;
     url: string;
-    icon?: Icon;
+    icon: Icon;
   }[];
-}) {
+} & React.ComponentPropsWithoutRef<typeof SidebarGroup>) {
   return (
-    <SidebarGroup>
-      <SidebarGroupContent className="flex flex-col gap-2">
+    <SidebarGroup {...props}>
+      <SidebarGroupContent>
         <SidebarMenu>
           {items.map((item) => (
             <SidebarMenuItem key={item.title}>
-              <SidebarMenuButton
-                asChild
-                className="gap-3 font-semibold"
-                tooltip={item.title}
-              >
-                <Link to={item.url}>
-                  {item.icon && <item.icon />}
+              <SidebarMenuButton asChild>
+                <a href={item.url}>
+                  <item.icon />
                   <span>{item.title}</span>
-                </Link>
+                </a>
               </SidebarMenuButton>
             </SidebarMenuItem>
           ))}

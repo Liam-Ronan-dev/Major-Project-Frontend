@@ -17,16 +17,15 @@ export const registerSchema = z.object({
     .string()
     .length(6, 'License number must be exactly 6 digits')
     .regex(/^\d+$/, 'License number must contain only numbers'),
-  role: z.enum(['doctor', 'pharmacist']), // Must be exactly "doctor" or "pharmacist"
+  role: z.enum(['doctor', 'pharmacist']),
 });
 
 export const loginSchema = z.object({
   email: z.string().email('Invalid email format'),
   password: z.string().min(8, 'Password must be at least 8 characters'),
 });
-// 🔹 MFA Schema
-export const mfaSchema = z.object({
-  tempToken: z.string().nonempty('Missing tempToken'),
+
+export const totpSchema = z.object({
   totp: z
     .string()
     .length(6, 'TOTP must be 6 digits')
@@ -34,6 +33,6 @@ export const mfaSchema = z.object({
 });
 
 // Export inferred TypeScript types
-export type MfaFormData = z.infer<typeof mfaSchema>;
+export type totpFormData = z.infer<typeof totpSchema>;
 export type LoginFormData = z.infer<typeof loginSchema>;
 export type RegisterFormData = z.infer<typeof registerSchema>;
