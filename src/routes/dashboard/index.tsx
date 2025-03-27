@@ -8,7 +8,7 @@
 // import { AuthContext } from '@/contexts/AuthContext';
 // import { prescriptionColumns } from '@/columns/prescription';
 
-// export const Route = createFileRoute('/dashboard/_layout/')({
+// export const Route = createFileRoute('/dashboard/')({
 //   component: DashboardOverview,
 // });
 
@@ -25,7 +25,7 @@
 //     enabled: !!user,
 //   });
 
-//   const prescriptions = prescriptionsResponse || [];
+//   // const prescriptions = prescriptionsResponse || [];
 
 //   // const filteredData = prescriptions.filter((prescription) => {
 //   //   const doctorId = prescription.doctorId?._id;
@@ -62,8 +62,7 @@
 //               Failed to load prescriptions.
 //             </p>
 //           ) : (
-//             <p>f</p>
-//             // <DataTable data={transformedData} columns={prescriptionColumns} />
+//             <DataTable data={transformedData} columns={prescriptionColumns} />
 //           )}
 //         </div>
 //       </div>
