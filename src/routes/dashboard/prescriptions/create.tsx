@@ -1,9 +1,17 @@
 import { createFileRoute } from '@tanstack/react-router';
+import { CreatePrescriptionForm } from '@/components/CreatePrescriptionForm';
 
 export const Route = createFileRoute('/dashboard/prescriptions/create')({
   component: RouteComponent,
 });
 
 function RouteComponent() {
-  return <div>Hello "/dashboard/prescriptions/create"!</div>;
+  return (
+    <div className="p-4 lg:p-6">
+      <div className="flex justify-between">
+        <h1 className="text-2xl font-bold mb-4 ml-5">Add New Prescription</h1>
+      </div>
+      <CreatePrescriptionForm />
+    </div>
+  );
 }

@@ -98,3 +98,42 @@ export const getPrescriptions = async () => {
     throw error;
   }
 };
+
+// Get all pharmacists
+export const getPharmacists = async () => {
+  try {
+    const res = await api.get('/pharmacists');
+    return res.data.data; // adjust depending on your API response shape
+  } catch (error) {
+    handleApiError(error);
+  }
+};
+
+// Get all patients
+export const getPatients = async () => {
+  try {
+    const res = await api.get('/patients');
+    return res.data.data;
+  } catch (error) {
+    handleApiError(error);
+  }
+};
+
+// Get all medications
+export const getMedications = async () => {
+  try {
+    const res = await api.get('/medications');
+    return res.data.data;
+  } catch (error) {
+    handleApiError(error);
+  }
+};
+
+export const createPrescription = async (data: any) => {
+  try {
+    const res = await api.post('/prescriptions', data);
+    return res.data;
+  } catch (error) {
+    handleApiError(error);
+  }
+};
