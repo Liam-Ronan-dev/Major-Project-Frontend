@@ -4,6 +4,7 @@ import { SidebarProvider, SidebarInset } from '@/components/ui/sidebar';
 import { AppSidebar } from '@/components/app-sidebar';
 import { SiteHeader } from '@/components/site-header';
 import { ModeToggle } from '@/components/mode-toggle';
+import { Toaster } from '@/components/ui/sonner';
 
 export const Route = createRootRoute({
   component: RootLayout,
@@ -35,6 +36,8 @@ function RootLayout() {
           <Outlet />
         </>
       )}
+
+      <Toaster />
       <TanStackRouterDevtools />
     </div>
   );

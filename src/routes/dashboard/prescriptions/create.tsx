@@ -1,5 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router';
-import { CreatePrescriptionForm } from '@/components/CreatePrescriptionForm';
+import { CreatePrescriptionForm } from '@/components/forms/CreatePrescriptionForm';
 
 export const Route = createFileRoute('/dashboard/prescriptions/create')({
   component: RouteComponent,
