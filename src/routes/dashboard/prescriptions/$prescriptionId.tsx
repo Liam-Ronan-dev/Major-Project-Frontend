@@ -1,6 +1,10 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { usePrescriptionById } from '@/hooks/usePrescription';
 import { Skeleton } from '@/components/ui/skeleton';
+import { deletePrescription } from '@/lib/api';
+import { useNavigate } from '@tanstack/react-router';
+import { toast } from 'sonner';
+import { Button } from '@/components/ui/button';
 
 export const Route = createFileRoute(
   '/dashboard/prescriptions/$prescriptionId'
@@ -11,6 +15,17 @@ export const Route = createFileRoute(
 function PrescriptionDetailPage() {
   const { prescriptionId } = Route.useParams();
   const { data, isLoading, isError } = usePrescriptionById(prescriptionId);
+  const navigate = useNavigate();
+
+  const handleDelete = async () => {
+    try {
+      await deletePrescription(prescriptionId);
+      toast.success('Prescription deleted successfully');
+      navigate({ to: '/dashboard/prescriptions' });
+    } catch (err) {
+      toast.error('Failed to delete prescription');
+    }
+  };
 
   if (isLoading) {
     return (
@@ -159,6 +174,13 @@ function PrescriptionDetailPage() {
           <p className="text-muted-foreground">No medications listed.</p>
         )}
       </div>
+      <Button
+        onClick={handleDelete}
+        variant="destructive"
+        className="mt-4 bg-red-600 hover:bg-red-700 text-white w-50 px-4 py-2 rounded-md text-sm font-medium"
+      >
+        Delete Prescription
+      </Button>
     </div>
   );
 }
