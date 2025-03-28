@@ -137,3 +137,12 @@ export const createPrescription = async (data: any) => {
     handleApiError(error);
   }
 };
+
+export const getPrescriptionById = async (id: string) => {
+  try {
+    const res = await api.get(`/prescription/${id}`);
+    return res.data.data;
+  } catch (error) {
+    handleApiError(error);
+  }
+};

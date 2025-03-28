@@ -5,6 +5,7 @@ import { prescriptionColumns } from '@/columns/prescription';
 import { DataTable } from '@/components/data-table';
 import { usePrescriptions } from '@/hooks/usePrescription';
 import { Button } from '@/components/ui/button';
+import { extractNameFromEmail } from '@/helpers/ExtractEmail';
 
 export const Route = createFileRoute('/dashboard/prescriptions/')({
   component: PrescriptionsPage,
@@ -29,7 +30,7 @@ function PrescriptionsPage() {
   const transformedData = filteredData.map((p) => ({
     id: p._id,
     header: p.pharmacyName,
-    type: 'Prescription',
+    type: extractNameFromEmail(p.pharmacistId.email),
     status: p.status,
     target: p.repeats.toString(),
     limit: new Date(p.createdAt).toLocaleDateString(),
@@ -38,9 +39,15 @@ function PrescriptionsPage() {
 
   return (
     <div className="p-4 lg:p-6">
-      <div className="flex justify-between">
-        <h1 className="text-2xl font-bold mb-4 ml-5">Prescriptions</h1>
-        <Button asChild className="mr-5 mb-4 w-xs font-semibold">
+      <div className="flex flex-col-reverse sm:flex-row sm:justify-between sm:items-center">
+        <h1 className="text-2xl font-bold mb-2 sm:mb-4 ml-0 sm:ml-5">
+          Prescriptions
+        </h1>
+        <Button
+          asChild
+          className="w-full sm:w-auto font-semibold mb-4 sm:mb-4 sm:mr-5"
+          size="sm"
+        >
           <Link to="/dashboard/prescriptions/create">Add Prescription</Link>
         </Button>
       </div>
