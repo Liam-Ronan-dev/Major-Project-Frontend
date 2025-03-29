@@ -164,3 +164,15 @@ export const updatePrescription = async (id: string, data: any) => {
     handleApiError(error);
   }
 };
+
+export const updatePrescriptionStatus = async (
+  id: string,
+  updates: { status?: string; notes?: string }
+) => {
+  try {
+    const res = await api.patch(`/prescription/${id}/status`, updates);
+    return res.data;
+  } catch (error) {
+    handleApiError(error);
+  }
+};

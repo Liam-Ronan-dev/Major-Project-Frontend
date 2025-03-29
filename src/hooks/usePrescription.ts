@@ -3,6 +3,7 @@ import {
   getPrescriptions,
   getPrescriptionById,
   updatePrescription,
+  updatePrescriptionStatus,
 } from '@/lib/api';
 import { useMutation } from '@tanstack/react-query';
 import { useContext } from 'react';
@@ -31,4 +32,10 @@ export const usePrescriptionById = (id: string) => {
 export const useUpdatePrescription = (id: string) =>
   useMutation({
     mutationFn: (data) => updatePrescription(id, data),
+  });
+
+export const useUpdatePrescriptionStatus = (id: string) =>
+  useMutation({
+    mutationFn: (data: { status?: string; notes?: string }) =>
+      updatePrescriptionStatus(id, data),
   });

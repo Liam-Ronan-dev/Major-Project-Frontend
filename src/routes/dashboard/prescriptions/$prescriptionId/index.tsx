@@ -1,10 +1,22 @@
 import { createFileRoute } from '@tanstack/react-router';
-import { usePrescriptionById } from '@/hooks/usePrescription';
+import {
+  usePrescriptionById,
+  useUpdatePrescriptionStatus,
+} from '@/hooks/usePrescription';
 import { Skeleton } from '@/components/ui/skeleton';
 import { deletePrescription } from '@/lib/api';
 import { useNavigate } from '@tanstack/react-router';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
+import { useContext, useState, useEffect } from 'react';
+import { AuthContext } from '@/contexts/AuthContext';
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from '@/components/ui/select';
 
 export const Route = createFileRoute(
   '/dashboard/prescriptions/$prescriptionId/'
@@ -13,9 +25,40 @@ export const Route = createFileRoute(
 });
 
 function PrescriptionDetailPage() {
+  const { user } = useContext(AuthContext);
   const { prescriptionId } = Route.useParams();
   const { data, isLoading, isError } = usePrescriptionById(prescriptionId);
+  const updateMutation = useUpdatePrescriptionStatus(prescriptionId);
   const navigate = useNavigate();
+
+  const [formStatus, setFormStatus] = useState('Pending');
+  const [formNotes, setFormNotes] = useState('');
+
+  useEffect(() => {
+    if (data) {
+      setFormStatus(data.status || 'Pending');
+      setFormNotes(data.notes || '');
+    }
+  }, [data]);
+
+  const isChanged =
+    formStatus !== (data?.status || 'Pending') ||
+    formNotes !== (data?.notes || '');
+
+  const handlePharmacistUpdate = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      await updateMutation.mutateAsync({
+        status: formStatus,
+        notes: formNotes,
+      });
+      toast.success('Updated Prescription successfully');
+      data.status = formStatus;
+      data.notes = formNotes;
+    } catch (err) {
+      toast.error('Failed to update', err.message);
+    }
+  };
 
   const handleDelete = async () => {
     try {
@@ -61,10 +104,27 @@ function PrescriptionDetailPage() {
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-6">
       {/* Details */}
       <div className="rounded-lg border p-4">
-        <h2 className="font-semibold mb-2 text-lg">Details</h2>
-        <p>
-          <strong>Status:</strong> {status}
-        </p>
+        <div className="flex items-center gap-2 mb-2">
+          <strong>Status:</strong>
+          {user?.role === 'pharmacist' ? (
+            <Select value={formStatus} onValueChange={setFormStatus}>
+              <SelectTrigger className="w-[200px]">
+                <SelectValue placeholder="Select status" />
+              </SelectTrigger>
+              <SelectContent>
+                {['Pending', 'Processed', 'Completed', 'Cancelled'].map(
+                  (status) => (
+                    <SelectItem key={status} value={status}>
+                      {status}
+                    </SelectItem>
+                  )
+                )}
+              </SelectContent>
+            </Select>
+          ) : (
+            <span>{status}</span>
+          )}
+        </div>
         <p>
           <strong>Prescribed:</strong>{' '}
           {new Date(createdAt).toLocaleDateString()}
@@ -104,10 +164,18 @@ function PrescriptionDetailPage() {
 
       {/* Notes */}
       <div className="rounded-lg border p-4 md:col-span-1">
-        <h2 className="font-semibold mb-2 text-lg">Prescription Notes</h2>
-        <p className="min-h-[40px] text-muted-foreground">
-          {notes || 'No notes added.'}
-        </p>
+        <h2 className="font-semibold mb-2 text-lg">Notes</h2>
+        {user?.role === 'pharmacist' ? (
+          <textarea
+            className="w-full border rounded px-2 py-1 min-h-[40px]"
+            value={formNotes}
+            onChange={(e) => setFormNotes(e.target.value)}
+          />
+        ) : (
+          <p className="min-h-[40px] text-muted-foreground">
+            {notes || 'No notes added.'}
+          </p>
+        )}
       </div>
 
       <div className="rounded-lg border p-4 md:col-span-2">
@@ -175,22 +243,38 @@ function PrescriptionDetailPage() {
         )}
       </div>
       <div className="flex gap-3">
-        <Button
-          onClick={handleDelete}
-          variant="destructive"
-          className="mt-4 bg-red-600 hover:bg-red-700 text-white w-50 px-4 py-2 rounded-md text-sm font-medium"
-        >
-          Delete Prescription
-        </Button>
-        <Button
-          onClick={() =>
-            navigate({ to: `/dashboard/prescriptions/${prescriptionId}/edit` })
-          }
-          variant="outline"
-          className="mt-4 text-white w-50 px-4 py-2 rounded-md text-sm font-medium"
-        >
-          Edit Prescription
-        </Button>
+        {user?.role === 'doctor' && (
+          <>
+            <Button
+              onClick={handleDelete}
+              variant="destructive"
+              className="w-full sm:w-auto font-semibold mb-4 sm:mb-4 sm:mr-5"
+            >
+              Delete Prescription
+            </Button>
+            <Button
+              onClick={() =>
+                navigate({
+                  to: `/dashboard/prescriptions/${prescriptionId}/edit`,
+                })
+              }
+              variant="outline"
+              className="mw-full sm:w-auto font-semibold mb-4 sm:mb-4 sm:mr-5"
+            >
+              Edit Prescription
+            </Button>
+          </>
+        )}
+        {isChanged && (
+          <div className="mt-4">
+            <Button
+              onClick={handlePharmacistUpdate}
+              disabled={updateMutation.isPending}
+            >
+              {updateMutation.isPending ? 'Updating...' : 'Save Changes'}
+            </Button>
+          </div>
+        )}
       </div>
     </div>
   );

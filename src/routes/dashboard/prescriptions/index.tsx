@@ -43,13 +43,15 @@ function PrescriptionsPage() {
         <h1 className="text-2xl font-bold mb-2 sm:mb-4 ml-0 sm:ml-5">
           Prescriptions
         </h1>
-        <Button
-          asChild
-          className="w-full sm:w-auto font-semibold mb-4 sm:mb-4 sm:mr-5"
-          size="sm"
-        >
-          <Link to="/dashboard/prescriptions/create">Add Prescription</Link>
-        </Button>
+        {user?.role === 'doctor' && (
+          <Button
+            asChild
+            className="w-full sm:w-auto font-semibold mb-4 sm:mb-4 sm:mr-5"
+            size="sm"
+          >
+            <Link to="/dashboard/prescriptions/create">Add Prescription</Link>
+          </Button>
+        )}
       </div>
       {isLoading ? (
         <p className="text-center">Loading prescriptions...</p>
