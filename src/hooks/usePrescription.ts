@@ -1,5 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
-import { getPrescriptions, getPrescriptionById } from '@/lib/api';
+import {
+  getPrescriptions,
+  getPrescriptionById,
+  updatePrescription,
+} from '@/lib/api';
+import { useMutation } from '@tanstack/react-query';
 import { useContext } from 'react';
 import { AuthContext } from '@/contexts/AuthContext';
 
@@ -22,3 +27,8 @@ export const usePrescriptionById = (id: string) => {
     enabled: !!user && !!id,
   });
 };
+
+export const useUpdatePrescription = (id: string) =>
+  useMutation({
+    mutationFn: (data) => updatePrescription(id, data),
+  });

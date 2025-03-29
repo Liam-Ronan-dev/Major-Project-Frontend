@@ -155,3 +155,12 @@ export const deletePrescription = async (id: string) => {
     handleApiError(error);
   }
 };
+
+export const updatePrescription = async (id: string, data: any) => {
+  try {
+    const res = await api.put(`/prescription/${id}`, data);
+    return res.data;
+  } catch (error) {
+    handleApiError(error);
+  }
+};

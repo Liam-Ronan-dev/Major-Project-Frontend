@@ -7,7 +7,7 @@ import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 
 export const Route = createFileRoute(
-  '/dashboard/prescriptions/$prescriptionId'
+  '/dashboard/prescriptions/$prescriptionId/'
 )({
   component: PrescriptionDetailPage,
 });
@@ -174,13 +174,24 @@ function PrescriptionDetailPage() {
           <p className="text-muted-foreground">No medications listed.</p>
         )}
       </div>
-      <Button
-        onClick={handleDelete}
-        variant="destructive"
-        className="mt-4 bg-red-600 hover:bg-red-700 text-white w-50 px-4 py-2 rounded-md text-sm font-medium"
-      >
-        Delete Prescription
-      </Button>
+      <div className="flex gap-3">
+        <Button
+          onClick={handleDelete}
+          variant="destructive"
+          className="mt-4 bg-red-600 hover:bg-red-700 text-white w-50 px-4 py-2 rounded-md text-sm font-medium"
+        >
+          Delete Prescription
+        </Button>
+        <Button
+          onClick={() =>
+            navigate({ to: `/dashboard/prescriptions/${prescriptionId}/edit` })
+          }
+          variant="outline"
+          className="mt-4 text-white w-50 px-4 py-2 rounded-md text-sm font-medium"
+        >
+          Edit Prescription
+        </Button>
+      </div>
     </div>
   );
 }
