@@ -109,16 +109,6 @@ export const getPharmacists = async () => {
   }
 };
 
-// Get all patients
-export const getPatients = async () => {
-  try {
-    const res = await api.get('/patients');
-    return res.data.data;
-  } catch (error) {
-    handleApiError(error);
-  }
-};
-
 // Get all medications
 export const getMedications = async () => {
   try {
@@ -129,6 +119,7 @@ export const getMedications = async () => {
   }
 };
 
+// Prescriptions
 export const createPrescription = async (data: any) => {
   try {
     const res = await api.post('/prescriptions', data);
@@ -171,6 +162,80 @@ export const updatePrescriptionStatus = async (
 ) => {
   try {
     const res = await api.patch(`/prescription/${id}/status`, updates);
+    return res.data;
+  } catch (error) {
+    handleApiError(error);
+  }
+};
+
+// Appointments
+export const getAppointments = async () => {
+  try {
+    const res = await api.get('/appointments');
+    return res.data;
+  } catch (error) {
+    handleApiError(error);
+  }
+};
+
+export const getAppointmentById = async (id: string) => {
+  try {
+    const res = await api.get(`/appointment/${id}`);
+    return res.data;
+  } catch (error) {
+    handleApiError(error);
+  }
+};
+
+export const createAppointment = async (data: any) => {
+  try {
+    const res = await api.post('/appointments', data);
+    return res.data;
+  } catch (error) {
+    handleApiError(error);
+  }
+};
+
+export const deleteAppointment = async (id: string) => {
+  try {
+    const res = await api.delete(`/appointment/${id}`);
+    return res.data;
+  } catch (error) {
+    handleApiError(error);
+  }
+};
+
+// Patients //
+export const getPatients = async () => {
+  try {
+    const res = await api.get('/patients');
+    return res.data.data;
+  } catch (error) {
+    handleApiError(error);
+  }
+};
+
+export const getPatientById = async (id: string) => {
+  try {
+    const res = await api.get(`/patient/${id}`);
+    return res.data.data;
+  } catch (error) {
+    handleApiError(error);
+  }
+};
+
+export const deletePatient = async (id: string) => {
+  try {
+    const res = await api.delete(`/patient/${id}`);
+    return res.data;
+  } catch (error) {
+    handleApiError(error);
+  }
+};
+
+export const createPatient = async (data: any) => {
+  try {
+    const res = await api.post('/patients', data);
     return res.data;
   } catch (error) {
     handleApiError(error);

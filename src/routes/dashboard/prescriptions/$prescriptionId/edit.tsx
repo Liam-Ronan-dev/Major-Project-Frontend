@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { usePrescriptionById } from '@/hooks/usePrescription';
-import { EditPrescriptionForm } from '@/components/forms/EditPrescriptionForm';
+import { EditPrescriptionForm } from '@/components/forms/prescriptions/EditPrescriptionForm';
 import { Skeleton } from '@/components/ui/skeleton';
 
 export const Route = createFileRoute(

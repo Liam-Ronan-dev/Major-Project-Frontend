@@ -1,60 +1,52 @@
 'use client';
 
+import React from 'react';
 import { useForm, useFieldArray } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Label } from '@/components/ui/label';
-import { Button } from '@/components/ui/button';
 import { useNavigate } from '@tanstack/react-router';
-import { Textarea } from '@/components/ui/textarea';
 import { useMutation } from '@tanstack/react-query';
+import { toast } from 'sonner';
+
+import { updatePrescription } from '@/lib/api';
+import { usePatients } from '@/hooks/usePatients';
+import { useMedications } from '@/hooks/useMedications';
+import { usePharmacists } from '@/hooks/usePharmacists';
 
 import {
   PrescriptionFormData,
   prescriptionSchema,
 } from '@/validations/prescriptionSchema';
 
-import { createPrescription } from '@/lib/api';
-import { usePatients } from '@/hooks/usePatients';
-import { useMedications } from '@/hooks/useMedications';
-import { usePharmacists } from '@/hooks/usePharmacists';
-
+import { Button } from '@/components/ui/button';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
 import { GeneralInfoFields } from './PrescriptionFields';
-import { MedicationFields } from '@/components/forms/MedicationFields';
-import { DosageFields } from '@/components/forms/DosageFields';
-import { toast } from 'sonner';
+import { MedicationFields } from './MedicationFields';
+import { DosageFields } from './DosageFields';
 
-export function CreatePrescriptionForm() {
+type Props = {
+  defaultValues: PrescriptionFormData;
+  prescriptionId: string;
+};
+
+export function EditPrescriptionForm({ defaultValues, prescriptionId }: Props) {
   const navigate = useNavigate();
-
   const {
     register,
     control,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm<PrescriptionFormData>({
     resolver: zodResolver(prescriptionSchema),
-    defaultValues: {
-      pharmacyName: '',
-      generalInstructions: '',
-      repeats: 1,
-      notes: '',
-      items: [
-        {
-          medications: [''],
-          specificInstructions: '',
-          dosages: [
-            {
-              medicationId: '',
-              amount: '',
-              frequency: '',
-              duration: '',
-              notes: '',
-            },
-          ],
-        },
-      ],
-    },
+    defaultValues,
   });
+
+  React.useEffect(() => {
+    if (defaultValues) {
+      reset(defaultValues);
+    }
+  }, [defaultValues, reset]);
 
   const { fields: itemFields } = useFieldArray({
     control,
@@ -69,26 +61,25 @@ export function CreatePrescriptionForm() {
   const { data: medications = [] } = useMedications();
   const { data: pharmacists = [] } = usePharmacists();
 
-  const prescriptionMutation = useMutation({
-    mutationFn: createPrescription,
+  const mutation = useMutation({
+    mutationFn: (formData: PrescriptionFormData) =>
+      updatePrescription(prescriptionId, formData),
     onSuccess: () => {
-      toast.success('Prescription created successfully');
+      toast.success('Prescription updated successfully');
       navigate({ to: '/dashboard/prescriptions' });
     },
     onError: () => {
-      alert('Error creating prescription.');
+      toast.error('Failed to update prescription.');
     },
   });
 
   const onSubmit = (data: PrescriptionFormData) => {
-    console.log('Submitting Prescription:', data);
-    prescriptionMutation.mutate(data);
+    mutation.mutate(data);
   };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-8">
       <div className="flex flex-col lg:flex-row gap-8">
-        {/* General Info Section */}
         <div className="w-full lg:w-1/2">
           <GeneralInfoFields
             register={register}
@@ -99,7 +90,6 @@ export function CreatePrescriptionForm() {
           />
         </div>
 
-        {/* Prescription Items Section */}
         <div className="w-full lg:w-1/2 space-y-6">
           <h3 className="text-lg font-bold">Prescription Items</h3>
 
@@ -137,21 +127,6 @@ export function CreatePrescriptionForm() {
                     medications={medications}
                   />
                 ))}
-
-                <Button
-                  type="button"
-                  onClick={() =>
-                    dosageArray.append({
-                      medicationId: '',
-                      amount: '',
-                      frequency: '',
-                      duration: '',
-                      notes: '',
-                    })
-                  }
-                >
-                  Add Dosage
-                </Button>
               </div>
             );
           })}
@@ -160,12 +135,10 @@ export function CreatePrescriptionForm() {
 
       <Button
         type="submit"
-        className="w-full lg:w-fit"
-        disabled={prescriptionMutation.isPending}
+        disabled={mutation.isPending}
+        className="mw-full sm:w-auto font-semibold mb-4 sm:mb-4 sm:mr-5 cursor-pointer"
       >
-        {prescriptionMutation.isPending
-          ? 'Submitting...'
-          : 'Submit Prescription'}
+        {mutation.isPending ? 'Updating...' : 'Update Prescription'}
       </Button>
     </form>
   );

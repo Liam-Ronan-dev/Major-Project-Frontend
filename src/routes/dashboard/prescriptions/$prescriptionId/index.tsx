@@ -67,6 +67,7 @@ function PrescriptionDetailPage() {
       navigate({ to: '/dashboard/prescriptions' });
     } catch (err) {
       toast.error('Failed to delete prescription');
+      console.log(err.message);
     }
   };
 
@@ -248,7 +249,7 @@ function PrescriptionDetailPage() {
             <Button
               onClick={handleDelete}
               variant="destructive"
-              className="w-full sm:w-auto font-semibold mb-4 sm:mb-4 sm:mr-5"
+              className="w-full sm:w-auto font-semibold mb-4 sm:mb-4 sm:mr-5 cursor-pointer"
             >
               Delete Prescription
             </Button>
@@ -258,8 +259,7 @@ function PrescriptionDetailPage() {
                   to: `/dashboard/prescriptions/${prescriptionId}/edit`,
                 })
               }
-              variant="outline"
-              className="mw-full sm:w-auto font-semibold mb-4 sm:mb-4 sm:mr-5"
+              className="mw-full sm:w-auto font-semibold mb-4 sm:mb-4 sm:mr-5 cursor-pointer"
             >
               Edit Prescription
             </Button>

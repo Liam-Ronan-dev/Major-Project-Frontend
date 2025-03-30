@@ -1,52 +1,60 @@
 'use client';
 
-import React from 'react';
 import { useForm, useFieldArray } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { Label } from '@/components/ui/label';
+import { Button } from '@/components/ui/button';
 import { useNavigate } from '@tanstack/react-router';
+import { Textarea } from '@/components/ui/textarea';
 import { useMutation } from '@tanstack/react-query';
-import { toast } from 'sonner';
-
-import { updatePrescription } from '@/lib/api';
-import { usePatients } from '@/hooks/usePatients';
-import { useMedications } from '@/hooks/useMedications';
-import { usePharmacists } from '@/hooks/usePharmacists';
 
 import {
   PrescriptionFormData,
   prescriptionSchema,
 } from '@/validations/prescriptionSchema';
 
-import { Button } from '@/components/ui/button';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { GeneralInfoFields } from './PrescriptionFields';
-import { MedicationFields } from './MedicationFields';
-import { DosageFields } from './DosageFields';
+import { createPrescription } from '@/lib/api';
+import { usePatients } from '@/hooks/usePatients';
+import { useMedications } from '@/hooks/useMedications';
+import { usePharmacists } from '@/hooks/usePharmacists';
 
-type Props = {
-  defaultValues: PrescriptionFormData;
-  prescriptionId: string;
-};
+import { GeneralInfoFields } from '../prescriptions/PrescriptionFields';
+import { MedicationFields } from '@/components/forms/prescriptions/MedicationFields';
+import { DosageFields } from '@/components/forms/prescriptions/DosageFields';
+import { toast } from 'sonner';
 
-export function EditPrescriptionForm({ defaultValues, prescriptionId }: Props) {
+export function CreatePrescriptionForm() {
   const navigate = useNavigate();
+
   const {
     register,
     control,
     handleSubmit,
-    reset,
     formState: { errors },
   } = useForm<PrescriptionFormData>({
     resolver: zodResolver(prescriptionSchema),
-    defaultValues,
+    defaultValues: {
+      pharmacyName: '',
+      generalInstructions: '',
+      repeats: 1,
+      notes: '',
+      items: [
+        {
+          medications: [''],
+          specificInstructions: '',
+          dosages: [
+            {
+              medicationId: '',
+              amount: '',
+              frequency: '',
+              duration: '',
+              notes: '',
+            },
+          ],
+        },
+      ],
+    },
   });
-
-  React.useEffect(() => {
-    if (defaultValues) {
-      reset(defaultValues);
-    }
-  }, [defaultValues, reset]);
 
   const { fields: itemFields } = useFieldArray({
     control,
@@ -61,25 +69,26 @@ export function EditPrescriptionForm({ defaultValues, prescriptionId }: Props) {
   const { data: medications = [] } = useMedications();
   const { data: pharmacists = [] } = usePharmacists();
 
-  const mutation = useMutation({
-    mutationFn: (formData: PrescriptionFormData) =>
-      updatePrescription(prescriptionId, formData),
+  const prescriptionMutation = useMutation({
+    mutationFn: createPrescription,
     onSuccess: () => {
-      toast.success('Prescription updated successfully');
+      toast.success('Prescription created successfully');
       navigate({ to: '/dashboard/prescriptions' });
     },
     onError: () => {
-      toast.error('Failed to update prescription.');
+      alert('Error creating prescription.');
     },
   });
 
   const onSubmit = (data: PrescriptionFormData) => {
-    mutation.mutate(data);
+    console.log('Submitting Prescription:', data);
+    prescriptionMutation.mutate(data);
   };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-8">
       <div className="flex flex-col lg:flex-row gap-8">
+        {/* General Info Section */}
         <div className="w-full lg:w-1/2">
           <GeneralInfoFields
             register={register}
@@ -90,6 +99,7 @@ export function EditPrescriptionForm({ defaultValues, prescriptionId }: Props) {
           />
         </div>
 
+        {/* Prescription Items Section */}
         <div className="w-full lg:w-1/2 space-y-6">
           <h3 className="text-lg font-bold">Prescription Items</h3>
 
@@ -127,14 +137,35 @@ export function EditPrescriptionForm({ defaultValues, prescriptionId }: Props) {
                     medications={medications}
                   />
                 ))}
+
+                <Button
+                  type="button"
+                  onClick={() =>
+                    dosageArray.append({
+                      medicationId: '',
+                      amount: '',
+                      frequency: '',
+                      duration: '',
+                      notes: '',
+                    })
+                  }
+                >
+                  Add Dosage
+                </Button>
               </div>
             );
           })}
         </div>
       </div>
 
-      <Button type="submit" disabled={mutation.isPending}>
-        {mutation.isPending ? 'Updating...' : 'Update Prescription'}
+      <Button
+        type="submit"
+        className="w-full lg:w-fit"
+        disabled={prescriptionMutation.isPending}
+      >
+        {prescriptionMutation.isPending
+          ? 'Submitting...'
+          : 'Submit Prescription'}
       </Button>
     </form>
   );

@@ -35,7 +35,9 @@ function DashboardOverview() {
     status: p.status,
     target: p.repeats.toString(),
     limit: new Date(p.createdAt).toLocaleDateString(),
-    reviewer: p.patientId.firstName + ' ' + p.patientId.lastName,
+    reviewer: p.patientId
+      ? `${p.patientId.firstName} ${p.patientId.lastName}`
+      : 'Unknown Patient',
   }));
 
   return (

@@ -1,9 +1,58 @@
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, Link } from '@tanstack/react-router';
+import { useContext } from 'react';
+import { AuthContext } from '@/contexts/AuthContext';
+import { useAppointments } from '@/hooks/useAppointments';
+import { DataTable } from '@/components/data-table';
+import { appointmentColumns } from '@/columns/appointment';
+import { AppointmentRow } from '@/columns/appointment';
+import { Button } from '@/components/ui/button';
 
 export const Route = createFileRoute('/dashboard/appointments/')({
-  component: RouteComponent,
+  component: AllAppointments,
 });
 
-function RouteComponent() {
-  return <div>Hello "/dashboard/_layout/appointments"!</div>;
+function AllAppointments() {
+  const { user } = useContext(AuthContext);
+  const { data, isLoading, isError } = useAppointments();
+
+  const appointments = data || [];
+
+  const filtered = appointments.filter((appt) => {
+    return appt.doctorId?._id === user?._id;
+  });
+
+  const transformedData: AppointmentRow[] = filtered.map((appt) => ({
+    id: appt._id,
+    header: new Date(appt.date).toLocaleDateString(),
+    type: appt.status,
+    status: appt.notes || 'No notes',
+    target:
+      `${appt.patientId?.firstName || ''} ${appt.patientId?.lastName || ''}`.trim(),
+    limit: appt.patientId?.email || 'N/A',
+    reviewer: appt.patientId?.phoneNumber || 'N/A',
+  }));
+
+  return (
+    <div className="p-4 lg:p-6">
+      <div className="flex flex-col-reverse sm:flex-row sm:justify-between sm:items-center">
+        <h1 className="text-2xl font-bold mb-2 sm:mb-4 ml-0 sm:ml-5">
+          Appointments
+        </h1>
+        <Button
+          asChild
+          className="w-full sm:w-auto font-semibold mb-4 sm:mb-4 sm:mr-5"
+          size="sm"
+        >
+          <Link to="/dashboard/appointments/create">Add Appointment</Link>
+        </Button>
+      </div>
+      {isLoading ? (
+        <p className="text-center">Loading appointments...</p>
+      ) : isError ? (
+        <p className="text-center text-red-500">Failed to load appointments.</p>
+      ) : (
+        <DataTable columns={appointmentColumns} data={transformedData} />
+      )}
+    </div>
+  );
 }

@@ -21,8 +21,14 @@ import { Route as DashboardPrescriptionsIndexImport } from './routes/dashboard/p
 import { Route as DashboardPatientsIndexImport } from './routes/dashboard/patients/index';
 import { Route as DashboardAppointmentsIndexImport } from './routes/dashboard/appointments/index';
 import { Route as DashboardPrescriptionsCreateImport } from './routes/dashboard/prescriptions/create';
+import { Route as DashboardPatientsCreateImport } from './routes/dashboard/patients/create';
+import { Route as DashboardAppointmentsCreateImport } from './routes/dashboard/appointments/create';
 import { Route as DashboardPrescriptionsPrescriptionIdIndexImport } from './routes/dashboard/prescriptions/$prescriptionId/index';
+import { Route as DashboardPatientsPatientIdIndexImport } from './routes/dashboard/patients/$patientId/index';
+import { Route as DashboardAppointmentsAppointmentIdIndexImport } from './routes/dashboard/appointments/$appointmentId/index';
 import { Route as DashboardPrescriptionsPrescriptionIdEditImport } from './routes/dashboard/prescriptions/$prescriptionId/edit';
+import { Route as DashboardPatientsPatientIdEditImport } from './routes/dashboard/patients/$patientId/edit';
+import { Route as DashboardAppointmentsAppointmentIdEditImport } from './routes/dashboard/appointments/$appointmentId/edit';
 
 // Create/Update Routes
 
@@ -90,6 +96,19 @@ const DashboardPrescriptionsCreateRoute =
     getParentRoute: () => rootRoute,
   } as any);
 
+const DashboardPatientsCreateRoute = DashboardPatientsCreateImport.update({
+  id: '/dashboard/patients/create',
+  path: '/dashboard/patients/create',
+  getParentRoute: () => rootRoute,
+} as any);
+
+const DashboardAppointmentsCreateRoute =
+  DashboardAppointmentsCreateImport.update({
+    id: '/dashboard/appointments/create',
+    path: '/dashboard/appointments/create',
+    getParentRoute: () => rootRoute,
+  } as any);
+
 const DashboardPrescriptionsPrescriptionIdIndexRoute =
   DashboardPrescriptionsPrescriptionIdIndexImport.update({
     id: '/dashboard/prescriptions/$prescriptionId/',
@@ -97,10 +116,38 @@ const DashboardPrescriptionsPrescriptionIdIndexRoute =
     getParentRoute: () => rootRoute,
   } as any);
 
+const DashboardPatientsPatientIdIndexRoute =
+  DashboardPatientsPatientIdIndexImport.update({
+    id: '/dashboard/patients/$patientId/',
+    path: '/dashboard/patients/$patientId/',
+    getParentRoute: () => rootRoute,
+  } as any);
+
+const DashboardAppointmentsAppointmentIdIndexRoute =
+  DashboardAppointmentsAppointmentIdIndexImport.update({
+    id: '/dashboard/appointments/$appointmentId/',
+    path: '/dashboard/appointments/$appointmentId/',
+    getParentRoute: () => rootRoute,
+  } as any);
+
 const DashboardPrescriptionsPrescriptionIdEditRoute =
   DashboardPrescriptionsPrescriptionIdEditImport.update({
     id: '/dashboard/prescriptions/$prescriptionId/edit',
     path: '/dashboard/prescriptions/$prescriptionId/edit',
+    getParentRoute: () => rootRoute,
+  } as any);
+
+const DashboardPatientsPatientIdEditRoute =
+  DashboardPatientsPatientIdEditImport.update({
+    id: '/dashboard/patients/$patientId/edit',
+    path: '/dashboard/patients/$patientId/edit',
+    getParentRoute: () => rootRoute,
+  } as any);
+
+const DashboardAppointmentsAppointmentIdEditRoute =
+  DashboardAppointmentsAppointmentIdEditImport.update({
+    id: '/dashboard/appointments/$appointmentId/edit',
+    path: '/dashboard/appointments/$appointmentId/edit',
     getParentRoute: () => rootRoute,
   } as any);
 
@@ -150,6 +197,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardIndexImport;
       parentRoute: typeof rootRoute;
     };
+    '/dashboard/appointments/create': {
+      id: '/dashboard/appointments/create';
+      path: '/dashboard/appointments/create';
+      fullPath: '/dashboard/appointments/create';
+      preLoaderRoute: typeof DashboardAppointmentsCreateImport;
+      parentRoute: typeof rootRoute;
+    };
+    '/dashboard/patients/create': {
+      id: '/dashboard/patients/create';
+      path: '/dashboard/patients/create';
+      fullPath: '/dashboard/patients/create';
+      preLoaderRoute: typeof DashboardPatientsCreateImport;
+      parentRoute: typeof rootRoute;
+    };
     '/dashboard/prescriptions/create': {
       id: '/dashboard/prescriptions/create';
       path: '/dashboard/prescriptions/create';
@@ -178,11 +239,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardPrescriptionsIndexImport;
       parentRoute: typeof rootRoute;
     };
+    '/dashboard/appointments/$appointmentId/edit': {
+      id: '/dashboard/appointments/$appointmentId/edit';
+      path: '/dashboard/appointments/$appointmentId/edit';
+      fullPath: '/dashboard/appointments/$appointmentId/edit';
+      preLoaderRoute: typeof DashboardAppointmentsAppointmentIdEditImport;
+      parentRoute: typeof rootRoute;
+    };
+    '/dashboard/patients/$patientId/edit': {
+      id: '/dashboard/patients/$patientId/edit';
+      path: '/dashboard/patients/$patientId/edit';
+      fullPath: '/dashboard/patients/$patientId/edit';
+      preLoaderRoute: typeof DashboardPatientsPatientIdEditImport;
+      parentRoute: typeof rootRoute;
+    };
     '/dashboard/prescriptions/$prescriptionId/edit': {
       id: '/dashboard/prescriptions/$prescriptionId/edit';
       path: '/dashboard/prescriptions/$prescriptionId/edit';
       fullPath: '/dashboard/prescriptions/$prescriptionId/edit';
       preLoaderRoute: typeof DashboardPrescriptionsPrescriptionIdEditImport;
+      parentRoute: typeof rootRoute;
+    };
+    '/dashboard/appointments/$appointmentId/': {
+      id: '/dashboard/appointments/$appointmentId/';
+      path: '/dashboard/appointments/$appointmentId';
+      fullPath: '/dashboard/appointments/$appointmentId';
+      preLoaderRoute: typeof DashboardAppointmentsAppointmentIdIndexImport;
+      parentRoute: typeof rootRoute;
+    };
+    '/dashboard/patients/$patientId/': {
+      id: '/dashboard/patients/$patientId/';
+      path: '/dashboard/patients/$patientId';
+      fullPath: '/dashboard/patients/$patientId';
+      preLoaderRoute: typeof DashboardPatientsPatientIdIndexImport;
       parentRoute: typeof rootRoute;
     };
     '/dashboard/prescriptions/$prescriptionId/': {
@@ -204,11 +293,17 @@ export interface FileRoutesByFullPath {
   '/Setup-mfa': typeof SetupMfaRoute;
   '/register': typeof RegisterRoute;
   '/dashboard': typeof DashboardIndexRoute;
+  '/dashboard/appointments/create': typeof DashboardAppointmentsCreateRoute;
+  '/dashboard/patients/create': typeof DashboardPatientsCreateRoute;
   '/dashboard/prescriptions/create': typeof DashboardPrescriptionsCreateRoute;
   '/dashboard/appointments': typeof DashboardAppointmentsIndexRoute;
   '/dashboard/patients': typeof DashboardPatientsIndexRoute;
   '/dashboard/prescriptions': typeof DashboardPrescriptionsIndexRoute;
+  '/dashboard/appointments/$appointmentId/edit': typeof DashboardAppointmentsAppointmentIdEditRoute;
+  '/dashboard/patients/$patientId/edit': typeof DashboardPatientsPatientIdEditRoute;
   '/dashboard/prescriptions/$prescriptionId/edit': typeof DashboardPrescriptionsPrescriptionIdEditRoute;
+  '/dashboard/appointments/$appointmentId': typeof DashboardAppointmentsAppointmentIdIndexRoute;
+  '/dashboard/patients/$patientId': typeof DashboardPatientsPatientIdIndexRoute;
   '/dashboard/prescriptions/$prescriptionId': typeof DashboardPrescriptionsPrescriptionIdIndexRoute;
 }
 
@@ -219,11 +314,17 @@ export interface FileRoutesByTo {
   '/Setup-mfa': typeof SetupMfaRoute;
   '/register': typeof RegisterRoute;
   '/dashboard': typeof DashboardIndexRoute;
+  '/dashboard/appointments/create': typeof DashboardAppointmentsCreateRoute;
+  '/dashboard/patients/create': typeof DashboardPatientsCreateRoute;
   '/dashboard/prescriptions/create': typeof DashboardPrescriptionsCreateRoute;
   '/dashboard/appointments': typeof DashboardAppointmentsIndexRoute;
   '/dashboard/patients': typeof DashboardPatientsIndexRoute;
   '/dashboard/prescriptions': typeof DashboardPrescriptionsIndexRoute;
+  '/dashboard/appointments/$appointmentId/edit': typeof DashboardAppointmentsAppointmentIdEditRoute;
+  '/dashboard/patients/$patientId/edit': typeof DashboardPatientsPatientIdEditRoute;
   '/dashboard/prescriptions/$prescriptionId/edit': typeof DashboardPrescriptionsPrescriptionIdEditRoute;
+  '/dashboard/appointments/$appointmentId': typeof DashboardAppointmentsAppointmentIdIndexRoute;
+  '/dashboard/patients/$patientId': typeof DashboardPatientsPatientIdIndexRoute;
   '/dashboard/prescriptions/$prescriptionId': typeof DashboardPrescriptionsPrescriptionIdIndexRoute;
 }
 
@@ -235,11 +336,17 @@ export interface FileRoutesById {
   '/Setup-mfa': typeof SetupMfaRoute;
   '/register': typeof RegisterRoute;
   '/dashboard/': typeof DashboardIndexRoute;
+  '/dashboard/appointments/create': typeof DashboardAppointmentsCreateRoute;
+  '/dashboard/patients/create': typeof DashboardPatientsCreateRoute;
   '/dashboard/prescriptions/create': typeof DashboardPrescriptionsCreateRoute;
   '/dashboard/appointments/': typeof DashboardAppointmentsIndexRoute;
   '/dashboard/patients/': typeof DashboardPatientsIndexRoute;
   '/dashboard/prescriptions/': typeof DashboardPrescriptionsIndexRoute;
+  '/dashboard/appointments/$appointmentId/edit': typeof DashboardAppointmentsAppointmentIdEditRoute;
+  '/dashboard/patients/$patientId/edit': typeof DashboardPatientsPatientIdEditRoute;
   '/dashboard/prescriptions/$prescriptionId/edit': typeof DashboardPrescriptionsPrescriptionIdEditRoute;
+  '/dashboard/appointments/$appointmentId/': typeof DashboardAppointmentsAppointmentIdIndexRoute;
+  '/dashboard/patients/$patientId/': typeof DashboardPatientsPatientIdIndexRoute;
   '/dashboard/prescriptions/$prescriptionId/': typeof DashboardPrescriptionsPrescriptionIdIndexRoute;
 }
 
@@ -252,11 +359,17 @@ export interface FileRouteTypes {
     | '/Setup-mfa'
     | '/register'
     | '/dashboard'
+    | '/dashboard/appointments/create'
+    | '/dashboard/patients/create'
     | '/dashboard/prescriptions/create'
     | '/dashboard/appointments'
     | '/dashboard/patients'
     | '/dashboard/prescriptions'
+    | '/dashboard/appointments/$appointmentId/edit'
+    | '/dashboard/patients/$patientId/edit'
     | '/dashboard/prescriptions/$prescriptionId/edit'
+    | '/dashboard/appointments/$appointmentId'
+    | '/dashboard/patients/$patientId'
     | '/dashboard/prescriptions/$prescriptionId';
   fileRoutesByTo: FileRoutesByTo;
   to:
@@ -266,11 +379,17 @@ export interface FileRouteTypes {
     | '/Setup-mfa'
     | '/register'
     | '/dashboard'
+    | '/dashboard/appointments/create'
+    | '/dashboard/patients/create'
     | '/dashboard/prescriptions/create'
     | '/dashboard/appointments'
     | '/dashboard/patients'
     | '/dashboard/prescriptions'
+    | '/dashboard/appointments/$appointmentId/edit'
+    | '/dashboard/patients/$patientId/edit'
     | '/dashboard/prescriptions/$prescriptionId/edit'
+    | '/dashboard/appointments/$appointmentId'
+    | '/dashboard/patients/$patientId'
     | '/dashboard/prescriptions/$prescriptionId';
   id:
     | '__root__'
@@ -280,11 +399,17 @@ export interface FileRouteTypes {
     | '/Setup-mfa'
     | '/register'
     | '/dashboard/'
+    | '/dashboard/appointments/create'
+    | '/dashboard/patients/create'
     | '/dashboard/prescriptions/create'
     | '/dashboard/appointments/'
     | '/dashboard/patients/'
     | '/dashboard/prescriptions/'
+    | '/dashboard/appointments/$appointmentId/edit'
+    | '/dashboard/patients/$patientId/edit'
     | '/dashboard/prescriptions/$prescriptionId/edit'
+    | '/dashboard/appointments/$appointmentId/'
+    | '/dashboard/patients/$patientId/'
     | '/dashboard/prescriptions/$prescriptionId/';
   fileRoutesById: FileRoutesById;
 }
@@ -296,11 +421,17 @@ export interface RootRouteChildren {
   SetupMfaRoute: typeof SetupMfaRoute;
   RegisterRoute: typeof RegisterRoute;
   DashboardIndexRoute: typeof DashboardIndexRoute;
+  DashboardAppointmentsCreateRoute: typeof DashboardAppointmentsCreateRoute;
+  DashboardPatientsCreateRoute: typeof DashboardPatientsCreateRoute;
   DashboardPrescriptionsCreateRoute: typeof DashboardPrescriptionsCreateRoute;
   DashboardAppointmentsIndexRoute: typeof DashboardAppointmentsIndexRoute;
   DashboardPatientsIndexRoute: typeof DashboardPatientsIndexRoute;
   DashboardPrescriptionsIndexRoute: typeof DashboardPrescriptionsIndexRoute;
+  DashboardAppointmentsAppointmentIdEditRoute: typeof DashboardAppointmentsAppointmentIdEditRoute;
+  DashboardPatientsPatientIdEditRoute: typeof DashboardPatientsPatientIdEditRoute;
   DashboardPrescriptionsPrescriptionIdEditRoute: typeof DashboardPrescriptionsPrescriptionIdEditRoute;
+  DashboardAppointmentsAppointmentIdIndexRoute: typeof DashboardAppointmentsAppointmentIdIndexRoute;
+  DashboardPatientsPatientIdIndexRoute: typeof DashboardPatientsPatientIdIndexRoute;
   DashboardPrescriptionsPrescriptionIdIndexRoute: typeof DashboardPrescriptionsPrescriptionIdIndexRoute;
 }
 
@@ -311,12 +442,20 @@ const rootRouteChildren: RootRouteChildren = {
   SetupMfaRoute: SetupMfaRoute,
   RegisterRoute: RegisterRoute,
   DashboardIndexRoute: DashboardIndexRoute,
+  DashboardAppointmentsCreateRoute: DashboardAppointmentsCreateRoute,
+  DashboardPatientsCreateRoute: DashboardPatientsCreateRoute,
   DashboardPrescriptionsCreateRoute: DashboardPrescriptionsCreateRoute,
   DashboardAppointmentsIndexRoute: DashboardAppointmentsIndexRoute,
   DashboardPatientsIndexRoute: DashboardPatientsIndexRoute,
   DashboardPrescriptionsIndexRoute: DashboardPrescriptionsIndexRoute,
+  DashboardAppointmentsAppointmentIdEditRoute:
+    DashboardAppointmentsAppointmentIdEditRoute,
+  DashboardPatientsPatientIdEditRoute: DashboardPatientsPatientIdEditRoute,
   DashboardPrescriptionsPrescriptionIdEditRoute:
     DashboardPrescriptionsPrescriptionIdEditRoute,
+  DashboardAppointmentsAppointmentIdIndexRoute:
+    DashboardAppointmentsAppointmentIdIndexRoute,
+  DashboardPatientsPatientIdIndexRoute: DashboardPatientsPatientIdIndexRoute,
   DashboardPrescriptionsPrescriptionIdIndexRoute:
     DashboardPrescriptionsPrescriptionIdIndexRoute,
 };
@@ -337,11 +476,17 @@ export const routeTree = rootRoute
         "/Setup-mfa",
         "/register",
         "/dashboard/",
+        "/dashboard/appointments/create",
+        "/dashboard/patients/create",
         "/dashboard/prescriptions/create",
         "/dashboard/appointments/",
         "/dashboard/patients/",
         "/dashboard/prescriptions/",
+        "/dashboard/appointments/$appointmentId/edit",
+        "/dashboard/patients/$patientId/edit",
         "/dashboard/prescriptions/$prescriptionId/edit",
+        "/dashboard/appointments/$appointmentId/",
+        "/dashboard/patients/$patientId/",
         "/dashboard/prescriptions/$prescriptionId/"
       ]
     },
@@ -363,6 +508,12 @@ export const routeTree = rootRoute
     "/dashboard/": {
       "filePath": "dashboard/index.tsx"
     },
+    "/dashboard/appointments/create": {
+      "filePath": "dashboard/appointments/create.tsx"
+    },
+    "/dashboard/patients/create": {
+      "filePath": "dashboard/patients/create.tsx"
+    },
     "/dashboard/prescriptions/create": {
       "filePath": "dashboard/prescriptions/create.tsx"
     },
@@ -375,8 +526,20 @@ export const routeTree = rootRoute
     "/dashboard/prescriptions/": {
       "filePath": "dashboard/prescriptions/index.tsx"
     },
+    "/dashboard/appointments/$appointmentId/edit": {
+      "filePath": "dashboard/appointments/$appointmentId/edit.tsx"
+    },
+    "/dashboard/patients/$patientId/edit": {
+      "filePath": "dashboard/patients/$patientId/edit.tsx"
+    },
     "/dashboard/prescriptions/$prescriptionId/edit": {
       "filePath": "dashboard/prescriptions/$prescriptionId/edit.tsx"
+    },
+    "/dashboard/appointments/$appointmentId/": {
+      "filePath": "dashboard/appointments/$appointmentId/index.tsx"
+    },
+    "/dashboard/patients/$patientId/": {
+      "filePath": "dashboard/patients/$patientId/index.tsx"
     },
     "/dashboard/prescriptions/$prescriptionId/": {
       "filePath": "dashboard/prescriptions/$prescriptionId/index.tsx"
