@@ -29,7 +29,7 @@ const itemSchema = z.object({
         .string()
         .nonempty({ message: 'Medication ID is required.' })
         .regex(objectIdRegex, {
-          message: 'Each medication must be a valid Mongo ID.',
+          message: 'Each medication must be a valid ID.',
         })
     )
     .min(1, { message: 'Each item must have at least one medication.' }),

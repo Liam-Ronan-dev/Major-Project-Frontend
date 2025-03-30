@@ -25,6 +25,7 @@ import {
 } from '@/components/ui/sidebar';
 import { AuthContext } from '@/contexts/AuthContext';
 import { extractNameFromEmail } from '@/helpers/ExtractEmail';
+import { Link } from '@tanstack/react-router';
 
 const commonNav = [
   { title: 'Dashboard', url: '/dashboard', icon: Home },
@@ -64,12 +65,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           <SidebarMenuItem>
             <SidebarMenuButton
               asChild
-              className="data-[slot=sidebar-menu-button]:!p-1.5"
+              className="data-[slot=sidebar-menu-button]:!p-1.5 mb-5 mt-3"
             >
-              <a href="#">
-                <IconInnerShadowTop className="!size-5" />
-                <span className="text-xl font-semibold">PharmaLink</span>
-              </a>
+              <Link to="/dashboard/">
+                <IconInnerShadowTop className="!size-7" />
+                <span className="text-2xl font-semibold">PharmaLink</span>
+              </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>

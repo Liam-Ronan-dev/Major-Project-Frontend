@@ -32,8 +32,13 @@ export function CreatePatientForm() {
 
   const mutation = useMutation({
     mutationFn: createPatient,
-    onSuccess: () => toast.success('Patient created'),
-    onError: () => toast.error('Failed to create patient'),
+    onSuccess: () => {
+      toast.success('Patient created');
+      navigate({ to: '/dashboard/patients' });
+    },
+    onError: () => {
+      toast.error('Failed to create patient');
+    },
   });
 
   const onSubmit = (data: PatientFormData) => {
@@ -42,8 +47,6 @@ export function CreatePatientForm() {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 max-w-2xl">
-      <h2 className="text-xl font-bold">New Patient</h2>
-
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
           <Input placeholder="First Name" {...register('firstName')} />
@@ -183,7 +186,11 @@ export function CreatePatientForm() {
         </Button>
       </div>
 
-      <Button type="submit" disabled={mutation.isPending}>
+      <Button
+        type="submit"
+        className="cursor-pointer font-semibold"
+        disabled={mutation.isPending}
+      >
         {mutation.isPending ? 'Submitting...' : 'Create Patient'}
       </Button>
     </form>

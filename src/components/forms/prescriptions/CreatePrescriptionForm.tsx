@@ -76,7 +76,7 @@ export function CreatePrescriptionForm() {
       navigate({ to: '/dashboard/prescriptions' });
     },
     onError: () => {
-      alert('Error creating prescription.');
+      toast.error('Error creating prescription');
     },
   });
 

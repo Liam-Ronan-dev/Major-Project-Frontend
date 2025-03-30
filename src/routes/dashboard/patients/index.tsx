@@ -27,8 +27,8 @@ function RouteComponent() {
     type: patient.dateOfBirth,
     status: patient.gender,
     target: patient.email || 'N/A',
-    limit: `${patient.address.street},${patient.address.city},${patient.address.country}`,
-    reviewer: patient.emergencyContact.name,
+    limit: `${patient.address.street}, ${patient.address.city}, ${patient.address.country}`,
+    reviewer: patient.phoneNumber,
   }));
 
   if (isLoading) return <p className="text-center">Loading patients...</p>;

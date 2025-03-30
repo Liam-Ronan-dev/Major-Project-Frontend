@@ -17,7 +17,7 @@ export const patientColumns: ColumnDef<PatientRow>[] = [
   { accessorKey: 'status', header: 'Gender' },
   { accessorKey: 'target', header: 'Email' },
   { accessorKey: 'limit', header: 'Address' },
-  { accessorKey: 'reviewer', header: 'Emergency Contact' },
+  { accessorKey: 'reviewer', header: 'Phone Number' },
   {
     id: 'details',
     header: 'Details',
