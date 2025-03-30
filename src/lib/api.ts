@@ -168,7 +168,7 @@ export const updatePrescriptionStatus = async (
   }
 };
 
-// Appointments
+// Appointments //
 export const getAppointments = async () => {
   try {
     const res = await api.get('/appointments');
@@ -199,6 +199,15 @@ export const createAppointment = async (data: any) => {
 export const deleteAppointment = async (id: string) => {
   try {
     const res = await api.delete(`/appointment/${id}`);
+    return res.data;
+  } catch (error) {
+    handleApiError(error);
+  }
+};
+
+export const updateAppointment = async (id: string, data: any) => {
+  try {
+    const res = await api.put(`/appointment/${id}`, data);
     return res.data;
   } catch (error) {
     handleApiError(error);
@@ -236,6 +245,15 @@ export const deletePatient = async (id: string) => {
 export const createPatient = async (data: any) => {
   try {
     const res = await api.post('/patients', data);
+    return res.data;
+  } catch (error) {
+    handleApiError(error);
+  }
+};
+
+export const updatePatient = async (id: string, data: any) => {
+  try {
+    const res = await api.put(`/patient/${id}`, data);
     return res.data;
   } catch (error) {
     handleApiError(error);

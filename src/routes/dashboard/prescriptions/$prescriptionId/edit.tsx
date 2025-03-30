@@ -24,7 +24,11 @@ function EditPrescriptionRoute() {
   }
 
   if (isError || !data) {
-    return <div className="p-6 text-red-500">Failed to load prescription.</div>;
+    return (
+      <div className="p-6 text-red-500 text-center">
+        Failed to load prescription.
+      </div>
+    );
   }
 
   return (
