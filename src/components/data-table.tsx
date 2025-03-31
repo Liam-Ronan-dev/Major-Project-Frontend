@@ -112,6 +112,8 @@ export const schema = z.object({
 type DataTableProps<TData extends { id: string | number }> = {
   data: TData[];
   columns: ColumnDef<TData>[];
+  filterColumn?: keyof TData;
+  filterPlaceholder?: string;
 };
 
 function DraggableRow({ row }: { row: Row<z.infer<typeof schema>> }) {
@@ -142,6 +144,8 @@ function DraggableRow({ row }: { row: Row<z.infer<typeof schema>> }) {
 export function DataTable<TData extends { id: string | number }>({
   data: initialData,
   columns,
+  filterColumn,
+  filterPlaceholder,
 }: DataTableProps<TData>) {
   const [data, setData] = React.useState(() => initialData);
   const [rowSelection, setRowSelection] = React.useState({});
@@ -208,36 +212,27 @@ export function DataTable<TData extends { id: string | number }>({
       defaultValue="outline"
       className="w-full flex-col justify-start gap-6"
     >
-      <div className="flex items-center justify-between px-4 lg:px-6">
-        <Label htmlFor="view-selector" className="sr-only">
-          View
-        </Label>
-        <Select defaultValue="outline">
-          <SelectTrigger
-            className="flex w-fit @4xl/main:hidden"
-            size="sm"
-            id="view-selector"
-          >
-            <SelectValue placeholder="Select a view" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="outline">Outline</SelectItem>
-            <SelectItem value="past-performance">Past Performance</SelectItem>
-            <SelectItem value="key-personnel">Key Personnel</SelectItem>
-            <SelectItem value="focus-documents">Focus Documents</SelectItem>
-          </SelectContent>
-        </Select>
-        <TabsList className="**:data-[slot=badge]:bg-muted-foreground/30 hidden **:data-[slot=badge]:size-5 **:data-[slot=badge]:rounded-full **:data-[slot=badge]:px-1 @4xl/main:flex">
-          <TabsTrigger value="outline">Outline</TabsTrigger>
-          <TabsTrigger value="past-performance">
-            Past Performance <Badge variant="secondary">3</Badge>
-          </TabsTrigger>
-          <TabsTrigger value="key-personnel">
-            Key Personnel <Badge variant="secondary">2</Badge>
-          </TabsTrigger>
-          <TabsTrigger value="focus-documents">Focus Documents</TabsTrigger>
-        </TabsList>
-        <div className="flex items-center gap-2">
+      <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between px-4 lg:px-6">
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-4">
+          {filterColumn && (
+            <Input
+              placeholder={filterPlaceholder || 'Search...'}
+              value={
+                (table
+                  .getColumn(filterColumn as string)
+                  ?.getFilterValue() as string) ?? ''
+              }
+              onChange={(e) =>
+                table
+                  .getColumn(filterColumn as string)
+                  ?.setFilterValue(e.target.value)
+              }
+              className="w-full sm:w-64"
+            />
+          )}
+        </div>
+
+        <div className="flex flex-wrap gap-2">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" size="sm">
@@ -271,6 +266,7 @@ export function DataTable<TData extends { id: string | number }>({
                 })}
             </DropdownMenuContent>
           </DropdownMenu>
+
           <Button variant="outline" size="sm">
             <IconPlus />
             <span className="hidden lg:inline">Add Section</span>

@@ -52,8 +52,8 @@ const pharmacistNav = [
     url: '/dashboard/prescriptions',
     icon: ClipboardCheck,
   },
-  { title: 'Orders', url: '/orders', icon: Package },
-  { title: 'Medications', url: '/medications', icon: Pill },
+  { title: 'Patients', url: '/dashboard/patients', icon: Users },
+  { title: 'Medications', url: '/dashboard/medications', icon: Pill },
 ];
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
@@ -65,7 +65,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           <SidebarMenuItem>
             <SidebarMenuButton
               asChild
-              className="data-[slot=sidebar-menu-button]:!p-1.5 mb-5 mt-3"
+              className="data-[slot=sidebar-menu-button]:!p-1.5 mt-3"
             >
               <Link to="/dashboard/">
                 <IconInnerShadowTop className="!size-7" />
@@ -75,6 +75,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
+      <p className="p-1.5 text-left mb-10 ml-3 leading-3 [&:not(:first-child)]">
+        {user?.role.charAt(0).toUpperCase() + user?.role.slice(1)}
+      </p>
       <SidebarContent>
         <NavMain items={commonNav} />
         {user?.role === 'doctor' && <NavMain items={doctorNav} />}

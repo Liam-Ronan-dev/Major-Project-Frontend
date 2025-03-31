@@ -46,7 +46,7 @@ jobs:
       - name: Deploy to S3
         run: aws s3 sync ./dist/ s3://$BUCKET_ID --delete
 
-        # Only runs if the deploy is to main
+        # Only runs if the deploy is to main # Prod
       - name: Create CloudFront invalidation
-        if: env.RUN_INVALIDATION == 'true' # Prod
+        if: env.RUN_INVALIDATION == 'true'
         run: aws cloudfront create-invalidation --distribution-id ${{ secrets.DISTRIBUTION_ID }} --paths "/*"

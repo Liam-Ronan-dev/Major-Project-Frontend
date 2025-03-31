@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import axios from 'axios';
 
 const BASE_API_URL =
@@ -245,6 +244,7 @@ export const deletePatient = async (id: string) => {
 export const createPatient = async (data: any) => {
   try {
     const res = await api.post('/patients', data);
+    console.log(res.data);
     return res.data;
   } catch (error) {
     handleApiError(error);

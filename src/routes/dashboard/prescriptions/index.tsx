@@ -39,6 +39,14 @@ function PrescriptionsPage() {
       : 'Unknown Patient',
   }));
 
+  if (isLoading) return <p className="text-center">Loading prescriptions...</p>;
+
+  if (isError) {
+    return (
+      <p className="text-center text-red-500">Failed to load prescriptions.</p>
+    );
+  }
+
   return (
     <div className="p-4 lg:p-6">
       <div className="flex flex-col-reverse sm:flex-row sm:justify-between sm:items-center">
@@ -55,15 +63,12 @@ function PrescriptionsPage() {
           </Button>
         )}
       </div>
-      {isLoading ? (
-        <p className="text-center">Loading prescriptions...</p>
-      ) : isError ? (
-        <p className="text-center text-red-500">
-          Failed to load prescriptions.
-        </p>
-      ) : (
-        <DataTable data={transformedData} columns={prescriptionColumns} />
-      )}
+      <DataTable
+        data={transformedData}
+        columns={prescriptionColumns}
+        filterColumn="reviewer"
+        filterPlaceholder="Search prescriptions by patient"
+      />
     </div>
   );
 }

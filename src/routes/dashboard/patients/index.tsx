@@ -17,9 +17,10 @@ function RouteComponent() {
 
   const patients = data || [];
 
-  const filtered = patients.filter((patient) => {
-    return patient.doctorId?._id === user?._id;
-  });
+  const filtered =
+    user?.role === 'doctor'
+      ? patients.filter((patient) => patient.doctorId?._id === user._id)
+      : patients;
 
   const transformedData: PatientRow[] = filtered.map((patient) => ({
     id: patient._id,
@@ -36,21 +37,29 @@ function RouteComponent() {
   if (isError) {
     return <p className="text-center text-red-500">Failed to load patients.</p>;
   }
+
   return (
     <div className="p-4 lg:p-6">
       <div className="flex flex-col-reverse sm:flex-row sm:justify-between sm:items-center">
         <h1 className="text-2xl font-bold mb-2 sm:mb-4 ml-0 sm:ml-5">
           Patients
         </h1>
-        <Button
-          asChild
-          className="w-full sm:w-auto font-semibold mb-4 sm:mb-4 sm:mr-5"
-          size="sm"
-        >
-          <Link to="/dashboard/patients/create">Add Patient</Link>
-        </Button>
+        {user?.role === 'doctor' && (
+          <Button
+            asChild
+            className="w-full sm:w-auto font-semibold mb-4 sm:mb-4 sm:mr-5"
+            size="sm"
+          >
+            <Link to="/dashboard/patients/create">Add Patient</Link>
+          </Button>
+        )}
       </div>
-      <DataTable columns={patientColumns} data={transformedData} />
+      <DataTable
+        columns={patientColumns}
+        data={transformedData}
+        filterColumn="header"
+        filterPlaceholder="Search patients by name..."
+      />
     </div>
   );
 }

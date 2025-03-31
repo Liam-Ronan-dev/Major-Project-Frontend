@@ -32,6 +32,14 @@ function AllAppointments() {
     reviewer: appt.patientId?.phoneNumber || 'N/A',
   }));
 
+  if (isLoading) return <p className="text-center">Loading appointments...</p>;
+
+  if (isError) {
+    return (
+      <p className="text-center text-red-500">Failed to load appointments.</p>
+    );
+  }
+
   return (
     <div className="p-4 lg:p-6">
       <div className="flex flex-col-reverse sm:flex-row sm:justify-between sm:items-center">
@@ -46,13 +54,12 @@ function AllAppointments() {
           <Link to="/dashboard/appointments/create">Add Appointment</Link>
         </Button>
       </div>
-      {isLoading ? (
-        <p className="text-center">Loading appointments...</p>
-      ) : isError ? (
-        <p className="text-center text-red-500">Failed to load appointments.</p>
-      ) : (
-        <DataTable columns={appointmentColumns} data={transformedData} />
-      )}
+      <DataTable
+        columns={appointmentColumns}
+        data={transformedData}
+        filterColumn="target"
+        filterPlaceholder="Search appointments by name..."
+      />{' '}
     </div>
   );
 }

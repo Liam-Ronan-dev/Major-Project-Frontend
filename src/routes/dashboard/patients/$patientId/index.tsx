@@ -2,6 +2,8 @@ import { createFileRoute } from '@tanstack/react-router';
 import { usePatientById } from '@/hooks/usePatients';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
+import { useContext } from 'react';
+import { AuthContext } from '@/contexts/AuthContext';
 import { useNavigate } from '@tanstack/react-router';
 import { toast } from 'sonner';
 import { deletePatient } from '@/lib/api';
@@ -19,6 +21,7 @@ export const Route = createFileRoute('/dashboard/patients/$patientId/')({
 });
 
 function PatientDetailPage() {
+  const { user } = useContext(AuthContext);
   const { patientId } = Route.useParams();
   const { data, isLoading, isError } = usePatientById(patientId);
   const navigate = useNavigate();
@@ -219,26 +222,27 @@ function PatientDetailPage() {
           )}
         </div>
 
-        {/* Action Buttons */}
-        <div className="flex gap-4 md:col-span-2">
-          <Button
-            onClick={handleDelete}
-            variant="destructive"
-            className="w-full sm:w-auto font-semibold mb-4 sm:mb-4 sm:mr-5 cursor-pointer"
-          >
-            Delete Patient
-          </Button>
-          <Button
-            onClick={() =>
-              navigate({
-                to: `/dashboard/patients/${patientId}/edit`,
-              })
-            }
-            className="mw-full sm:w-auto font-semibold mb-4 sm:mb-4 sm:mr-5 cursor-pointer"
-          >
-            Edit Patient
-          </Button>
-        </div>
+        {user?.role === 'doctor' && (
+          <div className="flex gap-4 md:col-span-2">
+            <Button
+              onClick={handleDelete}
+              variant="destructive"
+              className="w-full sm:w-auto font-semibold mb-4 sm:mb-4 sm:mr-5 cursor-pointer"
+            >
+              Delete Patient
+            </Button>
+            <Button
+              onClick={() =>
+                navigate({
+                  to: `/dashboard/patients/${patientId}/edit`,
+                })
+              }
+              className="mw-full sm:w-auto font-semibold mb-4 sm:mb-4 sm:mr-5 cursor-pointer"
+            >
+              Edit Patient
+            </Button>
+          </div>
+        )}
       </div>
     </>
   );
