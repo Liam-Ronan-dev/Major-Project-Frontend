@@ -11,6 +11,7 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root';
+import { Route as VerifiedImport } from './routes/verified';
 import { Route as RegisterImport } from './routes/register';
 import { Route as SetupMfaImport } from './routes/Setup-mfa';
 import { Route as LoginImport } from './routes/Login';
@@ -31,6 +32,12 @@ import { Route as DashboardPatientsPatientIdEditImport } from './routes/dashboar
 import { Route as DashboardAppointmentsAppointmentIdEditImport } from './routes/dashboard/appointments/$appointmentId/edit';
 
 // Create/Update Routes
+
+const VerifiedRoute = VerifiedImport.update({
+  id: '/verified',
+  path: '/verified',
+  getParentRoute: () => rootRoute,
+} as any);
 
 const RegisterRoute = RegisterImport.update({
   id: '/register',
@@ -190,6 +197,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RegisterImport;
       parentRoute: typeof rootRoute;
     };
+    '/verified': {
+      id: '/verified';
+      path: '/verified';
+      fullPath: '/verified';
+      preLoaderRoute: typeof VerifiedImport;
+      parentRoute: typeof rootRoute;
+    };
     '/dashboard/': {
       id: '/dashboard/';
       path: '/dashboard';
@@ -292,6 +306,7 @@ export interface FileRoutesByFullPath {
   '/Login': typeof LoginRoute;
   '/Setup-mfa': typeof SetupMfaRoute;
   '/register': typeof RegisterRoute;
+  '/verified': typeof VerifiedRoute;
   '/dashboard': typeof DashboardIndexRoute;
   '/dashboard/appointments/create': typeof DashboardAppointmentsCreateRoute;
   '/dashboard/patients/create': typeof DashboardPatientsCreateRoute;
@@ -313,6 +328,7 @@ export interface FileRoutesByTo {
   '/Login': typeof LoginRoute;
   '/Setup-mfa': typeof SetupMfaRoute;
   '/register': typeof RegisterRoute;
+  '/verified': typeof VerifiedRoute;
   '/dashboard': typeof DashboardIndexRoute;
   '/dashboard/appointments/create': typeof DashboardAppointmentsCreateRoute;
   '/dashboard/patients/create': typeof DashboardPatientsCreateRoute;
@@ -335,6 +351,7 @@ export interface FileRoutesById {
   '/Login': typeof LoginRoute;
   '/Setup-mfa': typeof SetupMfaRoute;
   '/register': typeof RegisterRoute;
+  '/verified': typeof VerifiedRoute;
   '/dashboard/': typeof DashboardIndexRoute;
   '/dashboard/appointments/create': typeof DashboardAppointmentsCreateRoute;
   '/dashboard/patients/create': typeof DashboardPatientsCreateRoute;
@@ -358,6 +375,7 @@ export interface FileRouteTypes {
     | '/Login'
     | '/Setup-mfa'
     | '/register'
+    | '/verified'
     | '/dashboard'
     | '/dashboard/appointments/create'
     | '/dashboard/patients/create'
@@ -378,6 +396,7 @@ export interface FileRouteTypes {
     | '/Login'
     | '/Setup-mfa'
     | '/register'
+    | '/verified'
     | '/dashboard'
     | '/dashboard/appointments/create'
     | '/dashboard/patients/create'
@@ -398,6 +417,7 @@ export interface FileRouteTypes {
     | '/Login'
     | '/Setup-mfa'
     | '/register'
+    | '/verified'
     | '/dashboard/'
     | '/dashboard/appointments/create'
     | '/dashboard/patients/create'
@@ -420,6 +440,7 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute;
   SetupMfaRoute: typeof SetupMfaRoute;
   RegisterRoute: typeof RegisterRoute;
+  VerifiedRoute: typeof VerifiedRoute;
   DashboardIndexRoute: typeof DashboardIndexRoute;
   DashboardAppointmentsCreateRoute: typeof DashboardAppointmentsCreateRoute;
   DashboardPatientsCreateRoute: typeof DashboardPatientsCreateRoute;
@@ -441,6 +462,7 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   SetupMfaRoute: SetupMfaRoute,
   RegisterRoute: RegisterRoute,
+  VerifiedRoute: VerifiedRoute,
   DashboardIndexRoute: DashboardIndexRoute,
   DashboardAppointmentsCreateRoute: DashboardAppointmentsCreateRoute,
   DashboardPatientsCreateRoute: DashboardPatientsCreateRoute,
@@ -475,6 +497,7 @@ export const routeTree = rootRoute
         "/Login",
         "/Setup-mfa",
         "/register",
+        "/verified",
         "/dashboard/",
         "/dashboard/appointments/create",
         "/dashboard/patients/create",
@@ -504,6 +527,9 @@ export const routeTree = rootRoute
     },
     "/register": {
       "filePath": "register.tsx"
+    },
+    "/verified": {
+      "filePath": "verified.tsx"
     },
     "/dashboard/": {
       "filePath": "dashboard/index.tsx"
