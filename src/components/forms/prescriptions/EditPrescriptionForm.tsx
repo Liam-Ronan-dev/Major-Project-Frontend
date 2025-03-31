@@ -18,11 +18,8 @@ import {
 } from '@/validations/prescriptionSchema';
 
 import { Button } from '@/components/ui/button';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
 import { GeneralInfoFields } from './PrescriptionFields';
-import { MedicationFields } from './MedicationFields';
-import { DosageFields } from './DosageFields';
+import { PrescriptionItem } from './prescriptionItem';
 
 type Props = {
   defaultValues: PrescriptionFormData;
@@ -31,6 +28,7 @@ type Props = {
 
 export function EditPrescriptionForm({ defaultValues, prescriptionId }: Props) {
   const navigate = useNavigate();
+
   const {
     register,
     control,
@@ -52,10 +50,6 @@ export function EditPrescriptionForm({ defaultValues, prescriptionId }: Props) {
     control,
     name: 'items',
   });
-
-  const dosageFieldArrays = itemFields.map((_, index) =>
-    useFieldArray({ control, name: `items.${index}.dosages` as const })
-  );
 
   const { data: patients = [] } = usePatients();
   const { data: medications = [] } = useMedications();
@@ -80,6 +74,7 @@ export function EditPrescriptionForm({ defaultValues, prescriptionId }: Props) {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-8">
       <div className="flex flex-col lg:flex-row gap-8">
+        {/* General Info */}
         <div className="w-full lg:w-1/2">
           <GeneralInfoFields
             register={register}
@@ -90,53 +85,27 @@ export function EditPrescriptionForm({ defaultValues, prescriptionId }: Props) {
           />
         </div>
 
+        {/* Prescription Items */}
         <div className="w-full lg:w-1/2 space-y-6">
           <h3 className="text-lg font-bold">Prescription Items</h3>
 
-          {itemFields.map((item, index) => {
-            const dosageArray = dosageFieldArrays[index];
-
-            return (
-              <div key={item.id} className="border p-4 rounded space-y-4">
-                <Label>Specific Instructions</Label>
-                <Textarea
-                  {...register(`items.${index}.specificInstructions`)}
-                />
-                {errors.items?.[index]?.specificInstructions?.message && (
-                  <p className="text-sm text-red-500">
-                    {errors.items[index].specificInstructions?.message}
-                  </p>
-                )}
-
-                <MedicationFields
-                  index={index}
-                  control={control}
-                  errors={errors.items?.[index]}
-                  medications={medications}
-                />
-
-                <h4 className="font-medium">Dosages</h4>
-                {dosageArray.fields.map((_, dIndex) => (
-                  <DosageFields
-                    key={dIndex}
-                    index={index}
-                    dIndex={dIndex}
-                    control={control}
-                    register={register}
-                    errors={errors.items?.[index]?.dosages}
-                    medications={medications}
-                  />
-                ))}
-              </div>
-            );
-          })}
+          {itemFields.map((_, index) => (
+            <PrescriptionItem
+              key={index}
+              index={index}
+              control={control}
+              register={register}
+              errors={errors}
+              medications={medications}
+            />
+          ))}
         </div>
       </div>
 
       <Button
         type="submit"
         disabled={mutation.isPending}
-        className="mw-full sm:w-auto font-semibold mb-4 sm:mb-4 sm:mr-5 cursor-pointer"
+        className="w-full sm:w-auto font-semibold"
       >
         {mutation.isPending ? 'Updating...' : 'Update Prescription'}
       </Button>
