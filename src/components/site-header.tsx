@@ -36,10 +36,11 @@ export function SiteHeader() {
             Welcome Back {extractNameFromEmail(user.email)}
           </h1>
         </div>
-        <div className="ml-auto flex items-center gap-2 p-5">
+        <div className="ml-auto flex items-center gap-5 p-5">
           <ModeToggle />
           <Button
-            variant="ghost"
+            variant="outline"
+            className="cursor-pointer"
             size="icon"
             onClick={handleLogout}
             title="Log out"

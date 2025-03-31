@@ -31,7 +31,7 @@ if (!rootElement.innerHTML) {
         <QueryClientProvider client={queryClient}>
           <AuthProvider>
             {' '}
-            {/* ✅ Ensure AuthProvider Wraps the App */}
+            {/* Ensure AuthProvider Wraps the App */}
             <RouterProvider router={router} />
           </AuthProvider>
         </QueryClientProvider>

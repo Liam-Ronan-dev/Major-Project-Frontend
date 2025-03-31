@@ -1,0 +1,107 @@
+import { createFileRoute } from '@tanstack/react-router';
+import { useAppointmentById } from '@/hooks/useAppointments';
+import { Skeleton } from '@/components/ui/skeleton';
+import { toast } from 'sonner';
+import { useNavigate } from '@tanstack/react-router';
+import { deleteAppointment } from '@/lib/api';
+import { Button } from '@/components/ui/button';
+
+export const Route = createFileRoute('/dashboard/appointments/$appointmentId/')(
+  {
+    component: AppointmentDetailPage,
+  }
+);
+
+function AppointmentDetailPage() {
+  const { appointmentId } = Route.useParams();
+  const { data, isError, isLoading } = useAppointmentById(appointmentId);
+  const navigate = useNavigate();
+
+  const handleDelete = async () => {
+    try {
+      await deleteAppointment(appointmentId);
+      toast.success('Appointment deleted successfully');
+      navigate({ to: '/dashboard/appointments' });
+    } catch (err) {
+      toast.error('Failed to delete appointment');
+      console.error(err.message);
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <div className="p-6">
+        <Skeleton className="h-8 w-1/2 mb-4" />
+        <Skeleton className="h-6 w-full mb-2" />
+        <Skeleton className="h-6 w-3/4" />
+      </div>
+    );
+  }
+
+  if (isError || !data) {
+    return (
+      <div className="p-6 text-red-500">
+        Failed to load appointment details.
+      </div>
+    );
+  }
+
+  const { patientId, status, date, notes, createdAt } = data;
+
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-6">
+      {/* Appointment Info */}
+      <div className="rounded-lg border p-4">
+        <h2 className="font-semibold mb-2 text-lg">Appointment Details</h2>
+        <p>
+          <strong>Status:</strong> {status}
+        </p>
+        <p>
+          <strong>Scheduled For:</strong> {new Date(date).toLocaleDateString()}
+        </p>
+        <p>
+          <strong>Created At:</strong>{' '}
+          {new Date(createdAt).toLocaleDateString()}
+        </p>
+        <p>
+          <strong>Notes:</strong> {notes || 'No notes provided.'}
+        </p>
+      </div>
+
+      {/* Patient Info */}
+      <div className="rounded-lg border p-4">
+        <h2 className="font-semibold mb-2 text-lg">Patient Information</h2>
+        <p>
+          <strong>Name:</strong> {patientId?.firstName} {patientId?.lastName}
+        </p>
+        <p>
+          <strong>Email:</strong> {patientId?.email}
+        </p>
+        <p>
+          <strong>Phone:</strong> {patientId?.phoneNumber || 'N/A'}
+        </p>
+      </div>
+
+      {/* Action Buttons */}
+      <div className="flex gap-4 md:col-span-2">
+        <Button
+          onClick={handleDelete}
+          variant="destructive"
+          className="w-full sm:w-auto font-semibold mb-4 sm:mb-4 sm:mr-5 cursor-pointer"
+        >
+          Delete Prescription
+        </Button>
+        <Button
+          onClick={() =>
+            navigate({
+              to: `/dashboard/appointments/${appointmentId}/edit`,
+            })
+          }
+          className="mw-full sm:w-auto font-semibold mb-4 sm:mb-4 sm:mr-5 cursor-pointer"
+        >
+          Edit Appointment
+        </Button>
+      </div>
+    </div>
+  );
+}
