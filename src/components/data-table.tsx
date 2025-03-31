@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useNavigate } from '@tanstack/react-router';
 import {
   DndContext,
   KeyboardSensor,
@@ -114,6 +115,9 @@ type DataTableProps<TData extends { id: string | number }> = {
   columns: ColumnDef<TData>[];
   filterColumn?: keyof TData;
   filterPlaceholder?: string;
+  onDelete?: (id: string) => void;
+  editUrl?: (id: string) => string;
+  userRole?: string;
 };
 
 function DraggableRow({ row }: { row: Row<z.infer<typeof schema>> }) {
@@ -146,11 +150,15 @@ export function DataTable<TData extends { id: string | number }>({
   columns,
   filterColumn,
   filterPlaceholder,
+  onDelete,
+  editUrl,
+  userRole,
 }: DataTableProps<TData>) {
+  const navigate = useNavigate();
   const [data, setData] = React.useState(() => initialData);
   const [rowSelection, setRowSelection] = React.useState({});
   const [columnVisibility, setColumnVisibility] =
-    React.useState<VisibilityState>({});
+    React.useState<VisibilityState>({ select: true });
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
   );
@@ -196,6 +204,9 @@ export function DataTable<TData extends { id: string | number }>({
     getFacetedUniqueValues: getFacetedUniqueValues(),
   });
 
+  const selectedRows = table.getFilteredSelectedRowModel().rows;
+  const selectedId = selectedRows[0]?.original.id;
+
   function handleDragEnd(event: DragEndEvent) {
     const { active, over } = event;
     if (active && over && active.id !== over.id) {
@@ -229,6 +240,30 @@ export function DataTable<TData extends { id: string | number }>({
               }
               className="w-full sm:w-64"
             />
+          )}
+          {selectedId && userRole === 'doctor' && (
+            <div className="flex flex-col sm:flex-row gap-2 mt-4 sm:mt-0">
+              {editUrl && (
+                <Button
+                  variant="default"
+                  size="sm"
+                  onClick={() => navigate({ to: editUrl(selectedId) })}
+                  className="cursor-pointer px-5"
+                >
+                  Edit
+                </Button>
+              )}
+              {onDelete && (
+                <Button
+                  variant="destructive"
+                  size="sm"
+                  onClick={() => onDelete(selectedId)}
+                  className="cursor-pointer px-5"
+                >
+                  Delete
+                </Button>
+              )}
+            </div>
           )}
         </div>
 
