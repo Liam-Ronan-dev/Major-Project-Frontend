@@ -7,7 +7,7 @@ export const Route = createFileRoute('/register')({
 
 function Register() {
   return (
-    <div className="flex items-center justify-center min-h-5/6 w-full">
+    <div className="flex items-center justify-center min-h-[90lvh] w-full px-4">
       <div className="w-full max-w-md">
         <h1 className="text-center w-full scroll-m-20 text-4xl font-extrabold lg:text-5xl">
           Create an account

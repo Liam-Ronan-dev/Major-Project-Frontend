@@ -55,7 +55,7 @@ function Inputtotp() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-5/6 p-6">
+    <div className="flex flex-col items-center justify-center min-h-[90lvh] px-4">
       <h1 className="text-2xl font-bold">Enter MFA Code</h1>
       <p className="m-5 text-center leading-7 [&:not(:first-child)]:mt-6">
         Enter the one-time password from your Authenticator app.

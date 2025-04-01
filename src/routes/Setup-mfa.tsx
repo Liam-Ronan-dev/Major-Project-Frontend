@@ -16,7 +16,7 @@ function SetupMfa() {
     : '';
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-5/6 p-6">
+    <div className="flex flex-col items-center justify-center min-h-[90lvh] p-6">
       <h1 className="text-2xl font-bold text-center">
         Setup Multi-Factor Authentication
       </h1>
