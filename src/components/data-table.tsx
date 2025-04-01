@@ -118,6 +118,7 @@ type DataTableProps<TData extends { id: string | number }> = {
   onDelete?: (id: string) => void;
   editUrl?: (id: string) => string;
   userRole?: string;
+  resourceType?: 'patients' | 'prescriptions' | 'medications';
 };
 
 function DraggableRow({ row }: { row: Row<z.infer<typeof schema>> }) {
@@ -153,6 +154,7 @@ export function DataTable<TData extends { id: string | number }>({
   onDelete,
   editUrl,
   userRole,
+  resourceType,
 }: DataTableProps<TData>) {
   const navigate = useNavigate();
   const [data, setData] = React.useState(() => initialData);
@@ -241,30 +243,33 @@ export function DataTable<TData extends { id: string | number }>({
               className="w-full sm:w-64"
             />
           )}
-          {selectedId && userRole === 'doctor' && (
-            <div className="flex flex-col sm:flex-row gap-2 mt-4 sm:mt-0">
-              {editUrl && (
-                <Button
-                  variant="default"
-                  size="sm"
-                  onClick={() => navigate({ to: editUrl(selectedId) })}
-                  className="cursor-pointer px-5"
-                >
-                  Edit
-                </Button>
-              )}
-              {onDelete && (
-                <Button
-                  variant="destructive"
-                  size="sm"
-                  onClick={() => onDelete(selectedId)}
-                  className="cursor-pointer px-5"
-                >
-                  Delete
-                </Button>
-              )}
-            </div>
-          )}
+          {selectedId &&
+            (userRole === 'doctor' ||
+              (userRole === 'pharmacist' &&
+                resourceType === 'medications')) && (
+              <>
+                {editUrl && (
+                  <Button
+                    variant="default"
+                    size="sm"
+                    onClick={() => navigate({ to: editUrl(selectedId) })}
+                    className="cursor-pointer px-5"
+                  >
+                    Edit
+                  </Button>
+                )}
+                {onDelete && (
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    onClick={() => onDelete(selectedId)}
+                    className="cursor-pointer px-5"
+                  >
+                    Delete
+                  </Button>
+                )}
+              </>
+            )}
         </div>
 
         <div className="flex flex-wrap gap-2">
@@ -301,11 +306,6 @@ export function DataTable<TData extends { id: string | number }>({
                 })}
             </DropdownMenuContent>
           </DropdownMenu>
-
-          <Button variant="outline" size="sm">
-            <IconPlus />
-            <span className="hidden lg:inline">Add Section</span>
-          </Button>
         </div>
       </div>
       <TabsContent

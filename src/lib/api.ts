@@ -56,7 +56,7 @@ export const registerUser = async (data: {
   }
 };
 
-// Login API (Step 1)
+// Login
 export const login = async (email: string, password: string) => {
   try {
     const res = await api.post('/auth/login', { email, password });
@@ -66,7 +66,7 @@ export const login = async (email: string, password: string) => {
   }
 };
 
-// Verify OTP (Step 2)
+// Verify OTP
 export const verifyOTP = async (otp: string) => {
   try {
     const res = await api.post('/auth/login/mfa', { totp: otp });
@@ -76,7 +76,7 @@ export const verifyOTP = async (otp: string) => {
   }
 };
 
-// Logout API
+// Logout
 export const logout = async () => {
   try {
     await api.post('/auth/logout');
@@ -113,6 +113,15 @@ export const getMedications = async () => {
   try {
     const res = await api.get('/medications');
     return res.data.data;
+  } catch (error) {
+    handleApiError(error);
+  }
+};
+
+export const deleteMedication = async (id: string) => {
+  try {
+    const res = await api.delete(`/medication/${id}`);
+    return res.data;
   } catch (error) {
     handleApiError(error);
   }

@@ -28,6 +28,14 @@ function DashboardOverview() {
     return false;
   });
 
+  if (isLoading) return <p className="text-center">Loading prescriptions...</p>;
+
+  if (isError) {
+    return (
+      <p className="text-center text-red-500">Failed to load prescriptions.</p>
+    );
+  }
+
   const transformedData = filteredData.map((p) => ({
     id: p._id,
     header: p.pharmacyName,
@@ -48,15 +56,15 @@ function DashboardOverview() {
           <div className="px-4 lg:px-6">
             <ChartAreaInteractive />
           </div>
-          {isLoading ? (
-            <p className="text-center">Loading prescriptions...</p>
-          ) : isError ? (
-            <p className="text-center text-red-500">
-              Failed to load prescriptions.
-            </p>
-          ) : (
-            <DataTable data={transformedData} columns={prescriptionColumns} />
-          )}
+          <DataTable
+            data={transformedData}
+            columns={prescriptionColumns}
+            filterColumn="reviewer"
+            filterPlaceholder="Search prescriptions by patient"
+            editUrl={(id) => `/dashboard/prescriptions/${id}/edit`}
+            onDelete={(id) => handleDelete(id)}
+            userRole={user?.role}
+          />
         </div>
       </div>
     </div>
