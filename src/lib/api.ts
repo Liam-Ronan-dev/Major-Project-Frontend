@@ -118,6 +118,15 @@ export const getMedications = async () => {
   }
 };
 
+export const createMedication = async (data: any) => {
+  try {
+    const res = await api.post('/medications', data);
+    return res.data;
+  } catch (error) {
+    handleApiError(error);
+  }
+};
+
 export const deleteMedication = async (id: string) => {
   try {
     const res = await api.delete(`/medication/${id}`);

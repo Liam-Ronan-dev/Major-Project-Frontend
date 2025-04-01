@@ -61,7 +61,7 @@ function AllMedications() {
           className="w-full sm:w-auto font-semibold mb-4 sm:mb-4 sm:mr-5 px-5"
           size="sm"
         >
-          <Link to="/dashboard/appointments/create">Add Medication</Link>
+          <Link to="/dashboard/medications/create">Add Medication</Link>
         </Button>
       </div>
       <DataTable
