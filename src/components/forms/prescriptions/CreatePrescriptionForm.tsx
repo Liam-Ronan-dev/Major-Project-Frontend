@@ -3,7 +3,6 @@
 import { useForm, useFieldArray } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useNavigate } from '@tanstack/react-router';
-import { useMutation } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { PrescriptionItem } from './prescriptionItem';
 import {
@@ -16,9 +15,11 @@ import { useMedications } from '@/hooks/useMedications';
 import { usePharmacists } from '@/hooks/usePharmacists';
 import { GeneralInfoFields } from '../prescriptions/PrescriptionFields';
 import { Button } from '@/components/ui/button';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 export function CreatePrescriptionForm() {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   const {
     register,
@@ -59,10 +60,11 @@ export function CreatePrescriptionForm() {
   const { data: medications = [] } = useMedications();
   const { data: pharmacists = [] } = usePharmacists();
 
-  const prescriptionMutation = useMutation({
+  const createMutation = useMutation({
     mutationFn: createPrescription,
     onSuccess: () => {
       toast.success('Prescription created successfully');
+      queryClient.invalidateQueries({ queryKey: ['prescriptions'] });
       navigate({ to: '/dashboard/prescriptions' });
     },
     onError: () => {
@@ -71,7 +73,7 @@ export function CreatePrescriptionForm() {
   });
 
   const onSubmit = (data: PrescriptionFormData) => {
-    prescriptionMutation.mutate(data);
+    createMutation.mutate(data);
   };
 
   return (
@@ -108,11 +110,9 @@ export function CreatePrescriptionForm() {
       <Button
         type="submit"
         className="w-full lg:w-fit"
-        disabled={prescriptionMutation.isPending}
+        disabled={createMutation.isPending}
       >
-        {prescriptionMutation.isPending
-          ? 'Submitting...'
-          : 'Submit Prescription'}
+        {createMutation.isPending ? 'Submitting...' : 'Submit Prescription'}
       </Button>
     </form>
   );

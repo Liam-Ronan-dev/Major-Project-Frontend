@@ -157,7 +157,7 @@ export function DataTable<TData extends { id: string | number }>({
   resourceType,
 }: DataTableProps<TData>) {
   const navigate = useNavigate();
-  const [data, setData] = React.useState(() => initialData);
+  const data = React.useMemo(() => initialData, [initialData]);
   const [rowSelection, setRowSelection] = React.useState({});
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({ select: true });

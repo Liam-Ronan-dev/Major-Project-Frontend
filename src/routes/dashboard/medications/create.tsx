@@ -1,5 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { CreateMedicationForm } from '@/components/forms/medications/CreateMedicationForm';
 
 export const Route = createFileRoute('/dashboard/medications/create')({
   component: CreateMedication,
@@ -15,7 +16,7 @@ function CreateMedication() {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <CreateAppointmentForm />
+          <CreateMedicationForm />
         </CardContent>
       </Card>
     </div>

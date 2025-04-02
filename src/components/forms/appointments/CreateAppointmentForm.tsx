@@ -13,8 +13,9 @@ import {
   SelectContent,
   SelectItem,
 } from '@/components/ui/select';
-import { useMutation, useQuery } from '@tanstack/react-query';
-import { createAppointment, getPatients } from '@/lib/api';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { createAppointment } from '@/lib/api';
+import { usePatients } from '@/hooks/usePatients';
 import { toast } from 'sonner';
 import {
   AppointmentFormData,
@@ -23,6 +24,7 @@ import {
 
 export function CreateAppointmentForm() {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const {
     register,
     control,
@@ -35,15 +37,13 @@ export function CreateAppointmentForm() {
     },
   });
 
-  const { data: patients = [] } = useQuery({
-    queryKey: ['patients'],
-    queryFn: getPatients,
-  });
+  const { data: patients } = usePatients();
 
-  const mutation = useMutation({
+  const createMutation = useMutation({
     mutationFn: createAppointment,
     onSuccess: () => {
       toast.success('Appointment created!');
+      queryClient.invalidateQueries({ queryKey: ['appointments'] });
       navigate({ to: '/dashboard/appointments' });
     },
     onError: () => {
@@ -52,13 +52,11 @@ export function CreateAppointmentForm() {
   });
 
   const onSubmit = (data: AppointmentFormData) => {
-    mutation.mutate(data);
+    createMutation.mutate(data);
   };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 max-w-xl">
-      {/* Patient + Status side by side */}
-      {/* Patient + Status side by side */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {/* Patient */}
         <div className="w-full">
@@ -137,9 +135,9 @@ export function CreateAppointmentForm() {
       <Button
         className="font-semibold cursor-pointer"
         type="submit"
-        disabled={mutation.isPending}
+        disabled={createMutation.isPending}
       >
-        {mutation.isPending ? 'Submitting...' : 'Create Appointment'}
+        {createMutation.isPending ? 'Submitting...' : 'Create Appointment'}
       </Button>
     </form>
   );

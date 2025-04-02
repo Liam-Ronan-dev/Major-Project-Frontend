@@ -4,7 +4,7 @@ import React from 'react';
 import { useForm, useFieldArray } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useNavigate } from '@tanstack/react-router';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 
 import { updatePrescription } from '@/lib/api';
@@ -28,6 +28,7 @@ type Props = {
 
 export function EditPrescriptionForm({ defaultValues, prescriptionId }: Props) {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   const {
     register,
@@ -55,11 +56,12 @@ export function EditPrescriptionForm({ defaultValues, prescriptionId }: Props) {
   const { data: medications = [] } = useMedications();
   const { data: pharmacists = [] } = usePharmacists();
 
-  const mutation = useMutation({
+  const editMutation = useMutation({
     mutationFn: (formData: PrescriptionFormData) =>
       updatePrescription(prescriptionId, formData),
     onSuccess: () => {
       toast.success('Prescription updated successfully');
+      queryClient.invalidateQueries({ queryKey: ['prescriptions'] });
       navigate({ to: '/dashboard/prescriptions' });
     },
     onError: () => {
@@ -68,7 +70,7 @@ export function EditPrescriptionForm({ defaultValues, prescriptionId }: Props) {
   });
 
   const onSubmit = (data: PrescriptionFormData) => {
-    mutation.mutate(data);
+    editMutation.mutate(data);
   };
 
   return (
@@ -104,10 +106,10 @@ export function EditPrescriptionForm({ defaultValues, prescriptionId }: Props) {
 
       <Button
         type="submit"
-        disabled={mutation.isPending}
+        disabled={editMutation.isPending}
         className="w-full sm:w-auto font-semibold"
       >
-        {mutation.isPending ? 'Updating...' : 'Update Prescription'}
+        {editMutation.isPending ? 'Updating...' : 'Update Prescription'}
       </Button>
     </form>
   );

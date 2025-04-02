@@ -2,7 +2,7 @@
 
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
 import { useEffect } from 'react';
 import { toast } from 'sonner';
@@ -42,11 +42,13 @@ type Props = {
 
 export function EditPatientForm({ patient }: Props) {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
-  const mutation = useMutation({
+  const updateMutation = useMutation({
     mutationFn: (data: PatientFormData) => updatePatient(patient._id, data),
     onSuccess: () => {
       toast.success('Patient updated!');
+      queryClient.invalidateQueries({ queryKey: ['patients'] });
       navigate({ to: '/dashboard/patients' });
     },
     onError: () => {
@@ -80,7 +82,7 @@ export function EditPatientForm({ patient }: Props) {
   }, [patient, reset]);
 
   const onSubmit = (data: PatientFormData) => {
-    mutation.mutate(data);
+    updateMutation.mutate(data);
   };
 
   return (
@@ -184,9 +186,9 @@ export function EditPatientForm({ patient }: Props) {
       <Button
         type="submit"
         className="font-semibold cursor-pointer"
-        disabled={mutation.isPending}
+        disabled={updateMutation.isPending}
       >
-        {mutation.isPending ? 'Updating...' : 'Update Patient'}
+        {updateMutation.isPending ? 'Updating...' : 'Update Patient'}
       </Button>
     </form>
   );

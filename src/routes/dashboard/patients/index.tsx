@@ -8,6 +8,7 @@ import { patientColumns } from '@/columns/patient';
 import { Button } from '@/components/ui/button';
 import { deletePatient } from '@/lib/api';
 import { toast } from 'sonner';
+import { useQueryClient, useMutation } from '@tanstack/react-query';
 
 export const Route = createFileRoute('/dashboard/patients/')({
   component: RouteComponent,
@@ -15,9 +16,23 @@ export const Route = createFileRoute('/dashboard/patients/')({
 
 function RouteComponent() {
   const { user } = useContext(AuthContext);
-  const { data, isLoading, isError } = usePatients();
+  const queryClient = useQueryClient();
+  const { data: patients, isLoading, isError } = usePatients();
 
-  const patients = data || [];
+  const deleteMutation = useMutation({
+    mutationFn: deletePatient,
+    onSuccess: () => {
+      toast.success('Patient deleted successfully');
+      queryClient.invalidateQueries({ queryKey: ['patients'] });
+    },
+    onError: () => toast.error('Failed to delete Patient'),
+  });
+
+  if (isLoading) return <p className="text-center">Loading patients...</p>;
+
+  if (isError) {
+    return <p className="text-center text-red-500">Failed to load patients.</p>;
+  }
 
   const filtered =
     user?.role === 'doctor'
@@ -34,20 +49,8 @@ function RouteComponent() {
     reviewer: patient.phoneNumber,
   }));
 
-  if (isLoading) return <p className="text-center">Loading patients...</p>;
-
-  if (isError) {
-    return <p className="text-center text-red-500">Failed to load patients.</p>;
-  }
-
-  const handleDelete = async (id: string) => {
-    try {
-      await deletePatient(id);
-      toast.success('Patient deleted successfully');
-    } catch (err) {
-      toast.error('Failed to delete patient');
-      console.error(err.message);
-    }
+  const handleDelete = (id: string) => {
+    deleteMutation.mutate(id);
   };
 
   return (

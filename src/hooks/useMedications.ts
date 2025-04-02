@@ -1,14 +1,17 @@
 import { useQuery } from '@tanstack/react-query';
-import { getMedications } from '@/lib/api';
-import { useContext } from 'react';
-import { AuthContext } from '@/contexts/AuthContext';
+import { getMedicationById, getMedications } from '@/lib/api';
 
 export const useMedications = () => {
-  const { user } = useContext(AuthContext);
-
   return useQuery({
     queryKey: ['medications'],
     queryFn: getMedications,
-    enabled: !!user,
+  });
+};
+
+export const useMedicationById = (id: string) => {
+  return useQuery({
+    queryKey: ['medication', id],
+    queryFn: () => getMedicationById(id),
+    enabled: !!id,
   });
 };

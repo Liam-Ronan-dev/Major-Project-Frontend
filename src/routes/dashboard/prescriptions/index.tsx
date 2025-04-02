@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { extractNameFromEmail } from '@/helpers/ExtractEmail';
 import { deletePrescription } from '@/lib/api';
 import { toast } from 'sonner';
+import { useQueryClient, useMutation } from '@tanstack/react-query';
 
 export const Route = createFileRoute('/dashboard/prescriptions/')({
   component: PrescriptionsPage,
@@ -15,9 +16,25 @@ export const Route = createFileRoute('/dashboard/prescriptions/')({
 
 function PrescriptionsPage() {
   const { user } = useContext(AuthContext);
-  const { data, isLoading, isError } = usePrescriptions();
+  const queryClient = useQueryClient();
+  const { data: prescriptions, isLoading, isError } = usePrescriptions();
 
-  const prescriptions = data || [];
+  const deleteMutation = useMutation({
+    mutationFn: deletePrescription,
+    onSuccess: () => {
+      toast.success('Prescription deleted successfully');
+      queryClient.invalidateQueries({ queryKey: ['prescriptions'] });
+    },
+    onError: () => toast.error('Failed to delete Prescription'),
+  });
+
+  if (isLoading) return <p className="text-center">Loading prescriptions...</p>;
+
+  if (isError) {
+    return (
+      <p className="text-center text-red-500">Failed to load prescriptions.</p>
+    );
+  }
 
   const filteredData = prescriptions.filter((prescription) => {
     const doctorId = prescription.doctorId?._id;
@@ -41,22 +58,10 @@ function PrescriptionsPage() {
       : 'Unknown Patient',
   }));
 
-  if (isLoading) return <p className="text-center">Loading prescriptions...</p>;
-
-  if (isError) {
-    return (
-      <p className="text-center text-red-500">Failed to load prescriptions.</p>
-    );
-  }
-  const handleDelete = async (id: string) => {
-    try {
-      await deletePrescription(id);
-      toast.success('Prescription deleted successfully');
-    } catch (err) {
-      toast.error('Failed to delete Prescription');
-      console.error(err.message);
-    }
+  const handleDelete = (id: string) => {
+    deleteMutation.mutate(id);
   };
+
   return (
     <div className="p-4 lg:p-6">
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between sm:gap-0 mb-2">

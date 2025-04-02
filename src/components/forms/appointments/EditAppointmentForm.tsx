@@ -2,7 +2,7 @@
 
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
 import { toast } from 'sonner';
 
@@ -42,13 +42,15 @@ type Props = {
 
 export function EditAppointmentForm({ appointment }: Props) {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const { data: patients = [] } = usePatients();
 
-  const mutation = useMutation({
+  const updateMutation = useMutation({
     mutationFn: (formData: AppointmentFormData) =>
       updateAppointment(appointment._id, formData),
     onSuccess: () => {
       toast.success('Appointment updated!');
+      queryClient.invalidateQueries({ queryKey: ['appointments'] });
       navigate({ to: '/dashboard/appointments' });
     },
     onError: () => {
@@ -79,7 +81,7 @@ export function EditAppointmentForm({ appointment }: Props) {
   }, [appointment, reset]);
 
   const onSubmit = (data: AppointmentFormData) => {
-    mutation.mutate(data);
+    updateMutation.mutate(data);
   };
 
   return (
@@ -157,9 +159,9 @@ export function EditAppointmentForm({ appointment }: Props) {
       <Button
         type="submit"
         className="font-semibold cursor-pointer"
-        disabled={mutation.isPending}
+        disabled={updateMutation.isPending}
       >
-        {mutation.isPending ? 'Updating...' : 'Update Appointment'}
+        {updateMutation.isPending ? 'Updating...' : 'Update Appointment'}
       </Button>
     </form>
   );

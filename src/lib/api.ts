@@ -120,8 +120,25 @@ export const getMedications = async () => {
 
 export const createMedication = async (data: any) => {
   try {
-    const res = await api.post('/medications', data);
-    return res.data;
+    return await api.post('/medications', data);
+  } catch (error) {
+    handleApiError(error);
+  }
+};
+
+export const updateMedication = async (id: string, data: any) => {
+  try {
+    const res = await api.put(`/medication/${id}`, data);
+    return res.data.data;
+  } catch (error) {
+    handleApiError(error);
+  }
+};
+
+export const getMedicationById = async (id: string) => {
+  try {
+    const res = await api.get(`/medication/${id}`);
+    return res.data.data;
   } catch (error) {
     handleApiError(error);
   }

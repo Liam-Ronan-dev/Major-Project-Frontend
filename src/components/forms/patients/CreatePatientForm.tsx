@@ -5,13 +5,14 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { createPatient } from '@/lib/api';
 import { PatientFormData, patientSchema } from '@/validations/patientSchema';
 import { useNavigate } from '@tanstack/react-router';
 
 export function CreatePatientForm() {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const {
     register,
     handleSubmit,
@@ -29,10 +30,11 @@ export function CreatePatientForm() {
     name: 'medicalHistory',
   });
 
-  const mutation = useMutation({
+  const createMutation = useMutation({
     mutationFn: createPatient,
     onSuccess: () => {
       toast.success('Patient created');
+      queryClient.invalidateQueries({ queryKey: ['patients'] });
       navigate({ to: '/dashboard/patients' });
     },
     onError: () => {
@@ -41,7 +43,7 @@ export function CreatePatientForm() {
   });
 
   const onSubmit = (data: PatientFormData) => {
-    mutation.mutate(data);
+    createMutation.mutate(data);
   };
 
   return (
@@ -188,9 +190,9 @@ export function CreatePatientForm() {
       <Button
         type="submit"
         className="cursor-pointer font-semibold"
-        disabled={mutation.isPending}
+        disabled={createMutation.isPending}
       >
-        {mutation.isPending ? 'Submitting...' : 'Create Patient'}
+        {createMutation.isPending ? 'Submitting...' : 'Create Patient'}
       </Button>
     </form>
   );

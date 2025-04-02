@@ -7,6 +7,7 @@ import { AuthContext } from '@/contexts/AuthContext';
 import { useMedications } from '@/hooks/useMedications';
 import { deleteMedication } from '@/lib/api';
 import { medicationColumns, MedicationRow } from '@/columns/medication';
+import { useQueryClient, useMutation } from '@tanstack/react-query';
 
 export const Route = createFileRoute('/dashboard/medications/')({
   component: AllMedications,
@@ -14,14 +15,34 @@ export const Route = createFileRoute('/dashboard/medications/')({
 
 function AllMedications() {
   const { user } = useContext(AuthContext);
-  const { data, isLoading, isError } = useMedications();
 
-  const medications = data || [];
+  // Access the client
+  const queryClient = useQueryClient();
 
-  const filtered = medications.filter((medication) => {
-    return medication.pharmacistId?._id === user?._id;
+  // Queries
+  const { data: medications, isLoading, isError } = useMedications();
+
+  // Mutations
+  const deleteMutation = useMutation({
+    mutationFn: deleteMedication,
+    onSuccess: () => {
+      toast.success('Medication deleted successfully');
+      queryClient.invalidateQueries({ queryKey: ['medications'] });
+    },
+    onError: () => toast.error('Failed to delete Medication'),
   });
 
+  if (isLoading) return <p className="text-center">Loading medications...</p>;
+
+  if (isError) {
+    return (
+      <p className="text-center text-red-500">Failed to load medications.</p>
+    );
+  }
+
+  const filtered = medications.filter(
+    (medication) => medication.pharmacistId?._id === user?._id
+  );
   const transformedData: MedicationRow[] = filtered.map((medication) => ({
     id: medication._id,
     header: medication.name,
@@ -32,22 +53,8 @@ function AllMedications() {
     reviewer: `€ ${medication.price}`,
   }));
 
-  if (isLoading) return <p className="text-center">Loading medications...</p>;
-
-  if (isError) {
-    return (
-      <p className="text-center text-red-500">Failed to load medications.</p>
-    );
-  }
-
-  const handleDelete = async (id: string) => {
-    try {
-      await deleteMedication(id);
-      toast.success('Medication deleted successfully');
-    } catch (err) {
-      toast.error('Failed to delete Medication');
-      console.error(err.message);
-    }
+  const handleDelete = (id: string) => {
+    deleteMutation.mutate(id);
   };
 
   return (

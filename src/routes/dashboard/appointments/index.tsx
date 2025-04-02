@@ -8,6 +8,7 @@ import { AppointmentRow } from '@/columns/appointment';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import { deleteAppointment } from '@/lib/api';
+import { useQueryClient, useMutation } from '@tanstack/react-query';
 
 export const Route = createFileRoute('/dashboard/appointments/')({
   component: AllAppointments,
@@ -15,9 +16,25 @@ export const Route = createFileRoute('/dashboard/appointments/')({
 
 function AllAppointments() {
   const { user } = useContext(AuthContext);
-  const { data, isLoading, isError } = useAppointments();
+  const queryClient = useQueryClient();
+  const { data: appointments, isLoading, isError } = useAppointments();
 
-  const appointments = data || [];
+  const deleteMutation = useMutation({
+    mutationFn: deleteAppointment,
+    onSuccess: () => {
+      toast.success('Appointment deleted successfully');
+      queryClient.invalidateQueries({ queryKey: ['appointments'] });
+    },
+    onError: () => toast.error('Failed to delete Appointment'),
+  });
+
+  if (isLoading) return <p className="text-center">Loading appointments...</p>;
+
+  if (isError) {
+    return (
+      <p className="text-center text-red-500">Failed to load appointments.</p>
+    );
+  }
 
   const filtered = appointments.filter((appt) => {
     return appt.doctorId?._id === user?._id;
@@ -34,22 +51,8 @@ function AllAppointments() {
     reviewer: appt.patientId?.phoneNumber || 'N/A',
   }));
 
-  if (isLoading) return <p className="text-center">Loading appointments...</p>;
-
-  if (isError) {
-    return (
-      <p className="text-center text-red-500">Failed to load appointments.</p>
-    );
-  }
-
-  const handleDelete = async (id: string) => {
-    try {
-      await deleteAppointment(id);
-      toast.success('Appointment deleted successfully');
-    } catch (err) {
-      toast.error('Failed to delete Appointment');
-      console.error(err.message);
-    }
+  const handleDelete = (id: string) => {
+    deleteMutation.mutate(id);
   };
 
   return (

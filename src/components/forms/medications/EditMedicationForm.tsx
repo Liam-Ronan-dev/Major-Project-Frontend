@@ -1,48 +1,79 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { createMedication } from '@/lib/api';
-import { toast } from 'sonner';
+'use client';
+
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
-import {
-  MedicationFormData,
-  medicationSchema,
-} from '@/validations/medicationSchema';
+import { useEffect } from 'react';
+import { toast } from 'sonner';
 
-export function CreateMedicationForm() {
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+
+import {
+  medicationSchema,
+  MedicationFormData,
+} from '@/validations/medicationSchema';
+import { updateMedication } from '@/lib/api';
+
+type Props = {
+  medication: {
+    _id: string;
+    name: string;
+    form: string;
+    stock: number;
+    supplier: string;
+    price: number;
+  };
+};
+
+export function EditMedicationForm({ medication }: Props) {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+
+  const updateMutation = useMutation({
+    mutationFn: (data: MedicationFormData) =>
+      updateMedication(medication._id, data),
+    onSuccess: () => {
+      toast.success('Medication updated!');
+      queryClient.invalidateQueries({ queryKey: ['medications'] });
+      navigate({ to: '/dashboard/medications' });
+    },
+    onError: () => {
+      toast.error('Failed to update medication.');
+    },
+  });
+
   const {
     register,
     handleSubmit,
     formState: { errors },
+    reset,
   } = useForm<MedicationFormData>({
     resolver: zodResolver(medicationSchema),
   });
 
-  const createMutation = useMutation({
-    mutationFn: createMedication,
-    onSuccess: () => {
-      toast.success('Medication created!');
-      queryClient.invalidateQueries({ queryKey: ['medications'] });
-      navigate({ to: '/dashboard/Medications' });
-    },
-    onError: () => {
-      toast.error('Failed to create Medication.');
-    },
-  });
+  useEffect(() => {
+    if (medication) {
+      reset({
+        name: medication.name,
+        form: medication.form,
+        stock: medication.stock,
+        supplier: medication.supplier,
+        price: medication.price,
+      });
+    }
+  }, [medication, reset]);
 
   const onSubmit = (data: MedicationFormData) => {
-    createMutation.mutate(data);
+    updateMutation.mutate(data);
   };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 max-w-xl">
       <div>
         <label className="block mb-1 font-medium">Name</label>
-        <Input placeholder="e.g. Paracetamol" {...register('name')} />
+        <Input {...register('name')} />
         {errors.name && (
           <p className="text-sm text-red-500">{errors.name.message}</p>
         )}
@@ -50,10 +81,7 @@ export function CreateMedicationForm() {
 
       <div>
         <label className="block mb-1 font-medium">Form</label>
-        <Input
-          placeholder="e.g. Tablet, Capsule, Syrup"
-          {...register('form')}
-        />
+        <Input {...register('form')} />
         {errors.form && (
           <p className="text-sm text-red-500">{errors.form.message}</p>
         )}
@@ -61,7 +89,7 @@ export function CreateMedicationForm() {
 
       <div>
         <label className="block mb-1 font-medium">Stock</label>
-        <Input type="number" placeholder="e.g. 100" {...register('stock')} />
+        <Input type="number" {...register('stock')} />
         {errors.stock && (
           <p className="text-sm text-red-500">{errors.stock.message}</p>
         )}
@@ -69,7 +97,7 @@ export function CreateMedicationForm() {
 
       <div>
         <label className="block mb-1 font-medium">Supplier</label>
-        <Input placeholder="e.g. MedsInc" {...register('supplier')} />
+        <Input {...register('supplier')} />
         {errors.supplier && (
           <p className="text-sm text-red-500">{errors.supplier.message}</p>
         )}
@@ -77,23 +105,18 @@ export function CreateMedicationForm() {
 
       <div>
         <label className="block mb-1 font-medium">Price (€)</label>
-        <Input
-          type="number"
-          step="0.01"
-          placeholder="e.g. 6.50"
-          {...register('price')}
-        />
+        <Input type="number" step="0.01" {...register('price')} />
         {errors.price && (
           <p className="text-sm text-red-500">{errors.price.message}</p>
         )}
       </div>
 
       <Button
-        className="font-semibold"
         type="submit"
-        disabled={createMutation.isPending}
+        className="font-semibold"
+        disabled={updateMutation.isPending}
       >
-        {createMutation.isPending ? 'Submitting...' : 'Create Medication'}
+        {updateMutation.isPending ? 'Updating...' : 'Update Medication'}
       </Button>
     </form>
   );
