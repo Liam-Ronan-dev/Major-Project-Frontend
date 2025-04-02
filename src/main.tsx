@@ -6,6 +6,7 @@ import { AuthProvider } from '@/contexts/AuthContext';
 import './index.css';
 import { queryClient } from '@/lib/queryClient';
 import { QueryClientProvider } from '@tanstack/react-query';
+import { SocketProvider } from './contexts/SocketProvider';
 
 // Import the generated route tree
 import { routeTree } from './routeTree.gen';
@@ -30,7 +31,9 @@ if (!rootElement.innerHTML) {
       <ThemeProvider>
         <QueryClientProvider client={queryClient}>
           <AuthProvider>
-            <RouterProvider router={router} />
+            <SocketProvider>
+              <RouterProvider router={router} />
+            </SocketProvider>
           </AuthProvider>
         </QueryClientProvider>
       </ThemeProvider>

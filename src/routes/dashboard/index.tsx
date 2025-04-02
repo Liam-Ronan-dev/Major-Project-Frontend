@@ -6,6 +6,9 @@ import { useContext } from 'react';
 import { AuthContext } from '@/contexts/AuthContext';
 import { prescriptionColumns } from '@/columns/prescription';
 import { usePrescriptions } from '@/hooks/usePrescription';
+import { toast } from 'sonner';
+import { useQueryClient, useMutation } from '@tanstack/react-query';
+import { deletePrescription } from '@/lib/api';
 
 export const Route = createFileRoute('/dashboard/')({
   component: DashboardOverview,
@@ -13,10 +16,25 @@ export const Route = createFileRoute('/dashboard/')({
 
 function DashboardOverview() {
   const { user } = useContext(AuthContext);
-  console.log(user);
-  const { data, isLoading, isError } = usePrescriptions();
+  const queryClient = useQueryClient();
+  const { data: prescriptions, isLoading, isError } = usePrescriptions();
 
-  const prescriptions = data || [];
+  const deleteMutation = useMutation({
+    mutationFn: deletePrescription,
+    onSuccess: () => {
+      toast.success('Prescription deleted successfully');
+      queryClient.invalidateQueries({ queryKey: ['prescriptions'] });
+    },
+    onError: () => toast.error('Failed to delete Prescription'),
+  });
+
+  if (isLoading) return <p className="text-center">Loading prescriptions...</p>;
+
+  if (isError) {
+    return (
+      <p className="text-center text-red-500">Failed to load prescriptions.</p>
+    );
+  }
 
   const filteredData = prescriptions.filter((prescription) => {
     const doctorId = prescription.doctorId?._id;
@@ -27,14 +45,6 @@ function DashboardOverview() {
 
     return false;
   });
-
-  if (isLoading) return <p className="text-center">Loading prescriptions...</p>;
-
-  if (isError) {
-    return (
-      <p className="text-center text-red-500">Failed to load prescriptions.</p>
-    );
-  }
 
   const transformedData = filteredData.map((p) => ({
     id: p._id,
@@ -47,6 +57,10 @@ function DashboardOverview() {
       ? `${p.patientId.firstName} ${p.patientId.lastName}`
       : 'Unknown Patient',
   }));
+
+  const handleDelete = (id: string) => {
+    deleteMutation.mutate(id);
+  };
 
   return (
     <div className="flex flex-1 flex-col">

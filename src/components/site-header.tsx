@@ -8,6 +8,7 @@ import { useNavigate } from '@tanstack/react-router';
 import { useContext } from 'react';
 import { IconLogout } from '@tabler/icons-react';
 import { extractNameFromEmail } from '@/helpers/ExtractEmail';
+import { NotificationBell } from './NotificationBell';
 
 export function SiteHeader() {
   const { user } = useContext(AuthContext);
@@ -37,6 +38,7 @@ export function SiteHeader() {
           </h1>
         </div>
         <div className="ml-auto flex items-center gap-5 p-5">
+          <NotificationBell />
           <ModeToggle />
           <Button
             variant="outline"
