@@ -48,7 +48,7 @@ export function CreatePatientForm() {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 max-w-2xl">
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <div>
           <Input placeholder="First Name" {...register('firstName')} />
           {errors.firstName && (
@@ -62,7 +62,7 @@ export function CreatePatientForm() {
           )}
         </div>
         <div>
-          <Input type="date" {...register('dateOfBirth')} />
+          <Input type="date" {...register('dateOfBirth')} className="" />
           {errors.dateOfBirth && (
             <p className="text-sm text-red-500">{errors.dateOfBirth.message}</p>
           )}

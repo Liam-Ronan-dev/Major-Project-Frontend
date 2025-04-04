@@ -185,10 +185,10 @@ export function EditPatientForm({ patient }: Props) {
 
       <Button
         type="submit"
-        className="font-semibold cursor-pointer"
+        className="font-semibold cursor-pointer px-5"
         disabled={updateMutation.isPending}
       >
-        {updateMutation.isPending ? 'Updating...' : 'Update Patient'}
+        {updateMutation.isPending ? 'Updating...' : 'Update'}
       </Button>
     </form>
   );

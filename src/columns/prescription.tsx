@@ -1,15 +1,14 @@
 import { ColumnDef } from '@tanstack/react-table';
 import { Link } from '@tanstack/react-router';
 import { Checkbox } from '@/components/ui/checkbox';
+import { ArrowUpDown } from 'lucide-react';
 
 export type PrescriptionRow = {
   id: string;
-  header: string;
-  type: string;
+  pharmacy: string;
   status: string;
-  target: string;
-  limit: string;
-  reviewer: string;
+  date: string;
+  patient: string;
 };
 
 export const prescriptionColumns: ColumnDef<PrescriptionRow>[] = [
@@ -35,12 +34,10 @@ export const prescriptionColumns: ColumnDef<PrescriptionRow>[] = [
     enableSorting: false,
     enableHiding: false,
   },
-  { accessorKey: 'header', header: 'Pharmacy' },
-  { accessorKey: 'type', header: 'Pharmacist' },
+  { accessorKey: 'pharmacy', header: 'Pharmacy' },
   { accessorKey: 'status', header: 'Status' },
-  { accessorKey: 'target', header: 'Repeats' },
-  { accessorKey: 'limit', header: 'Date Prescribed' },
-  { accessorKey: 'reviewer', header: 'Patient' },
+  { accessorKey: 'date', header: 'Date Prescribed' },
+  { accessorKey: 'patient', header: 'Patient' },
   {
     id: 'details',
     header: 'Details',
@@ -49,7 +46,7 @@ export const prescriptionColumns: ColumnDef<PrescriptionRow>[] = [
       return (
         <Link
           to={`/dashboard/prescriptions/${prescription.id}`}
-          className="underline"
+          className="underline font-semibold"
         >
           View
         </Link>

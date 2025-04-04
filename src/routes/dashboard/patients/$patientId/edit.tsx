@@ -25,7 +25,7 @@ function EditPatient() {
   if (isError || !patient) {
     return (
       <div className="p-6 text-red-500 text-center">
-        Failed to load Appointment.
+        Failed to load Patient.
       </div>
     );
   }
@@ -35,7 +35,7 @@ function EditPatient() {
       <Card className="w-full max-w-xl shadow-lg">
         <CardHeader>
           <CardTitle className="text-xl text-center">
-            Edit Appointment
+            Edit Patient Details
           </CardTitle>
         </CardHeader>
         <CardContent>

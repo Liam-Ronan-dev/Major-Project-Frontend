@@ -36,7 +36,10 @@ function RouteComponent() {
 
   const filtered =
     user?.role === 'doctor'
-      ? patients.filter((patient) => patient.doctorId?._id === user._id)
+      ? patients.filter(
+          (patient) =>
+            patient.doctorId === user._id || patient.doctorId?._id === user._id
+        )
       : patients;
 
   const transformedData: PatientRow[] = filtered.map((patient) => ({

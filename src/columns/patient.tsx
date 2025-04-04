@@ -35,7 +35,7 @@ export const patientColumns: ColumnDef<PatientRow>[] = [
     enableSorting: false,
     enableHiding: false,
   },
-  { accessorKey: 'header', header: 'Patient' },
+  { accessorKey: 'header', header: 'Name' },
   { accessorKey: 'type', header: 'DOB' },
   { accessorKey: 'status', header: 'Gender' },
   { accessorKey: 'target', header: 'Email' },
@@ -47,7 +47,10 @@ export const patientColumns: ColumnDef<PatientRow>[] = [
     cell: ({ row }) => {
       const patient = row.original;
       return (
-        <Link to={`/dashboard/patients/${patient.id}`} className="underline">
+        <Link
+          to={`/dashboard/patients/${patient.id}`}
+          className="underline font-semibold"
+        >
           View
         </Link>
       );

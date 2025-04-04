@@ -5,7 +5,7 @@ const BASE_API_URL =
   'https://health-service-api.click/api';
 
 // Configure Axios with credentials (cookies)
-const api = axios.create({
+export const api = axios.create({
   baseURL: BASE_API_URL,
   withCredentials: true, // Ensures cookies are sent
 });
@@ -118,36 +118,10 @@ export const getMedications = async () => {
   }
 };
 
-export const createMedication = async (data: any) => {
-  try {
-    return await api.post('/medications', data);
-  } catch (error) {
-    handleApiError(error);
-  }
-};
-
-export const updateMedication = async (id: string, data: any) => {
-  try {
-    const res = await api.put(`/medication/${id}`, data);
-    return res.data.data;
-  } catch (error) {
-    handleApiError(error);
-  }
-};
-
 export const getMedicationById = async (id: string) => {
   try {
     const res = await api.get(`/medication/${id}`);
     return res.data.data;
-  } catch (error) {
-    handleApiError(error);
-  }
-};
-
-export const deleteMedication = async (id: string) => {
-  try {
-    const res = await api.delete(`/medication/${id}`);
-    return res.data;
   } catch (error) {
     handleApiError(error);
   }
@@ -192,7 +166,11 @@ export const updatePrescription = async (id: string, data: any) => {
 
 export const updatePrescriptionStatus = async (
   id: string,
-  updates: { status?: string; notes?: string }
+  updates: {
+    status?: string;
+    notes?: string;
+    itemNotes?: { itemId: string; pharmacistNote: string }[];
+  }
 ) => {
   try {
     const res = await api.patch(`/prescription/${id}/status`, updates);

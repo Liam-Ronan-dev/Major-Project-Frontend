@@ -9,7 +9,7 @@ function CreatePrescription() {
   return (
     <div className="p-4 lg:p-6">
       <div className="flex justify-between">
-        <h1 className="text-2xl font-bold mb-4 ml-5">Add New Prescription</h1>
+        <h1 className="text-2xl font-bold mb-4">Add New Prescription</h1>
       </div>
       <CreatePrescriptionForm />
     </div>

@@ -89,7 +89,7 @@ function AppointmentDetailPage() {
           variant="destructive"
           className="w-full sm:w-auto font-semibold mb-4 sm:mb-4 sm:mr-5 cursor-pointer"
         >
-          Delete Prescription
+          Delete Appointment
         </Button>
         <Button
           onClick={() =>

@@ -1,21 +1,32 @@
 'use client';
 
-import { useForm, useFieldArray } from 'react-hook-form';
+import { useForm, useFieldArray, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useNavigate } from '@tanstack/react-router';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
-import { PrescriptionItem } from './prescriptionItem';
+
 import {
-  PrescriptionFormData,
   prescriptionSchema,
+  PrescriptionFormData,
 } from '@/validations/prescriptionSchema';
 import { createPrescription } from '@/lib/api';
 import { usePatients } from '@/hooks/usePatients';
-import { useMedications } from '@/hooks/useMedications';
 import { usePharmacists } from '@/hooks/usePharmacists';
-import { GeneralInfoFields } from '../prescriptions/PrescriptionFields';
+
 import { Button } from '@/components/ui/button';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from '@/components/ui/select';
+import { AsyncMedicationSelect } from '@/components/forms/AsyncMedicationSelect';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 export function CreatePrescriptionForm() {
   const navigate = useNavigate();
@@ -29,35 +40,27 @@ export function CreatePrescriptionForm() {
   } = useForm<PrescriptionFormData>({
     resolver: zodResolver(prescriptionSchema),
     defaultValues: {
-      pharmacyName: '',
-      generalInstructions: '',
-      repeats: 1,
+      patientId: '',
+      pharmacistId: '',
       notes: '',
       items: [
         {
-          medications: [''],
+          medicationId: '',
           specificInstructions: '',
-          dosages: [
-            {
-              medicationId: '',
-              amount: '',
-              frequency: '',
-              duration: '',
-              notes: '',
-            },
-          ],
+          dosage: '',
+          amount: '',
+          repeats: 1,
         },
       ],
     },
   });
 
-  const { fields: itemFields } = useFieldArray({
+  const { fields, append, remove } = useFieldArray({
     control,
     name: 'items',
   });
 
   const { data: patients = [] } = usePatients();
-  const { data: medications = [] } = useMedications();
   const { data: pharmacists = [] } = usePharmacists();
 
   const createMutation = useMutation({
@@ -68,7 +71,7 @@ export function CreatePrescriptionForm() {
       navigate({ to: '/dashboard/prescriptions' });
     },
     onError: () => {
-      toast.error('Error creating prescription');
+      toast.error('Failed to create prescription');
     },
   });
 
@@ -77,43 +80,187 @@ export function CreatePrescriptionForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-8">
-      <div className="flex flex-col lg:flex-row gap-8">
-        {/* General Info Section */}
-        <div className="w-full lg:w-1/2">
-          <GeneralInfoFields
-            register={register}
-            control={control}
-            errors={errors}
-            patients={patients}
-            pharmacists={pharmacists}
-          />
-        </div>
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-10">
+      <Card>
+        <CardContent className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Patient */}
+            <div>
+              <Label>Patient</Label>
+              <Controller
+                control={control}
+                name="patientId"
+                render={({ field }) => (
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select patient" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {patients.map((p) => (
+                        <SelectItem key={p._id} value={p._id}>
+                          {p.firstName} {p.lastName}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                )}
+              />
+              <FieldError message={errors.patientId?.message} />
+            </div>
 
-        {/* Prescription Items Section */}
-        <div className="w-full lg:w-1/2 space-y-6">
-          <h3 className="text-lg font-bold">Prescription Items</h3>
+            {/* Pharmacist */}
+            <div>
+              <Label>Pharmacist</Label>
+              <Controller
+                control={control}
+                name="pharmacistId"
+                render={({ field }) => (
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select pharmacist" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {pharmacists.map((p) => (
+                        <SelectItem key={p._id} value={p._id}>
+                          {p.email}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                )}
+              />
+              <FieldError message={errors.pharmacistId?.message} />
+            </div>
+          </div>
 
-          {itemFields.map((_, index) => (
-            <PrescriptionItem
-              key={index}
-              index={index}
-              control={control}
-              register={register}
-              errors={errors}
-              medications={medications}
+          {/* Notes */}
+          <div>
+            <Label>Prescription Notes</Label>
+            <Textarea
+              {...register('notes')}
+              placeholder="E.g. Take as prescribed"
             />
-          ))}
+            <FieldError message={errors.notes?.message} />
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Items */}
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <h3 className="text-lg font-bold">Prescription Items</h3>
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() =>
+              append({
+                medicationId: '',
+                specificInstructions: '',
+                dosage: '',
+                amount: '',
+                repeats: 1,
+              })
+            }
+          >
+            Add Item
+          </Button>
         </div>
+
+        {fields.map((field, index) => (
+          <Card key={field.id}>
+            <CardHeader className="flex flex-row items-center justify-between">
+              <CardTitle>Item {index + 1}</CardTitle>
+              {fields.length > 1 && (
+                <Button
+                  type="button"
+                  variant="destructive"
+                  size="sm"
+                  onClick={() => remove(index)}
+                >
+                  Remove
+                </Button>
+              )}
+            </CardHeader>
+
+            <CardContent className="space-y-6">
+              {/* Medication */}
+              <div>
+                <Label>Medication</Label>
+                <Controller
+                  control={control}
+                  name={`items.${index}.medicationId`}
+                  render={({ field }) => (
+                    <AsyncMedicationSelect field={field} />
+                  )}
+                />
+                <FieldError
+                  message={errors.items?.[index]?.medicationId?.message}
+                />
+              </div>
+
+              {/* Fields */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label>Specific Instructions</Label>
+                  <Input
+                    {...register(`items.${index}.specificInstructions`)}
+                    placeholder="e.g. Take after meals"
+                  />
+                  <FieldError
+                    message={
+                      errors.items?.[index]?.specificInstructions?.message
+                    }
+                  />
+                </div>
+
+                <div>
+                  <Label>Dosage</Label>
+                  <Input
+                    {...register(`items.${index}.dosage`)}
+                    placeholder="e.g. 100mg"
+                  />
+                  <FieldError
+                    message={errors.items?.[index]?.dosage?.message}
+                  />
+                </div>
+
+                <div>
+                  <Label>Amount</Label>
+                  <Input
+                    {...register(`items.${index}.amount`)}
+                    placeholder="e.g. 28x"
+                  />
+                  <FieldError
+                    message={errors.items?.[index]?.amount?.message}
+                  />
+                </div>
+
+                <div>
+                  <Label>Repeats</Label>
+                  <Input
+                    type="number"
+                    {...register(`items.${index}.repeats`, {
+                      valueAsNumber: true,
+                    })}
+                  />
+                  <FieldError
+                    message={errors.items?.[index]?.repeats?.message}
+                  />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
       </div>
 
-      <Button
-        type="submit"
-        className="w-full lg:w-fit"
-        disabled={createMutation.isPending}
-      >
-        {createMutation.isPending ? 'Submitting...' : 'Submit Prescription'}
-      </Button>
+      <div className="pt-4">
+        <Button type="submit" disabled={createMutation.isPending}>
+          {createMutation.isPending ? 'Submitting...' : 'Submit Prescription'}
+        </Button>
+      </div>
     </form>
   );
 }
+
+const FieldError = ({ message }: { message?: string }) =>
+  message ? <p className="text-sm text-red-500 mt-1">{message}</p> : null;

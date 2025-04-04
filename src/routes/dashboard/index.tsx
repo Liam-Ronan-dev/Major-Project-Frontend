@@ -48,12 +48,10 @@ function DashboardOverview() {
 
   const transformedData = filteredData.map((p) => ({
     id: p._id,
-    header: p.pharmacyName,
-    type: 'Prescription',
+    pharmacy: p.pharmacistId?.email || 'Unknown Pharmacy', // 👈 now goes under Pharmacy column
     status: p.status,
-    target: p.repeats.toString(),
-    limit: new Date(p.createdAt).toLocaleDateString(),
-    reviewer: p.patientId
+    date: new Date(p.createdAt).toLocaleDateString(),
+    patient: p.patientId
       ? `${p.patientId.firstName} ${p.patientId.lastName}`
       : 'Unknown Patient',
   }));
@@ -73,7 +71,7 @@ function DashboardOverview() {
           <DataTable
             data={transformedData}
             columns={prescriptionColumns}
-            filterColumn="reviewer"
+            filterColumn="patient"
             filterPlaceholder="Search prescriptions by patient"
             editUrl={(id) => `/dashboard/prescriptions/${id}/edit`}
             onDelete={(id) => handleDelete(id)}

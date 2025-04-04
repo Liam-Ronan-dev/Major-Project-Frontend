@@ -5,7 +5,6 @@ import { prescriptionColumns } from '@/columns/prescription';
 import { DataTable } from '@/components/data-table';
 import { usePrescriptions } from '@/hooks/usePrescription';
 import { Button } from '@/components/ui/button';
-import { extractNameFromEmail } from '@/helpers/ExtractEmail';
 import { deletePrescription } from '@/lib/api';
 import { toast } from 'sonner';
 import { useQueryClient, useMutation } from '@tanstack/react-query';
@@ -48,12 +47,10 @@ function PrescriptionsPage() {
 
   const transformedData = filteredData.map((p) => ({
     id: p._id,
-    header: p.pharmacyName,
-    type: extractNameFromEmail(p.pharmacistId.email),
+    pharmacy: p.pharmacistId?.email || 'Unknown Pharmacy',
     status: p.status,
-    target: p.repeats.toString(),
-    limit: new Date(p.createdAt).toLocaleDateString(),
-    reviewer: p.patientId
+    date: new Date(p.createdAt).toLocaleDateString(),
+    patient: p.patientId
       ? `${p.patientId.firstName} ${p.patientId.lastName}`
       : 'Unknown Patient',
   }));
@@ -81,7 +78,7 @@ function PrescriptionsPage() {
       <DataTable
         data={transformedData}
         columns={prescriptionColumns}
-        filterColumn="reviewer"
+        filterColumn="patient"
         filterPlaceholder="Search prescriptions by patient"
         editUrl={(id) => `/dashboard/prescriptions/${id}/edit`}
         onDelete={(id) => handleDelete(id)}

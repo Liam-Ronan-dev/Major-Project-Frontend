@@ -4,7 +4,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
 import { useContext } from 'react';
 import { AuthContext } from '@/contexts/AuthContext';
-import { useNavigate } from '@tanstack/react-router';
+import { useNavigate, Link } from '@tanstack/react-router';
 import { toast } from 'sonner';
 import { deletePatient } from '@/lib/api';
 import {
@@ -15,6 +15,7 @@ import {
   TableRow,
   TableCell,
 } from '@/components/ui/table';
+import { Mail, Phone, Calendar, User, MapPin, Contact } from 'lucide-react';
 
 export const Route = createFileRoute('/dashboard/patients/$patientId/')({
   component: PatientDetailPage,
@@ -75,51 +76,74 @@ function PatientDetailPage() {
       </h2>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 p-6">
         {/* General Info */}
-        <div className="rounded-lg border p-4 space-y-2">
-          <p>
-            <strong>Email:</strong> {email}
-          </p>
-          <p>
-            <strong>Phone:</strong> {phoneNumber}
-          </p>
-          <p>
-            <strong>DOB:</strong> {new Date(dateOfBirth).toLocaleDateString()}
-          </p>
-          <p>
-            <strong>Gender:</strong> {gender}
-          </p>
-          <p>
-            <strong>Registered:</strong>{' '}
-            {new Date(createdAt).toLocaleDateString()}
-          </p>
+        <div className="rounded-2xl border bg-muted/5 p-5 pb-5 shadow-md space-y-4">
+          <h3 className="font-semibold text-lg text-primary mb-5 flex items-center gap-2">
+            <User className="w-4 h-4 text-muted-foreground" />
+            General Info
+          </h3>
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <Mail className="w-4 h-4" />
+            <span className="text-primary">{email}</span>
+          </div>
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <Phone className="w-4 h-4" />
+            <span className="text-primary">{phoneNumber}</span>
+          </div>
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <Calendar className="w-4 h-4" />
+            <span className="text-primary">
+              {new Date(dateOfBirth).toLocaleDateString()}
+            </span>
+          </div>
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <User className="w-4 h-4" />
+            <span className="text-primary">{gender}</span>
+          </div>
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <Calendar className="w-4 h-4" />
+            <span className="text-primary">
+              Registered: {new Date(createdAt).toLocaleDateString()}
+            </span>
+          </div>
         </div>
 
         {/* Address */}
-        <div className="rounded-lg border p-4 space-y-2">
-          <h2 className="font-semibold text-lg mb-2">Address</h2>
-          <p>{address.street}</p>
-          <p>
+        <div className="rounded-2xl border bg-muted/5 p-5 shadow-md space-y-4">
+          <h3 className="font-semibold text-lg text-primary mb-2 flex items-center gap-2">
+            <MapPin className="w-4 h-4 text-muted-foreground" />
+            Address
+          </h3>
+          <p className="text-sm">{address.street}</p>
+          <p className="text-sm">
             {address.city}, {address.postalCode}
           </p>
-          <p>{address.country}</p>
+          <p className="text-sm">{address.country}</p>
         </div>
 
         {/* Emergency Contact */}
-        <div className="rounded-lg border p-4 space-y-2">
-          <h2 className="font-semibold text-lg mb-2">Emergency Contact</h2>
-          <p>
-            <strong>Name:</strong> {emergencyContact.name}
-          </p>
-          <p>
-            <strong>Relationship:</strong> {emergencyContact.relationship}
-          </p>
-          <p>
-            <strong>Phone:</strong> {emergencyContact.phoneNumber}
-          </p>
+        <div className="rounded-2xl border bg-muted/5 p-5 shadow-md space-y-4">
+          <h3 className="font-semibold text-lg text-primary mb-2 flex items-center gap-2">
+            <Contact className="w-4 h-4 text-muted-foreground" />
+            Emergency Contact
+          </h3>
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <User className="w-4 h-4" />
+            <span className="text-primary">{emergencyContact.name}</span>
+          </div>
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <User className="w-4 h-4" />
+            <span className="text-primary">
+              Relationship: {emergencyContact.relationship}
+            </span>
+          </div>
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <Phone className="w-4 h-4" />
+            <span className="text-primary">{emergencyContact.phoneNumber}</span>
+          </div>
         </div>
 
         {/* Medical History */}
-        <div className="rounded-lg border p-4 space-y-2 md:col-span-3">
+        <div className="rounded-lg border p-4 space-y-2 md:col-span-3 shadow-md">
           <h2 className="font-semibold text-lg mb-4">Medical History</h2>
 
           {medicalHistory?.length > 0 ? (
@@ -127,13 +151,13 @@ function PatientDetailPage() {
               <TableHeader>
                 <TableRow>
                   <TableHead>
-                    <strong>Condition</strong>
+                    <strong className="font-bold">Condition</strong>
                   </TableHead>
                   <TableHead>
-                    <strong>Diagnosed At</strong>
+                    <strong className="font-bold">Diagnosed At</strong>
                   </TableHead>
                   <TableHead>
-                    <strong>Notes</strong>
+                    <strong className="font-bold">Notes</strong>
                   </TableHead>
                 </TableRow>
               </TableHeader>
@@ -157,7 +181,7 @@ function PatientDetailPage() {
         </div>
 
         {/* Prescriptions */}
-        <div className="rounded-lg border p-4 space-y-2 md:col-span-3">
+        <div className="rounded-lg border p-4 space-y-2 md:col-span-3 shadow-md">
           <h2 className="font-semibold text-lg mb-4">Prescriptions</h2>
 
           {prescriptions?.length > 0 ? (
@@ -165,18 +189,35 @@ function PatientDetailPage() {
               <TableHeader>
                 <TableRow>
                   <TableHead>
-                    <strong>Pharmacy</strong>
+                    <strong className="font-bold">Pharmacy</strong>
                   </TableHead>
                   <TableHead>
-                    <strong>Pharmacist ID</strong>
+                    <strong className="font-bold">Status</strong>
+                  </TableHead>
+                  <TableHead>
+                    <strong className="font-bold">Date</strong>
+                  </TableHead>
+                  <TableHead>
+                    <strong className="font-bold">Actions</strong>
                   </TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {prescriptions.map((p) => (
                   <TableRow key={p._id}>
-                    <TableCell>{p.pharmacyName}</TableCell>
-                    <TableCell>{p.pharmacistId}</TableCell>
+                    <TableCell>{p.pharmacistId?.email || 'N/A'}</TableCell>
+                    <TableCell>{p.status}</TableCell>
+                    <TableCell>
+                      {new Date(p.createdAt).toLocaleDateString()}
+                    </TableCell>
+                    <TableCell>
+                      <Link
+                        to={`/dashboard/prescriptions/${p._id}`}
+                        className="underline"
+                      >
+                        View Prescription Items
+                      </Link>
+                    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>
@@ -187,7 +228,7 @@ function PatientDetailPage() {
         </div>
 
         {/* Appointments */}
-        <div className="rounded-lg border p-4 space-y-2 md:col-span-3">
+        <div className="rounded-lg border p-4 space-y-2 md:col-span-3 shadow-md">
           <h2 className="font-semibold text-lg mb-4">Appointments</h2>
 
           {appointments?.length > 0 ? (
