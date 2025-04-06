@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { usePrescriptionById } from '@/hooks/usePrescription';
-import { EditPrescriptionForm } from '@/components/forms/prescriptions/EditPrescriptionForm';
+// import { EditPrescriptionForm } from '@/components/forms/prescriptions/EditPrescriptionForm';
 import { Skeleton } from '@/components/ui/skeleton';
 
 export const Route = createFileRoute(
@@ -36,7 +36,7 @@ function EditPrescriptionRoute() {
       <div className="flex justify-between">
         <h1 className="text-2xl font-bold mb-4">Update Prescription</h1>
       </div>
-      <EditPrescriptionForm
+      {/* <EditPrescriptionForm
         prescriptionId={prescriptionId}
         defaultValues={{
           ...data,
@@ -54,7 +54,7 @@ function EditPrescriptionRoute() {
             })),
           })),
         }}
-      />
+      /> */}
     </div>
   );
 }
