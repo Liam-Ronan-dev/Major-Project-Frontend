@@ -16,7 +16,7 @@ const itemSchema = z.object({
 
   amount: z.string().nonempty({ message: 'Amount is required.' }),
 
-  repeats: z.number().int().positive().optional(),
+  repeats: z.number().min(0, 'Repeats cannot be negative'),
 });
 
 export const prescriptionSchema = z.object({

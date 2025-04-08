@@ -34,17 +34,17 @@ export function AsyncMedicationSelect({ field, initialValue }: Props) {
   const [selectedMedication, setSelectedMedication] =
     useState<Medication | null>(initialValue ?? null);
 
-  // Sync selected medication on mount and value change
   useEffect(() => {
-    if (!selectedMedication && initialValue) {
+    if (initialValue && field.value === initialValue._id) {
       setSelectedMedication(initialValue);
+      return;
     }
 
-    const match = data.find((m) => m._id === field.value);
-    if (match && match._id !== selectedMedication?._id) {
-      setSelectedMedication(match);
+    if (!selectedMedication && field.value) {
+      const match = data.find((m) => m._id === field.value);
+      if (match) setSelectedMedication(match);
     }
-  }, [data, field.value, initialValue, selectedMedication]);
+  }, [data, field.value, initialValue]);
 
   // Dynamically show label in the input if user hasn't typed yet
   const inputDisplayValue =

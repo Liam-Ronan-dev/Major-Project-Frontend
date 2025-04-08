@@ -1,5 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { Badge } from '@/components/ui/badge';
+import { StatusStepper } from '@/components/ui/status-stepper';
 import {
   Table,
   TableHeader,
@@ -17,6 +18,8 @@ import {
   User,
   Building2,
   Pill,
+  History,
+  ListChecks,
 } from 'lucide-react';
 import {
   usePrescriptionById,
@@ -124,7 +127,16 @@ function PrescriptionDetailPage() {
     );
   }
 
-  const { patientId, pharmacistId, createdAt, status, notes, items } = data;
+  const {
+    patientId,
+    pharmacistId,
+    createdAt,
+    status,
+    notes,
+    items,
+    updatedAt,
+    doctorId,
+  } = data;
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-6">
@@ -221,7 +233,6 @@ function PrescriptionDetailPage() {
           <Pill className="w-5 h-5 text-muted-foreground" />
           Prescription Items
         </h3>
-
         {items?.length > 0 ? (
           <Table>
             <TableHeader>
@@ -274,8 +285,52 @@ function PrescriptionDetailPage() {
         )}
       </div>
 
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:col-span-2">
+        {/* Audit Trail */}
+        {user?.role === 'pharmacist' && (
+          <div className="rounded-2xl border bg-muted/5 p-5 shadow-sm">
+            <h3 className="font-semibold text-lg mb-4 flex items-center gap-2">
+              <History className="w-5 h-5 text-muted-foreground" />
+              Audit Trail
+            </h3>
+            <div className="space-y-2 text-sm">
+              <div>
+                Created:{' '}
+                <span className="font-semibold">
+                  {new Date(createdAt).toLocaleString()}{' '}
+                </span>
+                <span className="font-semibold">
+                  by doctor {doctorId?.email || 'Unknown'}
+                </span>
+              </div>
+              <div>
+                <span className="font-medium text-foreground">
+                  Last Updated:
+                </span>{' '}
+                {new Date(updatedAt).toLocaleString()}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Status Timeline */}
+        <div
+          className={`rounded-2xl border bg-muted/5 p-5 shadow-sm ${
+            user?.role === 'doctor' ? 'md:col-span-2' : ''
+          }`}
+        >
+          <h3 className="font-semibold text-lg mb-4 flex items-center gap-2">
+            <ListChecks className="w-5 h-5 text-muted-foreground" />
+            Status Timeline
+          </h3>
+          <div className="px-3 mt-5 p-2">
+            <StatusStepper currentStatus={data.status} />
+          </div>
+        </div>
+      </div>
+
       {/* Actions */}
-      <div className="flex gap-3 mt-2 md:col-span-2">
+      <div className="flex gap-5 mt-2 md:col-span-2">
         {user?.role === 'doctor' && status === 'Assigned' && (
           <>
             <Button

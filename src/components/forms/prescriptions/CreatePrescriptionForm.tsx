@@ -5,7 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useNavigate } from '@tanstack/react-router';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
-
+import { useEffect } from 'react';
 import {
   prescriptionSchema,
   PrescriptionFormData,
@@ -28,7 +28,13 @@ import {
 import { AsyncMedicationSelect } from '@/components/forms/AsyncMedicationSelect';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
-export function CreatePrescriptionForm() {
+type CreatePrescriptionFormProps = {
+  prefill?: PrescriptionFormData;
+};
+
+export function CreatePrescriptionForm({
+  prefill,
+}: CreatePrescriptionFormProps) {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
@@ -36,10 +42,11 @@ export function CreatePrescriptionForm() {
     register,
     control,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm<PrescriptionFormData>({
     resolver: zodResolver(prescriptionSchema),
-    defaultValues: {
+    defaultValues: prefill || {
       patientId: '',
       pharmacistId: '',
       notes: '',
@@ -54,6 +61,11 @@ export function CreatePrescriptionForm() {
       ],
     },
   });
+
+  // if prefill updates after initial render (not likely, but safe)
+  useEffect(() => {
+    if (prefill) reset(prefill);
+  }, [prefill, reset]);
 
   const { fields, append, remove } = useFieldArray({
     control,
@@ -82,8 +94,8 @@ export function CreatePrescriptionForm() {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-10">
       <Card>
-        <CardContent className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <CardContent className="space-y-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {/* Patient */}
             <div>
               <Label className="pb-2 font-semibold">Patient</Label>
@@ -152,7 +164,6 @@ export function CreatePrescriptionForm() {
           <Button
             type="button"
             variant="default"
-            className="mw-full sm:w-auto font-semibold mb-4 sm:mb-4 cursor-pointer px-5"
             onClick={() =>
               append({
                 medicationId: '',
@@ -169,29 +180,36 @@ export function CreatePrescriptionForm() {
 
         {fields.map((field, index) => (
           <Card key={field.id}>
-            <CardHeader className="flex flex-row items-center justify-between">
+            <CardHeader className="flex justify-between">
               <CardTitle>Item {index + 1}</CardTitle>
               {fields.length > 1 && (
                 <Button
                   type="button"
                   variant="destructive"
-                  className="mw-full sm:w-auto font-semibold mb-4 sm:mb-4 cursor-pointer px-5"
                   onClick={() => remove(index)}
                 >
                   Remove
                 </Button>
               )}
             </CardHeader>
-
-            <CardContent className="space-y-6">
-              {/* Medication */}
+            <CardContent className="space-y-8">
               <div>
                 <Label className="pb-2 font-semibold">Medication</Label>
                 <Controller
                   control={control}
                   name={`items.${index}.medicationId`}
                   render={({ field }) => (
-                    <AsyncMedicationSelect field={field} />
+                    <AsyncMedicationSelect
+                      field={field}
+                      initialValue={
+                        prefill?.items?.[index]?.medicationId
+                          ? {
+                              _id: prefill.items[index].medicationId,
+                              name: prefill.items[index].medicationLabel ?? '', // add this to your prefill transform
+                            }
+                          : undefined
+                      }
+                    />
                   )}
                 />
                 <FieldError
@@ -199,12 +217,9 @@ export function CreatePrescriptionForm() {
                 />
               </div>
 
-              {/* Fields */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <Label className="pb-2 font-semibold">
-                    Specific Instructions
-                  </Label>
+                  <Label>Specific Instructions</Label>
                   <Input
                     {...register(`items.${index}.specificInstructions`)}
                     placeholder="e.g. Take after meals"
@@ -217,7 +232,7 @@ export function CreatePrescriptionForm() {
                 </div>
 
                 <div>
-                  <Label className="pb-2 font-semibold">Dosage</Label>
+                  <Label>Dosage</Label>
                   <Input
                     {...register(`items.${index}.dosage`)}
                     placeholder="e.g. 100mg"
@@ -228,7 +243,7 @@ export function CreatePrescriptionForm() {
                 </div>
 
                 <div>
-                  <Label className="pb-2 font-semibold">Amount</Label>
+                  <Label>Amount</Label>
                   <Input
                     {...register(`items.${index}.amount`)}
                     placeholder="e.g. 28x"
@@ -239,7 +254,7 @@ export function CreatePrescriptionForm() {
                 </div>
 
                 <div>
-                  <Label className="pb-2 font-semibold">Repeats</Label>
+                  <Label>Repeats</Label>
                   <Input
                     type="number"
                     {...register(`items.${index}.repeats`, {
@@ -257,11 +272,7 @@ export function CreatePrescriptionForm() {
       </div>
 
       <div className="pt-4">
-        <Button
-          type="submit"
-          className="mw-full sm:w-auto font-semibold mb-4 sm:mb-4 sm:mr-5 cursor-pointer px-5"
-          disabled={createMutation.isPending}
-        >
+        <Button type="submit" disabled={createMutation.isPending}>
           {createMutation.isPending ? 'Submitting...' : 'Submit'}
         </Button>
       </div>

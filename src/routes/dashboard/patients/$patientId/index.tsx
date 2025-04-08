@@ -215,7 +215,7 @@ function PatientDetailPage() {
                         to={`/dashboard/prescriptions/${p._id}`}
                         className="underline font-semibold"
                       >
-                        View Prescription Items
+                        View Items
                       </Link>
                     </TableCell>
                   </TableRow>
@@ -281,6 +281,17 @@ function PatientDetailPage() {
               className="mw-full sm:w-auto font-semibold mb-4 sm:mb-4 sm:mr-5 cursor-pointer px-5"
             >
               Edit
+            </Button>
+            <Button
+              onClick={() =>
+                navigate({
+                  to: '/dashboard/prescriptions/quick-prescribe',
+                  search: { patientId: patientId },
+                })
+              }
+              className="px-4 py-2 font-semibold"
+            >
+              Quick Prescribe
             </Button>
           </div>
         )}

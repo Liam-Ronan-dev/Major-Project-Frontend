@@ -89,7 +89,7 @@ export function EditPrescriptionForm({
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Patient */}
             <div>
-              <Label>Patient</Label>
+              <Label className="pb-2 font-semibold">Patient</Label>
               <Controller
                 control={control}
                 name="patientId"
@@ -113,7 +113,7 @@ export function EditPrescriptionForm({
 
             {/* Pharmacist */}
             <div>
-              <Label>Pharmacist</Label>
+              <Label className="pb-2 font-semibold">Pharmacist</Label>
               <Controller
                 control={control}
                 name="pharmacistId"
@@ -138,7 +138,7 @@ export function EditPrescriptionForm({
 
           {/* Notes */}
           <div>
-            <Label>Prescription Notes</Label>
+            <Label className="pb-2 font-semibold">Prescription Notes</Label>
             <Textarea
               {...register('notes')}
               placeholder="E.g. Take as prescribed"
@@ -154,7 +154,8 @@ export function EditPrescriptionForm({
           <h3 className="text-lg font-bold">Prescription Items</h3>
           <Button
             type="button"
-            variant="outline"
+            variant="default"
+            className="mw-full sm:w-auto font-semibold mb-4 sm:mb-4 cursor-pointer px-5"
             onClick={() =>
               append({
                 medicationId: '',
@@ -177,7 +178,7 @@ export function EditPrescriptionForm({
                 <Button
                   type="button"
                   variant="destructive"
-                  size="sm"
+                  className="mw-full sm:w-auto font-semibold mb-4 sm:mb-4 cursor-pointer px-5"
                   onClick={() => remove(index)}
                 >
                   Remove
@@ -188,7 +189,7 @@ export function EditPrescriptionForm({
             <CardContent className="space-y-6">
               {/* Medication */}
               <div>
-                <Label>Medication</Label>
+                <Label className="pb-2 font-semibold">Medication</Label>
                 <Controller
                   control={control}
                   name={`items.${index}.medicationId`}
@@ -211,7 +212,9 @@ export function EditPrescriptionForm({
               {/* Fields */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <Label>Specific Instructions</Label>
+                  <Label className="pb-2 font-semibold">
+                    Specific Instructions
+                  </Label>
                   <Input
                     {...register(`items.${index}.specificInstructions`)}
                     placeholder="e.g. Take after meals"
@@ -224,7 +227,7 @@ export function EditPrescriptionForm({
                 </div>
 
                 <div>
-                  <Label>Dosage</Label>
+                  <Label className="pb-2 font-semibold">Dosage</Label>
                   <Input
                     {...register(`items.${index}.dosage`)}
                     placeholder="e.g. 100mg"
@@ -235,7 +238,7 @@ export function EditPrescriptionForm({
                 </div>
 
                 <div>
-                  <Label>Amount</Label>
+                  <Label className="pb-2 font-semibold">Amount</Label>
                   <Input
                     {...register(`items.${index}.amount`)}
                     placeholder="e.g. 28x"
@@ -246,7 +249,7 @@ export function EditPrescriptionForm({
                 </div>
 
                 <div>
-                  <Label>Repeats</Label>
+                  <Label className="pb-2 font-semibold">Repeats</Label>
                   <Input
                     type="number"
                     {...register(`items.${index}.repeats`, {

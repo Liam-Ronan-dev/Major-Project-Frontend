@@ -1,7 +1,6 @@
 import { ColumnDef } from '@tanstack/react-table';
 import { Link } from '@tanstack/react-router';
 import { Checkbox } from '@/components/ui/checkbox';
-import { ArrowUpDown } from 'lucide-react';
 
 export type PrescriptionRow = {
   id: string;

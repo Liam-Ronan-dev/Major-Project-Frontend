@@ -1,5 +1,6 @@
 import { useContext, useState } from 'react';
 import { IconBell } from '@tabler/icons-react';
+import { useNavigate } from '@tanstack/react-router';
 import {
   Popover,
   PopoverContent,
@@ -8,6 +9,7 @@ import {
 import { SocketContext } from '@/contexts/SocketProvider';
 
 export function NotificationBell() {
+  const navigate = useNavigate();
   const { notifications, unreadCount, markAllAsRead } =
     useContext(SocketContext);
 
@@ -38,7 +40,15 @@ export function NotificationBell() {
             </p>
           ) : (
             notifications.map((n, idx) => (
-              <div key={idx} className="rounded border px-3 py-2 text-sm">
+              <div
+                key={idx}
+                onClick={() =>
+                  navigate({
+                    to: `/dashboard/prescriptions/${n.prescriptionId}`,
+                  })
+                }
+                className="rounded border px-3 py-2 text-sm cursor-pointer hover:bg-muted transition"
+              >
                 <div className="font-medium mb-1">
                   {n.type === 'new'
                     ? 'New Prescription Assigned'

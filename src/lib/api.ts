@@ -108,25 +108,6 @@ export const getPharmacists = async () => {
   }
 };
 
-// Get all medications
-export const getMedications = async () => {
-  try {
-    const res = await api.get('/medications');
-    return res.data.data;
-  } catch (error) {
-    handleApiError(error);
-  }
-};
-
-export const getMedicationById = async (id: string) => {
-  try {
-    const res = await api.get(`/medication/${id}`);
-    return res.data.data;
-  } catch (error) {
-    handleApiError(error);
-  }
-};
-
 // Prescriptions
 export const createPrescription = async (data: any) => {
   try {
@@ -267,6 +248,15 @@ export const createPatient = async (data: any) => {
 export const updatePatient = async (id: string, data: any) => {
   try {
     const res = await api.put(`/patient/${id}`, data);
+    return res.data;
+  } catch (error) {
+    handleApiError(error);
+  }
+};
+
+export const getLatestPrescriptionForPatient = async (patientId: string) => {
+  try {
+    const res = await api.get(`/prescriptions/latest?patientId=${patientId}`);
     return res.data;
   } catch (error) {
     handleApiError(error);

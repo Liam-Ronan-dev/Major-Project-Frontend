@@ -4,6 +4,7 @@ import {
   getPrescriptionById,
   updatePrescription,
   updatePrescriptionStatus,
+  getLatestPrescriptionForPatient,
 } from '@/lib/api';
 import { useMutation } from '@tanstack/react-query';
 import { useContext } from 'react';
@@ -28,6 +29,14 @@ export const usePrescriptionById = (id: string) => {
     enabled: !!user && !!id,
   });
 };
+
+export function useLatestPrescription(patientId?: string) {
+  return useQuery({
+    queryKey: ['latestPrescription', patientId],
+    queryFn: () => getLatestPrescriptionForPatient(patientId!),
+    enabled: !!patientId,
+  });
+}
 
 export const useUpdatePrescription = (id: string) =>
   useMutation({

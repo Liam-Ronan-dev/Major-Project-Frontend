@@ -53,7 +53,6 @@ const pharmacistNav = [
     icon: ClipboardCheck,
   },
   { title: 'Patients', url: '/dashboard/patients', icon: Users },
-  { title: 'Medications', url: '/dashboard/medications', icon: Pill },
 ];
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
