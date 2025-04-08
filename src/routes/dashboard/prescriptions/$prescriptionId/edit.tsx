@@ -1,7 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { usePrescriptionById } from '@/hooks/usePrescription';
-// import { EditPrescriptionForm } from '@/components/forms/prescriptions/EditPrescriptionForm';
 import { Skeleton } from '@/components/ui/skeleton';
+import { EditPrescriptionForm } from '@/components/forms/prescriptions/EditPrescriptionForm';
 
 export const Route = createFileRoute(
   '/dashboard/prescriptions/$prescriptionId/edit'
@@ -11,7 +11,11 @@ export const Route = createFileRoute(
 
 function EditPrescriptionRoute() {
   const { prescriptionId } = Route.useParams();
-  const { data, isLoading, isError } = usePrescriptionById(prescriptionId);
+  const {
+    data: prescription,
+    isLoading,
+    isError,
+  } = usePrescriptionById(prescriptionId);
 
   if (isLoading) {
     return (
@@ -23,7 +27,7 @@ function EditPrescriptionRoute() {
     );
   }
 
-  if (isError || !data) {
+  if (isError || !prescription) {
     return (
       <div className="p-6 text-red-500 text-center">
         Failed to load prescription.
@@ -36,25 +40,22 @@ function EditPrescriptionRoute() {
       <div className="flex justify-between">
         <h1 className="text-2xl font-bold mb-4">Update Prescription</h1>
       </div>
-      {/* <EditPrescriptionForm
-        prescriptionId={prescriptionId}
-        defaultValues={{
-          ...data,
-          pharmacistId: data.pharmacistId?._id ?? '',
-          patientId: data.patientId?._id ?? '',
-          items: data.items.map((item: any) => ({
-            ...item,
-            medications: item.medications.map((m: any) => m._id),
-            dosages: item.dosages.map((d: any) => ({
-              medicationId: d.medicationId?._id ?? '',
-              amount: d.amount,
-              frequency: d.frequency,
-              duration: d.duration,
-              notes: d.notes,
-            })),
+      <EditPrescriptionForm
+        prescription={{
+          _id: prescription._id,
+          patientId: prescription.patientId._id,
+          pharmacistId: prescription.pharmacistId._id,
+          notes: prescription.notes ?? '',
+          items: prescription.items.map((item) => ({
+            medicationId: item.medicationId._id,
+            medicationLabel: item.medicationId.name,
+            specificInstructions: item.specificInstructions,
+            dosage: item.dosage,
+            amount: item.amount,
+            repeats: item.repeats,
           })),
         }}
-      /> */}
+      />
     </div>
   );
 }

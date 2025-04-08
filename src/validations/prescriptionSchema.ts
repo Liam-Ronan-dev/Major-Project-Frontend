@@ -22,15 +22,15 @@ const itemSchema = z.object({
 export const prescriptionSchema = z.object({
   patientId: z
     .string()
-    .nonempty({ message: 'Patient ID is required.' })
+    .nonempty({ message: 'Patient is required.' })
     .regex(objectIdRegex, { message: 'Invalid patient ID format.' }),
 
   pharmacistId: z
     .string()
-    .nonempty({ message: 'Pharmacist ID is required.' })
+    .nonempty({ message: 'Pharmacist is required.' })
     .regex(objectIdRegex, { message: 'Invalid pharmacist ID format.' }),
 
-  notes: z.string().optional(),
+  notes: z.string().optional().nullable().default(''),
 
   items: z
     .array(itemSchema)

@@ -108,7 +108,7 @@ function PatientDetailPage() {
         </div>
 
         {/* Address */}
-        <div className="rounded-2xl border bg-muted/5 p-5 shadow-md space-y-4">
+        <div className="rounded-2xl border bg-muted/5 p-5 shadow-md space-y-2">
           <h3 className="font-semibold text-lg text-primary mb-2 flex items-center gap-2">
             <MapPin className="w-4 h-4 text-muted-foreground" />
             Address
@@ -182,7 +182,7 @@ function PatientDetailPage() {
 
         {/* Prescriptions */}
         <div className="rounded-lg border p-4 space-y-2 md:col-span-3 shadow-md">
-          <h2 className="font-semibold text-lg mb-4">Prescriptions</h2>
+          <h2 className="font-semibold text-lg mb-4">Prescription History</h2>
 
           {prescriptions?.length > 0 ? (
             <Table>
@@ -213,7 +213,7 @@ function PatientDetailPage() {
                     <TableCell>
                       <Link
                         to={`/dashboard/prescriptions/${p._id}`}
-                        className="underline"
+                        className="underline font-semibold"
                       >
                         View Prescription Items
                       </Link>
@@ -268,9 +268,9 @@ function PatientDetailPage() {
             <Button
               onClick={handleDelete}
               variant="destructive"
-              className="w-full sm:w-auto font-semibold mb-4 sm:mb-4 sm:mr-5 cursor-pointer"
+              className="w-full sm:w-auto font-semibold mb-4 sm:mb-4 sm:mr-5 cursor-pointer px-5"
             >
-              Delete Patient
+              Delete
             </Button>
             <Button
               onClick={() =>
@@ -278,9 +278,9 @@ function PatientDetailPage() {
                   to: `/dashboard/patients/${patientId}/edit`,
                 })
               }
-              className="mw-full sm:w-auto font-semibold mb-4 sm:mb-4 sm:mr-5 cursor-pointer"
+              className="mw-full sm:w-auto font-semibold mb-4 sm:mb-4 sm:mr-5 cursor-pointer px-5"
             >
-              Edit Patient
+              Edit
             </Button>
           </div>
         )}

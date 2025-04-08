@@ -12,13 +12,11 @@ import {
   CalendarDays,
   ClipboardList,
   FileText,
-  Home,
   Mail,
   Phone,
   User,
   Building2,
   Pill,
-  Syringe,
 } from 'lucide-react';
 import {
   usePrescriptionById,
@@ -26,7 +24,7 @@ import {
 } from '@/hooks/usePrescription';
 import { Skeleton } from '@/components/ui/skeleton';
 import { deletePrescription } from '@/lib/api';
-import { useNavigate } from '@tanstack/react-router';
+import { useNavigate, Link } from '@tanstack/react-router';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { useContext, useState, useEffect } from 'react';
@@ -131,7 +129,7 @@ function PrescriptionDetailPage() {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-6">
       {/* Prescription Summary */}
-      <div className="rounded-2xl border bg-muted/5 p-5 space-y-4 shadow-sm">
+      <div className="rounded-2xl border bg-muted/5 p-5 space-y-5 shadow-sm">
         <h3 className="font-semibold text-lg flex items-center gap-2">
           <ClipboardList className="w-5 h-5 text-muted-foreground" />
           Prescription Info
@@ -148,7 +146,7 @@ function PrescriptionDetailPage() {
           <strong className="font-medium">Status:</strong>
           {user?.role === 'pharmacist' ? (
             <Select value={formStatus} onValueChange={setFormStatus}>
-              <SelectTrigger className="w-[200px]">
+              <SelectTrigger className="w-[400px]">
                 <SelectValue placeholder="Select status" />
               </SelectTrigger>
               <SelectContent>
@@ -166,7 +164,7 @@ function PrescriptionDetailPage() {
               </SelectContent>
             </Select>
           ) : (
-            <Badge variant="outline" className="text-sm p-2">
+            <Badge variant="outline" className="text-sm p-2 px-5 font-semibold">
               {status}
             </Badge>
           )}
@@ -174,14 +172,20 @@ function PrescriptionDetailPage() {
       </div>
 
       {/* Patient Info */}
-      <div className="rounded-2xl border bg-muted/5 p-5 space-y-4 shadow-sm">
+      <div className="rounded-2xl border bg-muted/5 p-5 space-y-5 shadow-sm">
         <h3 className="font-semibold text-lg flex items-center gap-2">
           <User className="w-5 h-5 text-muted-foreground" />
           Patient Info
         </h3>
         <p className="flex items-center gap-2 text-sm">
           <User className="w-4 h-4 text-muted-foreground" />
-          {patientId?.firstName} {patientId?.lastName}
+
+          <Link to={`/dashboard/patients/${patientId._id}`}>
+            <span className="font-semibold underline">
+              {' '}
+              {patientId?.firstName} {patientId?.lastName}
+            </span>
+          </Link>
         </p>
         <p className="flex items-center gap-2 text-sm">
           <Mail className="w-4 h-4 text-muted-foreground" />
@@ -272,14 +276,14 @@ function PrescriptionDetailPage() {
 
       {/* Actions */}
       <div className="flex gap-3 mt-2 md:col-span-2">
-        {user?.role === 'doctor' && (
+        {user?.role === 'doctor' && status === 'Assigned' && (
           <>
             <Button
               onClick={handleDelete}
               variant="destructive"
-              className="w-full sm:w-auto"
+              className="w-full sm:w-auto font-semibold mb-4 sm:mb-4 sm:mr-5 cursor-pointer px-5"
             >
-              Delete Prescription
+              Delete
             </Button>
             <Button
               onClick={() =>
@@ -287,9 +291,9 @@ function PrescriptionDetailPage() {
                   to: `/dashboard/prescriptions/${prescriptionId}/edit`,
                 })
               }
-              className="w-full sm:w-auto"
+              className="w-full sm:w-auto font-semibold mb-4 sm:mb-4 sm:mr-5 cursor-pointer px-5"
             >
-              Edit Prescription
+              Edit
             </Button>
           </>
         )}
@@ -298,7 +302,7 @@ function PrescriptionDetailPage() {
           <Button
             onClick={handlePharmacistUpdate}
             disabled={updateMutation.isPending}
-            className="ml-auto"
+            className="mw-full sm:w-auto font-semibold mb-4 sm:mb-4 sm:mr-5 cursor-pointer px-5"
           >
             {updateMutation.isPending ? 'Saving...' : 'Save Changes'}
           </Button>

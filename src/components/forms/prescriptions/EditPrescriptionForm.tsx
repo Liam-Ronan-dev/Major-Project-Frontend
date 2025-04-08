@@ -1,0 +1,280 @@
+'use client';
+
+import { useForm, useFieldArray, Controller } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useNavigate } from '@tanstack/react-router';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { toast } from 'sonner';
+
+import {
+  prescriptionSchema,
+  PrescriptionFormData,
+} from '@/validations/prescriptionSchema';
+import { updatePrescription } from '@/lib/api';
+import { usePatients } from '@/hooks/usePatients';
+import { usePharmacists } from '@/hooks/usePharmacists';
+
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from '@/components/ui/select';
+import { AsyncMedicationSelect } from '@/components/forms/AsyncMedicationSelect';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+
+export function EditPrescriptionForm({
+  prescription,
+}: {
+  prescription: PrescriptionFormData & { _id: string };
+}) {
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+
+  const {
+    register,
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<PrescriptionFormData>({
+    resolver: zodResolver(prescriptionSchema),
+    defaultValues: {
+      patientId: prescription.patientId,
+      pharmacistId: prescription.pharmacistId,
+      notes: prescription.notes,
+      items: prescription.items.map((item) => ({
+        medicationId: item.medicationId,
+        specificInstructions: item.specificInstructions,
+        dosage: item.dosage,
+        amount: item.amount,
+        repeats: item.repeats,
+      })),
+    },
+  });
+
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: 'items',
+  });
+
+  const { data: patients = [] } = usePatients();
+  const { data: pharmacists = [] } = usePharmacists();
+
+  const updateMutation = useMutation({
+    mutationFn: (data: PrescriptionFormData) =>
+      updatePrescription(prescription._id, data),
+    onSuccess: () => {
+      toast.success('Prescription updated successfully');
+      queryClient.invalidateQueries({ queryKey: ['prescriptions'] });
+      navigate({ to: '/dashboard/prescriptions' });
+    },
+    onError: () => {
+      toast.error('Failed to update prescription');
+    },
+  });
+
+  const onSubmit = (data: PrescriptionFormData) => {
+    updateMutation.mutate(data);
+  };
+
+  return (
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-10">
+      <Card>
+        <CardContent className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Patient */}
+            <div>
+              <Label>Patient</Label>
+              <Controller
+                control={control}
+                name="patientId"
+                render={({ field }) => (
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select patient" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {patients.map((p) => (
+                        <SelectItem key={p._id} value={p._id}>
+                          {p.firstName} {p.lastName}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                )}
+              />
+              <FieldError message={errors.patientId?.message} />
+            </div>
+
+            {/* Pharmacist */}
+            <div>
+              <Label>Pharmacist</Label>
+              <Controller
+                control={control}
+                name="pharmacistId"
+                render={({ field }) => (
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select pharmacist" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {pharmacists.map((p) => (
+                        <SelectItem key={p._id} value={p._id}>
+                          {p.email}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                )}
+              />
+              <FieldError message={errors.pharmacistId?.message} />
+            </div>
+          </div>
+
+          {/* Notes */}
+          <div>
+            <Label>Prescription Notes</Label>
+            <Textarea
+              {...register('notes')}
+              placeholder="E.g. Take as prescribed"
+            />
+            <FieldError message={errors.notes?.message} />
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Items */}
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <h3 className="text-lg font-bold">Prescription Items</h3>
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() =>
+              append({
+                medicationId: '',
+                specificInstructions: '',
+                dosage: '',
+                amount: '',
+                repeats: 1,
+              })
+            }
+          >
+            Add Item
+          </Button>
+        </div>
+
+        {fields.map((field, index) => (
+          <Card key={field.id}>
+            <CardHeader className="flex flex-row items-center justify-between">
+              <CardTitle>Item {index + 1}</CardTitle>
+              {fields.length > 1 && (
+                <Button
+                  type="button"
+                  variant="destructive"
+                  size="sm"
+                  onClick={() => remove(index)}
+                >
+                  Remove
+                </Button>
+              )}
+            </CardHeader>
+
+            <CardContent className="space-y-6">
+              {/* Medication */}
+              <div>
+                <Label>Medication</Label>
+                <Controller
+                  control={control}
+                  name={`items.${index}.medicationId`}
+                  render={({ field }) => (
+                    <AsyncMedicationSelect
+                      field={field}
+                      initialValue={{
+                        _id: prescription.items[index].medicationId,
+                        name: prescription.items[index].medicationLabel,
+                      }}
+                    />
+                  )}
+                />
+
+                <FieldError
+                  message={errors.items?.[index]?.medicationId?.message}
+                />
+              </div>
+
+              {/* Fields */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label>Specific Instructions</Label>
+                  <Input
+                    {...register(`items.${index}.specificInstructions`)}
+                    placeholder="e.g. Take after meals"
+                  />
+                  <FieldError
+                    message={
+                      errors.items?.[index]?.specificInstructions?.message
+                    }
+                  />
+                </div>
+
+                <div>
+                  <Label>Dosage</Label>
+                  <Input
+                    {...register(`items.${index}.dosage`)}
+                    placeholder="e.g. 100mg"
+                  />
+                  <FieldError
+                    message={errors.items?.[index]?.dosage?.message}
+                  />
+                </div>
+
+                <div>
+                  <Label>Amount</Label>
+                  <Input
+                    {...register(`items.${index}.amount`)}
+                    placeholder="e.g. 28x"
+                  />
+                  <FieldError
+                    message={errors.items?.[index]?.amount?.message}
+                  />
+                </div>
+
+                <div>
+                  <Label>Repeats</Label>
+                  <Input
+                    type="number"
+                    {...register(`items.${index}.repeats`, {
+                      valueAsNumber: true,
+                    })}
+                  />
+                  <FieldError
+                    message={errors.items?.[index]?.repeats?.message}
+                  />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      <div className="pt-4">
+        <Button
+          type="submit"
+          className="mw-full sm:w-auto font-semibold mb-4 sm:mb-4 sm:mr-5 cursor-pointer px-5"
+          disabled={updateMutation.isPending}
+        >
+          {updateMutation.isPending ? 'Submitting...' : 'Submit'}
+        </Button>
+      </div>
+    </form>
+  );
+}
+
+const FieldError = ({ message }: { message?: string }) =>
+  message ? <p className="text-sm text-red-500 mt-1">{message}</p> : null;

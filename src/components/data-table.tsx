@@ -208,6 +208,7 @@ export function DataTable<TData extends { id: string | number }>({
 
   const selectedRows = table.getFilteredSelectedRowModel().rows;
   const selectedId = selectedRows[0]?.original.id;
+  const selectedStatus = selectedRows[0]?.original.status;
 
   function handleDragEnd(event: DragEndEvent) {
     const { active, over } = event;
@@ -244,9 +245,8 @@ export function DataTable<TData extends { id: string | number }>({
             />
           )}
           {selectedId &&
-            (userRole === 'doctor' ||
-              (userRole === 'pharmacist' &&
-                resourceType === 'medications')) && (
+            userRole === 'doctor' &&
+            selectedStatus === 'Assigned' && (
               <>
                 {editUrl && (
                   <Button

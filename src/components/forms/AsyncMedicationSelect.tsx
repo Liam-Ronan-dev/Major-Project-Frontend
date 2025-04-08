@@ -19,9 +19,10 @@ type Medication = {
 
 type Props = {
   field: ControllerRenderProps<any, any>;
+  initialValue?: Medication;
 };
 
-export function AsyncMedicationSelect({ field }: Props) {
+export function AsyncMedicationSelect({ field, initialValue }: Props) {
   const [query, setQuery] = useState('');
   const [hasInteracted, setHasInteracted] = useState(false);
   const [debounced] = useDebounce(query, 300);
@@ -31,18 +32,29 @@ export function AsyncMedicationSelect({ field }: Props) {
   );
 
   const [selectedMedication, setSelectedMedication] =
-    useState<Medication | null>(null);
+    useState<Medication | null>(initialValue ?? null);
 
+  // Sync selected medication on mount and value change
   useEffect(() => {
-    const current = data.find((m) => m._id === field.value);
-    if (current) setSelectedMedication(current);
-  }, [data, field.value]);
+    if (!selectedMedication && initialValue) {
+      setSelectedMedication(initialValue);
+    }
+
+    const match = data.find((m) => m._id === field.value);
+    if (match && match._id !== selectedMedication?._id) {
+      setSelectedMedication(match);
+    }
+  }, [data, field.value, initialValue, selectedMedication]);
+
+  // Dynamically show label in the input if user hasn't typed yet
+  const inputDisplayValue =
+    hasInteracted || query.length > 0 ? query : selectedMedication?.name || '';
 
   return (
     <div className="space-y-2">
       <Command className="rounded-md border shadow-sm">
         <CommandInput
-          value={query}
+          value={inputDisplayValue}
           onValueChange={(val) => {
             setQuery(val);
             if (!hasInteracted) setHasInteracted(true);
@@ -56,8 +68,7 @@ export function AsyncMedicationSelect({ field }: Props) {
           {hasInteracted &&
             query.length >= 2 &&
             !isLoading &&
-            data.length === 0 &&
-            !selectedMedication && (
+            data.length === 0 && (
               <CommandEmpty>No medications found.</CommandEmpty>
             )}
 
@@ -69,6 +80,7 @@ export function AsyncMedicationSelect({ field }: Props) {
                 field.onChange(med._id);
                 setSelectedMedication(med);
                 setQuery('');
+                setHasInteracted(false); // Reset for display purposes
               }}
             >
               {med.name}
