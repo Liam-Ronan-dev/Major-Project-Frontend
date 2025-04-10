@@ -9,7 +9,7 @@ export const Route = createFileRoute('/dashboard/patients/create')({
 function CreatePatient() {
   return (
     <div className="min-h-11/12 flex items-center justify-center px-4">
-      <Card className="w-full max-w-xl shadow-lg">
+      <Card className="w-full max-w-2xl shadow-lg">
         <CardHeader>
           <CardTitle className="text-xl text-center">Add New Patient</CardTitle>
         </CardHeader>

@@ -95,13 +95,15 @@ function Inputtotp() {
         )}
 
         {/* Submit Button */}
-        <Button
-          type="submit"
-          className="w-full font-semibold"
-          disabled={otpMutation.isPending}
-        >
-          {otpMutation.isPending ? 'Verifying...' : 'Submit'}
-        </Button>
+        <div className="text-center">
+          <Button
+            type="submit"
+            className="w-1/2 font-semibold cursor-pointer px-8"
+            disabled={otpMutation.isPending}
+          >
+            {otpMutation.isPending ? 'Verifying...' : 'Submit'}
+          </Button>
+        </div>
 
         {/* API Error Message */}
         {otpMutation.isError && (

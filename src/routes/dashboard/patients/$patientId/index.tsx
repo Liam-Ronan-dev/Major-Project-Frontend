@@ -71,7 +71,7 @@ function PatientDetailPage() {
 
   return (
     <>
-      <h2 className="text-2xl font-bold ml-5 p-2 mt-4">
+      <h2 className="text-2xl font-bold ml-5 p-2 mt-4 first-letter:uppercase">
         {firstName} {lastName}
       </h2>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 p-6">
@@ -198,6 +198,9 @@ function PatientDetailPage() {
                     <strong className="font-bold">Date</strong>
                   </TableHead>
                   <TableHead>
+                    <strong className="font-bold">Notes</strong>
+                  </TableHead>
+                  <TableHead>
                     <strong className="font-bold">Actions</strong>
                   </TableHead>
                 </TableRow>
@@ -210,6 +213,7 @@ function PatientDetailPage() {
                     <TableCell>
                       {new Date(p.createdAt).toLocaleDateString()}
                     </TableCell>
+                    <TableCell>{p.notes}</TableCell>
                     <TableCell>
                       <Link
                         to={`/dashboard/prescriptions/${p._id}`}
@@ -218,6 +222,18 @@ function PatientDetailPage() {
                         View Items
                       </Link>
                     </TableCell>
+                    {user?.role === 'doctor' && (
+                      <TableCell>
+                        <Link to={`/dashboard/prescriptions/${p._id}/edit`}>
+                          <Button
+                            className="font-semibold border border-gray-300"
+                            variant="outline"
+                          >
+                            Duplicate
+                          </Button>
+                        </Link>
+                      </TableCell>
+                    )}
                   </TableRow>
                 ))}
               </TableBody>
@@ -262,13 +278,15 @@ function PatientDetailPage() {
             <p className="text-muted-foreground">No appointments found.</p>
           )}
         </div>
+      </div>
 
+      <div className="flex justify-end gap-5 mt-2 md:col-span-2 mr-6">
         {user?.role === 'doctor' && (
-          <div className="flex gap-4 md:col-span-2">
+          <>
             <Button
               onClick={handleDelete}
               variant="destructive"
-              className="w-full sm:w-auto font-semibold mb-4 sm:mb-4 sm:mr-5 cursor-pointer px-5"
+              className="w-full sm:w-auto font-semibold cursor-pointer px-8"
             >
               Delete
             </Button>
@@ -278,22 +296,11 @@ function PatientDetailPage() {
                   to: `/dashboard/patients/${patientId}/edit`,
                 })
               }
-              className="mw-full sm:w-auto font-semibold mb-4 sm:mb-4 sm:mr-5 cursor-pointer px-5"
+              className="w-full sm:w-auto font-semibold cursor-pointer px-8"
             >
               Edit
             </Button>
-            <Button
-              onClick={() =>
-                navigate({
-                  to: '/dashboard/prescriptions/quick-prescribe',
-                  search: { patientId: patientId },
-                })
-              }
-              className="px-4 py-2 font-semibold"
-            >
-              Quick Prescribe
-            </Button>
-          </div>
+          </>
         )}
       </div>
     </>

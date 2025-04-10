@@ -47,7 +47,7 @@ export function CreatePatientForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 max-w-2xl">
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-10 max-w-2xl">
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <div>
           <Input placeholder="First Name" {...register('firstName')} />
@@ -187,13 +187,15 @@ export function CreatePatientForm() {
         </Button>
       </div>
 
-      <Button
-        type="submit"
-        className="cursor-pointer font-semibold"
-        disabled={createMutation.isPending}
-      >
-        {createMutation.isPending ? 'Submitting...' : 'Create Patient'}
-      </Button>
+      <div className="text-end">
+        <Button
+          type="submit"
+          className="w-full sm:w-auto font-semibold cursor-pointer px-8"
+          disabled={createMutation.isPending}
+        >
+          {createMutation.isPending ? 'Submitting...' : 'Submit'}
+        </Button>
+      </div>
     </form>
   );
 }
