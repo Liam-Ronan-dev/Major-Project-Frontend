@@ -90,9 +90,9 @@ export function AsyncMedicationSelect({ field, initialValue }: Props) {
       </Command>
 
       {selectedMedication && (
-        <div className="text-sm text-muted-foreground">
+        <div className="text-md font-medium">
           Selected:{' '}
-          <span className="font-medium">{selectedMedication.name}</span>
+          <span className="font-semibold">{selectedMedication.name}</span>
         </div>
       )}
     </div>

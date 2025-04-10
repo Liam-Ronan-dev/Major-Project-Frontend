@@ -65,7 +65,7 @@ function RouteComponent() {
         {user?.role === 'doctor' && (
           <Button
             asChild
-            className="w-full sm:w-auto font-semibold mb-4 sm:mb-4 sm:mr-5 px-5"
+            className="mw-full sm:w-auto font-semibold mb-4 sm:mb-4 sm:mr-5 cursor-pointer px-8"
             size="sm"
           >
             <Link to="/dashboard/patients/create">Add Patient</Link>

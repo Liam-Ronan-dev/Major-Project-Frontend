@@ -164,6 +164,7 @@ export function CreatePrescriptionForm({
           <Button
             type="button"
             variant="default"
+            className="mw-full sm:w-auto font-semibold mb-4 sm:mb-4 cursor-pointer px-5"
             onClick={() =>
               append({
                 medicationId: '',
@@ -185,6 +186,7 @@ export function CreatePrescriptionForm({
               {fields.length > 1 && (
                 <Button
                   type="button"
+                  className="mw-full sm:w-auto font-semibold mb-4 sm:mb-4 sm:mr-5 cursor-pointer px-5"
                   variant="destructive"
                   onClick={() => remove(index)}
                 >
@@ -219,7 +221,9 @@ export function CreatePrescriptionForm({
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <Label>Specific Instructions</Label>
+                  <Label className="pb-2 font-semibold">
+                    Specific Instructions
+                  </Label>
                   <Input
                     {...register(`items.${index}.specificInstructions`)}
                     placeholder="e.g. Take after meals"
@@ -232,7 +236,7 @@ export function CreatePrescriptionForm({
                 </div>
 
                 <div>
-                  <Label>Dosage</Label>
+                  <Label className="pb-2 font-semibold">Dosage</Label>
                   <Input
                     {...register(`items.${index}.dosage`)}
                     placeholder="e.g. 100mg"
@@ -243,7 +247,7 @@ export function CreatePrescriptionForm({
                 </div>
 
                 <div>
-                  <Label>Amount</Label>
+                  <Label className="pb-2 font-semibold">Amount</Label>
                   <Input
                     {...register(`items.${index}.amount`)}
                     placeholder="e.g. 28x"
@@ -254,7 +258,7 @@ export function CreatePrescriptionForm({
                 </div>
 
                 <div>
-                  <Label>Repeats</Label>
+                  <Label className="pb-2 font-semibold">Repeats</Label>
                   <Input
                     type="number"
                     {...register(`items.${index}.repeats`, {
@@ -271,11 +275,13 @@ export function CreatePrescriptionForm({
         ))}
       </div>
 
-      <div className="pt-4">
-        <Button type="submit" disabled={createMutation.isPending}>
-          {createMutation.isPending ? 'Submitting...' : 'Submit'}
-        </Button>
-      </div>
+      <Button
+        className="mw-full sm:w-auto font-semibold mb-4 sm:mb-4 sm:mr-5 cursor-pointer px-8"
+        type="submit"
+        disabled={createMutation.isPending}
+      >
+        {createMutation.isPending ? 'Submitting...' : 'Submit'}
+      </Button>
     </form>
   );
 }

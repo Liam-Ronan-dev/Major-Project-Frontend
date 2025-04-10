@@ -264,11 +264,11 @@ function PatientDetailPage() {
         </div>
 
         {user?.role === 'doctor' && (
-          <div className="flex gap-4 md:col-span-2">
+          <div className="flex gap-2 md:col-span-2">
             <Button
               onClick={handleDelete}
               variant="destructive"
-              className="w-full sm:w-auto font-semibold mb-4 sm:mb-4 sm:mr-5 cursor-pointer px-5"
+              className="mw-full sm:w-auto font-semibold mb-4 sm:mb-4 sm:mr-5 cursor-pointer px-8"
             >
               Delete
             </Button>
@@ -278,7 +278,7 @@ function PatientDetailPage() {
                   to: `/dashboard/patients/${patientId}/edit`,
                 })
               }
-              className="mw-full sm:w-auto font-semibold mb-4 sm:mb-4 sm:mr-5 cursor-pointer px-5"
+              className="mw-full sm:w-auto font-semibold mb-4 sm:mb-4 sm:mr-5 cursor-pointer px-8"
             >
               Edit
             </Button>
@@ -289,7 +289,7 @@ function PatientDetailPage() {
                   search: { patientId: patientId },
                 })
               }
-              className="px-4 py-2 font-semibold"
+              className="mw-full sm:w-auto font-semibold mb-4 sm:mb-4 sm:mr-5 cursor-pointer px-8 flex"
             >
               Quick Prescribe
             </Button>
