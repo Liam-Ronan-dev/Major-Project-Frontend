@@ -49,7 +49,7 @@ export const appointmentColumns: ColumnDef<AppointmentRow>[] = [
       return (
         <Link
           to={`/dashboard/appointments/${appointment.id}`}
-          className="underline"
+          className="underline font-semibold"
         >
           View
         </Link>
