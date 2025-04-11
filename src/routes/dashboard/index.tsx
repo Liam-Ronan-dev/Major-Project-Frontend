@@ -36,7 +36,7 @@ function DashboardOverview() {
     );
   }
 
-  const filteredData = prescriptions.data.filter((prescription) => {
+  const filteredData = prescriptions.filter((prescription) => {
     const doctorId = prescription.doctorId?._id;
     const pharmacistId = prescription.pharmacistId?._id;
 
@@ -48,7 +48,7 @@ function DashboardOverview() {
 
   const transformedData = filteredData.map((p) => ({
     id: p._id,
-    pharmacy: p.pharmacistId?.email || 'Unknown Pharmacy',
+    pharmacy: p.pharmacistId?.email || 'Unknown Pharmacy', // 👈 now goes under Pharmacy column
     status: p.status,
     date: new Date(p.createdAt).toLocaleDateString(),
     patient: p.patientId
