@@ -8,6 +8,7 @@ export type PrescriptionRow = {
   status: string;
   date: string;
   patient: string;
+  patientId: string;
 };
 
 export const prescriptionColumns: ColumnDef<PrescriptionRow>[] = [
@@ -36,7 +37,21 @@ export const prescriptionColumns: ColumnDef<PrescriptionRow>[] = [
   { accessorKey: 'pharmacy', header: 'Pharmacy' },
   { accessorKey: 'status', header: 'Status' },
   { accessorKey: 'date', header: 'Date Prescribed' },
-  { accessorKey: 'patient', header: 'Patient' },
+  {
+    accessorKey: 'patient',
+    header: 'Patient',
+    cell: ({ row }) => {
+      const patient = row.original;
+      return (
+        <Link
+          className="underline font-semibold"
+          to={`/dashboard/patients/${patient.patientId}`}
+        >
+          {patient.patient}
+        </Link>
+      );
+    },
+  },
   {
     id: 'details',
     header: 'Details',
