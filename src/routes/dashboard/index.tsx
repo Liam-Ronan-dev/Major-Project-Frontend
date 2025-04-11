@@ -54,6 +54,7 @@ function DashboardOverview() {
     patient: p.patientId
       ? `${p.patientId.firstName} ${p.patientId.lastName}`
       : 'Unknown Patient',
+    patientId: p.patientId?._id,
   }));
 
   const handleDelete = (id: string) => {

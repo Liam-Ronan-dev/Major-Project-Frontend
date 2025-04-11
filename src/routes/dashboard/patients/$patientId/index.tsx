@@ -244,40 +244,42 @@ function PatientDetailPage() {
         </div>
 
         {/* Appointments */}
-        <div className="rounded-lg border p-4 space-y-2 md:col-span-3 shadow-md">
-          <h2 className="font-semibold text-lg mb-4">Appointments</h2>
+        {user?.role === 'doctor' && (
+          <div className="rounded-lg border p-4 space-y-2 md:col-span-3 shadow-md">
+            <h2 className="font-semibold text-lg mb-4">Appointments</h2>
 
-          {appointments?.length > 0 ? (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>
-                    <strong>Date</strong>
-                  </TableHead>
-                  <TableHead>
-                    <strong>Status</strong>
-                  </TableHead>
-                  <TableHead>
-                    <strong>Notes</strong>
-                  </TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {appointments.map((appointment) => (
-                  <TableRow key={appointment._id}>
-                    <TableCell>
-                      {new Date(appointment.date).toLocaleDateString()}
-                    </TableCell>
-                    <TableCell>{appointment.status}</TableCell>
-                    <TableCell>{appointment.notes || 'No notes'}</TableCell>
+            {appointments?.length > 0 ? (
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>
+                      <strong>Date</strong>
+                    </TableHead>
+                    <TableHead>
+                      <strong>Status</strong>
+                    </TableHead>
+                    <TableHead>
+                      <strong>Notes</strong>
+                    </TableHead>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          ) : (
-            <p className="text-muted-foreground">No appointments found.</p>
-          )}
-        </div>
+                </TableHeader>
+                <TableBody>
+                  {appointments.map((appointment) => (
+                    <TableRow key={appointment._id}>
+                      <TableCell>
+                        {new Date(appointment.date).toLocaleDateString()}
+                      </TableCell>
+                      <TableCell>{appointment.status}</TableCell>
+                      <TableCell>{appointment.notes || 'No notes'}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            ) : (
+              <p className="text-muted-foreground">No appointments found.</p>
+            )}
+          </div>
+        )}
       </div>
 
       <div className="flex justify-end gap-5 mt-2 md:col-span-2 mr-6">
