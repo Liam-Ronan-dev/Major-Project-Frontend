@@ -122,7 +122,7 @@ export function CreatePrescriptionForm({
 
             {/* Pharmacist */}
             <div>
-              <Label className="pb-2 font-semibold">Pharmacist</Label>
+              <Label className="pb-2 font-semibold">Pharmacy</Label>
               <Controller
                 control={control}
                 name="pharmacistId"
@@ -164,7 +164,7 @@ export function CreatePrescriptionForm({
           <Button
             type="button"
             variant="default"
-            className="mw-full sm:w-auto font-semibold mb-4 sm:mb-4 cursor-pointer px-5"
+            className="w-full sm:w-auto font-semibold cursor-pointer px-8"
             onClick={() =>
               append({
                 medicationId: '',
@@ -275,13 +275,15 @@ export function CreatePrescriptionForm({
         ))}
       </div>
 
-      <Button
-        className="mw-full sm:w-auto font-semibold mb-4 sm:mb-4 sm:mr-5 cursor-pointer px-8"
-        type="submit"
-        disabled={createMutation.isPending}
-      >
-        {createMutation.isPending ? 'Submitting...' : 'Submit'}
-      </Button>
+      <div className="pt-4 flex justify-end">
+        <Button
+          type="submit"
+          className="w-full sm:w-auto font-semibold mb-4 sm:mb-4 cursor-pointer px-8"
+          disabled={createMutation.isPending}
+        >
+          {createMutation.isPending ? 'Submitting...' : 'Submit'}
+        </Button>
+      </div>
     </form>
   );
 }

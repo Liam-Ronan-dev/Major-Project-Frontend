@@ -6,8 +6,7 @@ import {
   Home,
   Users,
   ClipboardList,
-  Package,
-  Pill,
+  PlusCircleIcon,
   Settings2,
   ClipboardCheck,
 } from 'lucide-react';
@@ -78,6 +77,22 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         {user?.role.charAt(0).toUpperCase() + user?.role.slice(1)}
       </p>
       <SidebarContent>
+        {user?.role === 'doctor' && (
+          <SidebarMenu>
+            <SidebarMenuItem className="flex items-center gap-2">
+              <SidebarMenuButton
+                tooltip="Quick Create"
+                className="min-w-4 w-3/4 bg-primary text-primary-foreground duration-200 ease-linear hover:bg-primary/90 hover:text-primary-foreground active:bg-primary/90 active:text-primary-foreground mx-3 cursor-pointer"
+              >
+                <PlusCircleIcon />
+                <Link to="/dashboard/prescriptions/create">
+                  {' '}
+                  <span className="font-semibold">Quick Prescription</span>
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          </SidebarMenu>
+        )}
         <NavMain items={commonNav} />
         {user?.role === 'doctor' && <NavMain items={doctorNav} />}
         {user?.role === 'pharmacist' && <NavMain items={pharmacistNav} />}

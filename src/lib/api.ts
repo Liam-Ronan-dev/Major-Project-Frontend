@@ -91,7 +91,7 @@ export const getPrescriptions = async () => {
   try {
     const response = await api.get('/prescriptions');
     console.log('Prescriptions API Response:', response.data);
-    return response.data.data;
+    return response.data;
   } catch (error) {
     console.error('Failed to fetch prescriptions:', error);
     throw error;

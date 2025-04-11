@@ -330,13 +330,13 @@ function PrescriptionDetailPage() {
       </div>
 
       {/* Actions */}
-      <div className="flex gap-5 mt-2 md:col-span-2">
+      <div className="flex justify-end gap-5 mt-2 md:col-span-2">
         {user?.role === 'doctor' && status === 'Assigned' && (
           <>
             <Button
               onClick={handleDelete}
               variant="destructive"
-              className="mw-full sm:w-auto font-semibold mb-4 sm:mb-4 sm:mr-5 cursor-pointer px-8"
+              className="w-full sm:w-auto font-semibold cursor-pointer px-8"
             >
               Delete
             </Button>
@@ -346,7 +346,7 @@ function PrescriptionDetailPage() {
                   to: `/dashboard/prescriptions/${prescriptionId}/edit`,
                 })
               }
-              className="mw-full sm:w-auto font-semibold mb-4 sm:mb-4 sm:mr-5 cursor-pointer px-8"
+              className="w-full sm:w-auto font-semibold cursor-pointer px-8"
             >
               Edit
             </Button>
@@ -357,7 +357,7 @@ function PrescriptionDetailPage() {
           <Button
             onClick={handlePharmacistUpdate}
             disabled={updateMutation.isPending}
-            className="mw-full sm:w-auto font-semibold mb-4 sm:mb-4 sm:mr-5 cursor-pointer px-8"
+            className="mw-full sm:w-auto font-semibold mb-4 sm:mb-4 cursor-pointer px-8"
           >
             {updateMutation.isPending ? 'Saving...' : 'Save Changes'}
           </Button>
