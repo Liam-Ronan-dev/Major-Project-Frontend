@@ -1,6 +1,8 @@
 import { ColumnDef } from '@tanstack/react-table';
 import { Link } from '@tanstack/react-router';
 import { Checkbox } from '@/components/ui/checkbox';
+import { ArrowUpDown } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 export type PatientRow = {
   id: string;
@@ -35,7 +37,21 @@ export const patientColumns: ColumnDef<PatientRow>[] = [
     enableSorting: false,
     enableHiding: false,
   },
-  { accessorKey: 'header', header: 'Name' },
+  {
+    accessorKey: 'header',
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          className="font-semibold"
+        >
+          Name
+          <ArrowUpDown className="h-4 w-4" />
+        </Button>
+      );
+    },
+  },
   { accessorKey: 'type', header: 'DOB' },
   { accessorKey: 'status', header: 'Gender' },
   { accessorKey: 'target', header: 'Email' },

@@ -218,7 +218,7 @@ export function DataTable<TData extends { id: string | number }>({
                   variant="default"
                   size="sm"
                   onClick={() => navigate({ to: editUrl(selectedId) })}
-                  className="cursor-pointer px-5"
+                  className="mw-full sm:w-auto font-semibold cursor-pointer px-8"
                 >
                   Edit
                 </Button>
@@ -228,7 +228,7 @@ export function DataTable<TData extends { id: string | number }>({
                   variant="destructive"
                   size="sm"
                   onClick={() => onDelete(selectedId)}
-                  className="cursor-pointer px-5"
+                  className="mw-full sm:w-auto font-semibold cursor-pointer px-8"
                 >
                   Delete
                 </Button>

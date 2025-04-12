@@ -1,6 +1,8 @@
 import { ColumnDef } from '@tanstack/react-table';
 import { Link } from '@tanstack/react-router';
 import { Checkbox } from '@/components/ui/checkbox';
+import { ArrowUpDown } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 export type AppointmentRow = {
   id: string;
@@ -36,7 +38,21 @@ export const appointmentColumns: ColumnDef<AppointmentRow>[] = [
     enableHiding: false,
   },
   { accessorKey: 'header', header: 'Appointment Date' },
-  { accessorKey: 'type', header: 'Status' },
+  {
+    accessorKey: 'type',
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          className="font-semibold"
+        >
+          Status
+          <ArrowUpDown className="h-4 w-4" />
+        </Button>
+      );
+    },
+  },
   { accessorKey: 'status', header: 'Notes' },
   { accessorKey: 'target', header: 'Patient' },
   { accessorKey: 'limit', header: 'Email' },
