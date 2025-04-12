@@ -1,6 +1,8 @@
 import { ColumnDef } from '@tanstack/react-table';
 import { Link } from '@tanstack/react-router';
 import { Checkbox } from '@/components/ui/checkbox';
+import { ArrowUpDown } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 export type PrescriptionRow = {
   id: string;
@@ -35,7 +37,21 @@ export const prescriptionColumns: ColumnDef<PrescriptionRow>[] = [
     enableHiding: false,
   },
   { accessorKey: 'pharmacy', header: 'Pharmacy' },
-  { accessorKey: 'status', header: 'Status' },
+  {
+    accessorKey: 'status',
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          className="font-semibold"
+        >
+          Status
+          <ArrowUpDown className="h-4 w-4" />
+        </Button>
+      );
+    },
+  },
   { accessorKey: 'date', header: 'Date Prescribed' },
   {
     accessorKey: 'patient',
