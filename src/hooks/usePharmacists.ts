@@ -1,10 +1,9 @@
 import { useQuery } from '@tanstack/react-query';
 import { getPharmacists } from '@/lib/api';
-import { useContext } from 'react';
-import { AuthContext } from '@/contexts/AuthContext';
+import { useAuth } from './useAuth';
 
 export const usePharmacists = () => {
-  const { user } = useContext(AuthContext);
+  const { user } = useAuth();
 
   return useQuery({
     queryKey: ['pharmacists'],

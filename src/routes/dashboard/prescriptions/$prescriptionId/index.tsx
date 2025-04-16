@@ -30,8 +30,7 @@ import { deletePrescription } from '@/lib/api';
 import { useNavigate, Link } from '@tanstack/react-router';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
-import { useContext, useState, useEffect } from 'react';
-import { AuthContext } from '@/contexts/AuthContext';
+import { useState, useEffect } from 'react';
 import {
   Select,
   SelectTrigger,
@@ -39,6 +38,7 @@ import {
   SelectContent,
   SelectItem,
 } from '@/components/ui/select';
+import { useAuth } from '@/hooks/useAuth';
 
 export const Route = createFileRoute(
   '/dashboard/prescriptions/$prescriptionId/'
@@ -47,7 +47,7 @@ export const Route = createFileRoute(
 });
 
 function PrescriptionDetailPage() {
-  const { user } = useContext(AuthContext);
+  const { user } = useAuth();
   const { prescriptionId } = Route.useParams();
   const { data, isLoading, isError } = usePrescriptionById(prescriptionId);
   const updateMutation = useUpdatePrescriptionStatus(prescriptionId);

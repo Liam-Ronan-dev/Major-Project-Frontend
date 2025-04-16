@@ -7,11 +7,10 @@ import {
   getLatestPrescriptionForPatient,
 } from '@/lib/api';
 import { useMutation } from '@tanstack/react-query';
-import { useContext } from 'react';
-import { AuthContext } from '@/contexts/AuthContext';
+import { useAuth } from './useAuth';
 
 export const usePrescriptions = () => {
-  const { user } = useContext(AuthContext);
+  const { user } = useAuth();
 
   return useQuery({
     queryKey: ['prescriptions'],
@@ -21,7 +20,7 @@ export const usePrescriptions = () => {
 };
 
 export const usePrescriptionById = (id: string) => {
-  const { user } = useContext(AuthContext);
+  const { user } = useAuth();
 
   return useQuery({
     queryKey: ['prescription', id],

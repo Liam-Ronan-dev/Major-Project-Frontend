@@ -1,6 +1,4 @@
 import { createFileRoute, Link } from '@tanstack/react-router';
-import { useContext } from 'react';
-import { AuthContext } from '@/contexts/AuthContext';
 import { useAppointments } from '@/hooks/useAppointments';
 import { DataTable } from '@/components/data-table';
 import { appointmentColumns } from '@/columns/appointment';
@@ -9,13 +7,14 @@ import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import { deleteAppointment } from '@/lib/api';
 import { useQueryClient, useMutation } from '@tanstack/react-query';
+import { useAuth } from '@/hooks/useAuth';
 
 export const Route = createFileRoute('/dashboard/appointments/')({
   component: AllAppointments,
 });
 
 function AllAppointments() {
-  const { user } = useContext(AuthContext);
+  const { user } = useAuth();
   const queryClient = useQueryClient();
   const { data: appointments, isLoading, isError } = useAppointments();
 

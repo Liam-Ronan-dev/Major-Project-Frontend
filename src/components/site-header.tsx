@@ -1,17 +1,16 @@
-import { AuthContext } from '@/contexts/AuthContext';
 import { Button } from './ui/button';
 import { logout } from '@/lib/api';
 import { Separator } from '@/components/ui/separator';
 import { SidebarTrigger } from '@/components/ui/sidebar';
 import { ModeToggle } from '@/components/mode-toggle';
 import { useNavigate } from '@tanstack/react-router';
-import { useContext } from 'react';
 import { IconLogout } from '@tabler/icons-react';
 import { extractNameFromEmail } from '@/helpers/ExtractEmail';
 import { NotificationBell } from './NotificationBell';
+import { useAuth } from '@/hooks/useAuth';
 
 export function SiteHeader() {
-  const { user } = useContext(AuthContext);
+  const { user } = useAuth();
   const navigate = useNavigate();
 
   const handleLogout = async () => {

@@ -1,10 +1,9 @@
 import { useQuery } from '@tanstack/react-query';
 import { getPatients, getPatientById } from '@/lib/api';
-import { useContext } from 'react';
-import { AuthContext } from '@/contexts/AuthContext';
+import { useAuth } from './useAuth';
 
 export const usePatients = () => {
-  const { user } = useContext(AuthContext);
+  const { user } = useAuth();
 
   return useQuery({
     queryKey: ['patients'],
@@ -14,7 +13,7 @@ export const usePatients = () => {
 };
 
 export const usePatientById = (id: string) => {
-  const { user } = useContext(AuthContext);
+  const { user } = useAuth();
 
   return useQuery({
     queryKey: ['patient', id],

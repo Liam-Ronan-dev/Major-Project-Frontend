@@ -2,8 +2,6 @@ import { createFileRoute } from '@tanstack/react-router';
 import { usePatientById } from '@/hooks/usePatients';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
-import { useContext } from 'react';
-import { AuthContext } from '@/contexts/AuthContext';
 import { useNavigate, Link } from '@tanstack/react-router';
 import { toast } from 'sonner';
 import { deletePatient } from '@/lib/api';
@@ -16,13 +14,14 @@ import {
   TableCell,
 } from '@/components/ui/table';
 import { Mail, Phone, Calendar, User, MapPin, Contact } from 'lucide-react';
+import { useAuth } from '@/hooks/useAuth';
 
 export const Route = createFileRoute('/dashboard/patients/$patientId/')({
   component: PatientDetailPage,
 });
 
 function PatientDetailPage() {
-  const { user } = useContext(AuthContext);
+  const { user } = useAuth();
   const { patientId } = Route.useParams();
   const { data, isLoading, isError } = usePatientById(patientId);
   const navigate = useNavigate();

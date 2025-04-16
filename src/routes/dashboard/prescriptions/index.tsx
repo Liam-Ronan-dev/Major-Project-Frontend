@@ -1,6 +1,4 @@
 import { createFileRoute, Link } from '@tanstack/react-router';
-import { useContext } from 'react';
-import { AuthContext } from '@/contexts/AuthContext';
 import { prescriptionColumns } from '@/columns/prescription';
 import { DataTable } from '@/components/data-table';
 import { usePrescriptions } from '@/hooks/usePrescription';
@@ -8,13 +6,14 @@ import { Button } from '@/components/ui/button';
 import { deletePrescription } from '@/lib/api';
 import { toast } from 'sonner';
 import { useQueryClient, useMutation } from '@tanstack/react-query';
+import { useAuth } from '@/hooks/useAuth';
 
 export const Route = createFileRoute('/dashboard/prescriptions/')({
   component: PrescriptionsPage,
 });
 
 function PrescriptionsPage() {
-  const { user } = useContext(AuthContext);
+  const { user } = useAuth();
   const queryClient = useQueryClient();
   const { data: prescriptions, isLoading, isError } = usePrescriptions();
 

@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { useContext } from 'react';
 import { IconInnerShadowTop } from '@tabler/icons-react';
 
 import {
@@ -22,7 +21,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from '@/components/ui/sidebar';
-import { AuthContext } from '@/contexts/AuthContext';
+import { useAuth } from '@/hooks/useAuth';
 import { extractNameFromEmail } from '@/helpers/ExtractEmail';
 import { Link } from '@tanstack/react-router';
 
@@ -55,7 +54,7 @@ const pharmacistNav = [
 ];
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const { user } = useContext(AuthContext);
+  const { user } = useAuth();
   return (
     <Sidebar collapsible="offcanvas" {...props}>
       <SidebarHeader>

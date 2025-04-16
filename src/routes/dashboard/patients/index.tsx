@@ -1,7 +1,5 @@
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { usePatients } from '@/hooks/usePatients';
-import { useContext } from 'react';
-import { AuthContext } from '@/contexts/AuthContext';
 import { DataTable } from '@/components/data-table';
 import { PatientRow } from '@/columns/patient';
 import { patientColumns } from '@/columns/patient';
@@ -9,13 +7,14 @@ import { Button } from '@/components/ui/button';
 import { deletePatient } from '@/lib/api';
 import { toast } from 'sonner';
 import { useQueryClient, useMutation } from '@tanstack/react-query';
+import { useAuth } from '@/hooks/useAuth';
 
 export const Route = createFileRoute('/dashboard/patients/')({
   component: RouteComponent,
 });
 
 function RouteComponent() {
-  const { user } = useContext(AuthContext);
+  const { user } = useAuth();
   const queryClient = useQueryClient();
   const { data: patients, isLoading, isError } = usePatients();
 

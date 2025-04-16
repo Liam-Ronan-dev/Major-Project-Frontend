@@ -2,20 +2,19 @@ import { createFileRoute } from '@tanstack/react-router';
 import { DataTable } from '@/components/data-table';
 import { SectionCards } from '@/components/section-cards';
 import { ChartAreaInteractive } from '@/components/chart-area-interactive';
-import { useContext } from 'react';
-import { AuthContext } from '@/contexts/AuthContext';
 import { prescriptionColumns } from '@/columns/prescription';
 import { usePrescriptions } from '@/hooks/usePrescription';
 import { toast } from 'sonner';
 import { useQueryClient, useMutation } from '@tanstack/react-query';
 import { deletePrescription } from '@/lib/api';
+import { useAuth } from '@/hooks/useAuth';
 
 export const Route = createFileRoute('/dashboard/')({
   component: DashboardOverview,
 });
 
 function DashboardOverview() {
-  const { user } = useContext(AuthContext);
+  const { user } = useAuth();
   const queryClient = useQueryClient();
   const { data: prescriptions, isLoading, isError } = usePrescriptions();
 
