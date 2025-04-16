@@ -156,13 +156,15 @@ export function EditAppointmentForm({ appointment }: Props) {
         <Textarea {...register('notes')} placeholder="Optional notes..." />
       </div>
 
-      <Button
-        type="submit"
-        className="font-semibold cursor-pointer"
-        disabled={updateMutation.isPending}
-      >
-        {updateMutation.isPending ? 'Updating...' : 'Update Appointment'}
-      </Button>
+      <div className="text-end">
+        <Button
+          type="submit"
+          className="w-full sm:w-auto font-semibold cursor-pointer px-8"
+          disabled={updateMutation.isPending}
+        >
+          {updateMutation.isPending ? 'Updating...' : 'Update'}
+        </Button>
+      </div>
     </form>
   );
 }

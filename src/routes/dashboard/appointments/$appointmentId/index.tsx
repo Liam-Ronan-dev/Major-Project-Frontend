@@ -5,6 +5,7 @@ import { toast } from 'sonner';
 import { useNavigate } from '@tanstack/react-router';
 import { deleteAppointment } from '@/lib/api';
 import { Button } from '@/components/ui/button';
+import { Link } from '@tanstack/react-router';
 
 export const Route = createFileRoute('/dashboard/appointments/$appointmentId/')(
   {
@@ -51,7 +52,7 @@ function AppointmentDetailPage() {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-6">
       {/* Appointment Info */}
-      <div className="rounded-lg border p-4">
+      <div className="rounded-2xl border bg-muted/5 p-5 space-y-5 shadow-sm">
         <h2 className="font-semibold mb-2 text-lg">Appointment Details</h2>
         <p>
           <strong>Status:</strong> {status}
@@ -69,10 +70,15 @@ function AppointmentDetailPage() {
       </div>
 
       {/* Patient Info */}
-      <div className="rounded-lg border p-4">
+      <div className="rounded-2xl border bg-muted/5 p-5 space-y-5 shadow-sm">
         <h2 className="font-semibold mb-2 text-lg">Patient Information</h2>
         <p>
-          <strong>Name:</strong> {patientId?.firstName} {patientId?.lastName}
+          <Link to={`/dashboard/patients/${patientId._id}`}>
+            <span className="font-semibold underline">
+              {' '}
+              {patientId?.firstName} {patientId?.lastName}
+            </span>
+          </Link>
         </p>
         <p>
           <strong>Email:</strong> {patientId?.email}
@@ -83,13 +89,13 @@ function AppointmentDetailPage() {
       </div>
 
       {/* Action Buttons */}
-      <div className="flex gap-4 md:col-span-2">
+      <div className="flex justify-end gap-5 mt-2 md:col-span-2">
         <Button
           onClick={handleDelete}
           variant="destructive"
-          className="w-full sm:w-auto font-semibold mb-4 sm:mb-4 sm:mr-5 cursor-pointer"
+          className="w-full sm:w-auto font-semibold cursor-pointer px-8"
         >
-          Delete Appointment
+          Delete
         </Button>
         <Button
           onClick={() =>
@@ -97,9 +103,9 @@ function AppointmentDetailPage() {
               to: `/dashboard/appointments/${appointmentId}/edit`,
             })
           }
-          className="mw-full sm:w-auto font-semibold mb-4 sm:mb-4 sm:mr-5 cursor-pointer"
+          className="mw-full sm:w-auto font-semibold cursor-pointer px-8"
         >
-          Edit Appointment
+          Edit
         </Button>
       </div>
     </div>

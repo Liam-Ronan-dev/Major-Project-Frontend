@@ -1,4 +1,3 @@
-import { useContext, useState } from 'react';
 import { IconBell } from '@tabler/icons-react';
 import { useNavigate } from '@tanstack/react-router';
 import {
@@ -6,12 +5,11 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
-import { SocketContext } from '@/contexts/SocketProvider';
+import { useSocket } from '@/hooks/useSocket';
 
 export function NotificationBell() {
   const navigate = useNavigate();
-  const { notifications, unreadCount, markAllAsRead } =
-    useContext(SocketContext);
+  const { notifications, unreadCount, markAllAsRead } = useSocket();
 
   return (
     <Popover>
@@ -39,31 +37,33 @@ export function NotificationBell() {
               No new notifications
             </p>
           ) : (
-            notifications.map((n, idx) => (
+            notifications.map((notification, id) => (
               <div
-                key={idx}
+                key={id}
                 onClick={() =>
                   navigate({
-                    to: `/dashboard/prescriptions/${n.prescriptionId}`,
+                    to: `/dashboard/prescriptions/${notification.prescriptionId}`,
                   })
                 }
                 className="rounded border px-3 py-2 text-sm cursor-pointer hover:bg-muted transition"
               >
                 <div className="font-medium mb-1">
-                  {n.type === 'new'
+                  {notification.type === 'new'
                     ? 'New Prescription Assigned'
                     : 'Prescription Updated'}
                 </div>
                 <div className="text-muted-foreground text-xs">
-                  {n.patient && (
+                  {notification.patient && (
                     <span className="font-medium">
-                      {n.message} - {n.patient}
+                      {notification.message} - {notification.patient}
                     </span>
                   )}
                 </div>
-                {n.createdAt || n.updatedAt ? (
+                {notification.createdAt || notification.updatedAt ? (
                   <div className="text-muted-foreground text-[11px] mt-1">
-                    {new Date(n.createdAt || n.updatedAt).toLocaleString()}
+                    {new Date(
+                      notification.createdAt || notification.updatedAt
+                    ).toLocaleString()}
                   </div>
                 ) : null}
               </div>

@@ -7,7 +7,7 @@ export const SocketContext = createContext(undefined);
 export const SocketProvider = ({ children }) => {
   const { user } = useAuth();
   const [isConnected, setIsConnected] = useState<boolean>(false);
-  const [notifications, setNotifications] = useState([]); // Optional state
+  const [notifications, setNotifications] = useState([]);
   const [unreadCount, setUnreadCount] = useState<number>(0);
 
   useEffect(() => {

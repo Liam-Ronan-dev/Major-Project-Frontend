@@ -132,13 +132,15 @@ export function CreateAppointmentForm() {
         <Textarea {...register('notes')} placeholder="Notes..." />
       </div>
 
-      <Button
-        className="font-semibold cursor-pointer px-5"
-        type="submit"
-        disabled={createMutation.isPending}
-      >
-        {createMutation.isPending ? 'Submitting...' : 'Submit'}
-      </Button>
+      <div className="text-end">
+        <Button
+          className="w-full sm:w-auto font-semibold cursor-pointer px-8"
+          type="submit"
+          disabled={createMutation.isPending}
+        >
+          {createMutation.isPending ? 'Submitting...' : 'Submit'}
+        </Button>
+      </div>
     </form>
   );
 }
