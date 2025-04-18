@@ -1,19 +1,27 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { useForm, useFieldArray, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useNavigate } from '@tanstack/react-router';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
-import { useEffect } from 'react';
+
 import {
   prescriptionSchema,
   PrescriptionFormData,
 } from '@/validations/prescriptionSchema';
+
 import { createPrescription } from '@/lib/api';
 import { usePatients } from '@/hooks/usePatients';
 import { usePharmacists } from '@/hooks/usePharmacists';
 
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -43,6 +51,9 @@ export function CreatePrescriptionForm({
     control,
     handleSubmit,
     reset,
+    watch,
+    setValue,
+    getValues,
     formState: { errors },
   } = useForm<PrescriptionFormData>({
     resolver: zodResolver(prescriptionSchema),
@@ -62,18 +73,24 @@ export function CreatePrescriptionForm({
     },
   });
 
-  // if prefill updates after initial render (not likely, but safe)
-  useEffect(() => {
-    if (prefill) reset(prefill);
-  }, [prefill, reset]);
-
   const { fields, append, remove } = useFieldArray({
     control,
     name: 'items',
   });
 
+  // Local lock state per item
+  const [lockedItems, setLockedItems] = useState<boolean[]>([false]);
+
+  // Modal state
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+
   const { data: patients = [] } = usePatients();
   const { data: pharmacists = [] } = usePharmacists();
+
+  useEffect(() => {
+    if (prefill) reset(prefill);
+    setLockedItems(prefill?.items.map(() => false) || [false]);
+  }, [prefill, reset]);
 
   const createMutation = useMutation({
     mutationFn: createPrescription,
@@ -82,209 +99,294 @@ export function CreatePrescriptionForm({
       queryClient.invalidateQueries({ queryKey: ['prescriptions'] });
       navigate({ to: '/dashboard/prescriptions' });
     },
-    onError: () => {
-      toast.error('Failed to create prescription');
-    },
+    onError: () => toast.error('Failed to create prescription'),
   });
 
-  const onSubmit = (data: PrescriptionFormData) => {
-    createMutation.mutate(data);
+  const handleFinalSubmit = () => {
+    createMutation.mutate(getValues());
+    setShowConfirmModal(false);
+  };
+
+  const onSubmit = () => {
+    const allLocked = lockedItems.every(Boolean);
+    if (!allLocked) {
+      toast.error('Please lock all items before submitting.');
+      return;
+    }
+    setShowConfirmModal(true);
+  };
+
+  const toggleLock = (index: number) => {
+    setLockedItems((prev) => {
+      const updated = [...prev];
+      updated[index] = !updated[index];
+      return updated;
+    });
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-10">
-      <Card>
-        <CardContent className="space-y-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {/* Patient */}
-            <div>
-              <Label className="pb-2 font-semibold">Patient</Label>
-              <Controller
-                control={control}
-                name="patientId"
-                render={({ field }) => (
-                  <Select onValueChange={field.onChange} value={field.value}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select patient" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {patients.map((p) => (
-                        <SelectItem key={p._id} value={p._id}>
-                          {p.firstName} {p.lastName}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                )}
-              />
-              <FieldError message={errors.patientId?.message} />
-            </div>
-
-            {/* Pharmacist */}
-            <div>
-              <Label className="pb-2 font-semibold">Pharmacy</Label>
-              <Controller
-                control={control}
-                name="pharmacistId"
-                render={({ field }) => (
-                  <Select onValueChange={field.onChange} value={field.value}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select pharmacist" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {pharmacists.map((p) => (
-                        <SelectItem key={p._id} value={p._id}>
-                          {p.email}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                )}
-              />
-              <FieldError message={errors.pharmacistId?.message} />
-            </div>
-          </div>
-
-          {/* Notes */}
-          <div>
-            <Label className="pb-2 font-semibold">Prescription Notes</Label>
-            <Textarea
-              {...register('notes')}
-              placeholder="E.g. Take as prescribed"
-            />
-            <FieldError message={errors.notes?.message} />
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Items */}
-      <div className="space-y-3">
-        <div className="flex items-center justify-between">
-          <h3 className="text-lg font-semibold">Prescription Items</h3>
-          <Button
-            type="button"
-            variant="default"
-            className="w-full sm:w-auto font-semibold cursor-pointer px-8"
-            onClick={() =>
-              append({
-                medicationId: '',
-                specificInstructions: '',
-                dosage: '',
-                amount: '',
-                repeats: 1,
-              })
-            }
-          >
-            Add Item
-          </Button>
-        </div>
-
-        {fields.map((field, index) => (
-          <Card key={field.id}>
-            <CardHeader className="flex justify-between">
-              <CardTitle>Item {index + 1}</CardTitle>
-              {fields.length > 1 && (
-                <Button
-                  type="button"
-                  className="mw-full sm:w-auto font-semibold mb-4 sm:mb-4 sm:mr-5 cursor-pointer px-5"
-                  variant="destructive"
-                  onClick={() => remove(index)}
-                >
-                  Remove
-                </Button>
-              )}
-            </CardHeader>
-            <CardContent className="space-y-8">
+    <>
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-10">
+        {/* Patient & Pharmacist */}
+        <Card>
+          <CardContent className="space-y-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              {/* Patient */}
               <div>
-                <Label className="pb-2 font-semibold">Medication</Label>
+                <Label className="pb-2 font-semibold">Patient</Label>
                 <Controller
                   control={control}
-                  name={`items.${index}.medicationId`}
+                  name="patientId"
                   render={({ field }) => (
-                    <AsyncMedicationSelect
-                      field={field}
-                      initialValue={
-                        prefill?.items?.[index]?.medicationId
-                          ? {
-                              _id: prefill.items[index].medicationId,
-                              name: prefill.items[index].medicationLabel ?? '', // add this to your prefill transform
-                            }
-                          : undefined
-                      }
-                    />
+                    <Select onValueChange={field.onChange} value={field.value}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select patient" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {patients.map((p) => (
+                          <SelectItem key={p._id} value={p._id}>
+                            {p.firstName} {p.lastName}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   )}
                 />
-                <FieldError
-                  message={errors.items?.[index]?.medicationId?.message}
-                />
+                <FieldError message={errors.patientId?.message} />
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Pharmacist */}
+              <div>
+                <Label className="pb-2 font-semibold">Pharmacy</Label>
+                <Controller
+                  control={control}
+                  name="pharmacistId"
+                  render={({ field }) => (
+                    <Select onValueChange={field.onChange} value={field.value}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select pharmacist" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {pharmacists.map((p) => (
+                          <SelectItem key={p._id} value={p._id}>
+                            {p.email}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  )}
+                />
+                <FieldError message={errors.pharmacistId?.message} />
+              </div>
+            </div>
+
+            {/* Notes */}
+            <div>
+              <Label className="pb-2 font-semibold">Prescription Notes</Label>
+              <Textarea
+                {...register('notes')}
+                placeholder="E.g. Take as prescribed"
+              />
+              <FieldError message={errors.notes?.message} />
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Items */}
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <h1 className="font-semibold text-2xl">Prescription Items</h1>
+            <Button
+              type="button"
+              className="w-full sm:w-auto font-semibold cursor-pointer px-8"
+              onClick={() => {
+                append({
+                  medicationId: '',
+                  specificInstructions: '',
+                  dosage: '',
+                  amount: '',
+                  repeats: 1,
+                });
+                setLockedItems((prev) => [...prev, false]);
+              }}
+            >
+              Add Item
+            </Button>
+          </div>
+
+          {fields.map((field, index) => (
+            <Card key={field.id}>
+              <CardHeader className="flex justify-between items-center">
+                <CardTitle className="font-semibold text-xl">
+                  Item {index + 1}
+                </CardTitle>
+                <div className="flex gap-2">
+                  {fields.length > 1 && (
+                    <Button
+                      type="button"
+                      variant="destructive"
+                      className="w-full sm:w-auto font-semibold cursor-pointer px-8"
+                      onClick={() => {
+                        remove(index);
+                        setLockedItems((prev) =>
+                          prev.filter((_, i) => i !== index)
+                        );
+                      }}
+                    >
+                      Remove
+                    </Button>
+                  )}
+                  <Button
+                    type="button"
+                    className="w-full sm:w-auto font-semibold cursor-pointer px-8"
+                    onClick={() => toggleLock(index)}
+                  >
+                    {lockedItems[index] ? 'Unsave' : 'Save'}
+                  </Button>
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-6">
                 <div>
-                  <Label className="pb-2 font-semibold">
-                    Specific Instructions
-                  </Label>
-                  <Input
-                    {...register(`items.${index}.specificInstructions`)}
-                    placeholder="e.g. Take after meals"
+                  <Label className="pb-2 font-semibold">Medication</Label>
+                  <Controller
+                    control={control}
+                    name={`items.${index}.medicationId`}
+                    render={({ field }) => (
+                      <>
+                        <AsyncMedicationSelect
+                          field={field}
+                          disabled={lockedItems[index]}
+                          initialValue={
+                            prefill?.items?.[index]?.medicationId
+                              ? {
+                                  _id: prefill.items[index].medicationId,
+                                  name:
+                                    prefill.items[index].medicationLabel ?? '',
+                                }
+                              : undefined
+                          }
+                          onLabelChange={(name) =>
+                            setValue(`items.${index}.medicationLabel`, name)
+                          }
+                        />
+                        <input
+                          type="hidden"
+                          {...register(`items.${index}.medicationLabel`)}
+                        />
+                      </>
+                    )}
                   />
                   <FieldError
-                    message={
-                      errors.items?.[index]?.specificInstructions?.message
-                    }
+                    message={errors.items?.[index]?.medicationId?.message}
                   />
                 </div>
 
-                <div>
-                  <Label className="pb-2 font-semibold">Dosage</Label>
-                  <Input
-                    {...register(`items.${index}.dosage`)}
-                    placeholder="e.g. 100mg"
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <InputGroup
+                    label="Specific Instructions"
+                    register={register(`items.${index}.specificInstructions`)}
+                    error={errors.items?.[index]?.specificInstructions?.message}
+                    disabled={lockedItems[index]}
                   />
-                  <FieldError
-                    message={errors.items?.[index]?.dosage?.message}
+                  <InputGroup
+                    label="Dosage"
+                    register={register(`items.${index}.dosage`)}
+                    error={errors.items?.[index]?.dosage?.message}
+                    disabled={lockedItems[index]}
                   />
-                </div>
-
-                <div>
-                  <Label className="pb-2 font-semibold">Amount</Label>
-                  <Input
-                    {...register(`items.${index}.amount`)}
-                    placeholder="e.g. 28x"
+                  <InputGroup
+                    label="Amount"
+                    register={register(`items.${index}.amount`)}
+                    error={errors.items?.[index]?.amount?.message}
+                    disabled={lockedItems[index]}
                   />
-                  <FieldError
-                    message={errors.items?.[index]?.amount?.message}
-                  />
-                </div>
-
-                <div>
-                  <Label className="pb-2 font-semibold">Repeats</Label>
-                  <Input
-                    type="number"
-                    {...register(`items.${index}.repeats`, {
+                  <InputGroup
+                    label="Repeats"
+                    register={register(`items.${index}.repeats`, {
                       valueAsNumber: true,
                     })}
-                  />
-                  <FieldError
-                    message={errors.items?.[index]?.repeats?.message}
+                    error={errors.items?.[index]?.repeats?.message}
+                    disabled={lockedItems[index]}
+                    type="number"
                   />
                 </div>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
 
-      <div className="pt-4 flex justify-end">
-        <Button
-          type="submit"
-          className="w-full sm:w-auto font-semibold mb-4 sm:mb-4 cursor-pointer px-8"
-          disabled={createMutation.isPending}
-        >
-          {createMutation.isPending ? 'Submitting...' : 'Submit'}
-        </Button>
-      </div>
-    </form>
+        <div className="flex justify-end">
+          <Button
+            type="submit"
+            className="w-full sm:w-auto font-semibold cursor-pointer px-8"
+            disabled={createMutation.isPending}
+          >
+            {createMutation.isPending ? 'Submitting...' : 'Submit'}
+          </Button>
+        </div>
+      </form>
+
+      {/* Review Modal */}
+      <Dialog open={showConfirmModal} onOpenChange={setShowConfirmModal}>
+        <DialogContent>
+          <DialogHeader className="mb-3">
+            <DialogTitle>Review Prescription Items</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-3 max-h-80 overflow-y-auto">
+            {watch('items').map((item, idx) => (
+              <div key={idx} className="border rounded p-5 text-sm space-y-3">
+                <p>
+                  <strong>Medication: </strong>
+                  {item.medicationLabel || item.medicationId}
+                </p>
+                <p>
+                  <strong>Instructions:</strong> {item.specificInstructions}
+                </p>
+                <p>
+                  <strong>Dosage:</strong> {item.dosage}
+                </p>
+                <p>
+                  <strong>Amount:</strong> {item.amount}
+                </p>
+                <p>
+                  <strong>Repeats:</strong> {item.repeats}
+                </p>
+              </div>
+            ))}
+          </div>
+          <div className="flex justify-end gap-5 pt-4">
+            <Button
+              variant="destructive"
+              className="w-full sm:w-auto font-semibold cursor-pointer px-8"
+              onClick={() => setShowConfirmModal(false)}
+            >
+              Cancel
+            </Button>
+            <Button
+              className="w-full sm:w-auto font-semibold cursor-pointer px-8"
+              onClick={handleFinalSubmit}
+            >
+              Confirm & Submit
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+    </>
+  );
+}
+
+function InputGroup({ label, register, error, disabled, type = 'text' }: any) {
+  return (
+    <div>
+      <Label className="pb-2 font-semibold">{label}</Label>
+      <Input
+        {...register}
+        disabled={disabled}
+        placeholder={`Enter ${label.toLowerCase()}`}
+        type={type}
+      />
+      {error && <p className="text-sm text-red-500 mt-1">{error}</p>}
+    </div>
   );
 }
 

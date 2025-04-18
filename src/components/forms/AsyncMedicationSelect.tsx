@@ -3,6 +3,7 @@
 import { useMedicationSearch } from '@/hooks/useMedicationSearch';
 import { useDebounce } from 'use-debounce';
 import { useEffect, useState } from 'react';
+import { ControllerRenderProps } from 'react-hook-form';
 import {
   Command,
   CommandInput,
@@ -10,7 +11,6 @@ import {
   CommandList,
   CommandEmpty,
 } from '@/components/ui/command';
-import { ControllerRenderProps } from 'react-hook-form';
 
 type Medication = {
   _id: string;
@@ -20,15 +20,22 @@ type Medication = {
 type Props = {
   field: ControllerRenderProps<any, any>;
   initialValue?: Medication;
+  disabled?: boolean;
+  onLabelChange?: (name: string) => void;
 };
 
-export function AsyncMedicationSelect({ field, initialValue }: Props) {
+export function AsyncMedicationSelect({
+  field,
+  initialValue,
+  disabled,
+  onLabelChange,
+}: Props) {
   const [query, setQuery] = useState('');
   const [hasInteracted, setHasInteracted] = useState(false);
-  const [debounced] = useDebounce(query, 300);
+  const [debouncedQuery] = useDebounce(query, 300);
 
   const { data = [], isLoading } = useMedicationSearch(
-    debounced.length >= 2 ? debounced : ''
+    debouncedQuery.length >= 2 ? debouncedQuery : ''
   );
 
   const [selectedMedication, setSelectedMedication] =
@@ -44,17 +51,27 @@ export function AsyncMedicationSelect({ field, initialValue }: Props) {
       const match = data.find((m) => m._id === field.value);
       if (match) setSelectedMedication(match);
     }
-  }, [data, field.value, initialValue]);
+  }, [data, field.value, initialValue, selectedMedication]);
 
-  // Dynamically show label in the input if user hasn't typed yet
-  const inputDisplayValue =
-    hasInteracted || query.length > 0 ? query : selectedMedication?.name || '';
+  const handleSelect = (med: Medication) => {
+    field.onChange(med._id);
+    onLabelChange?.(med.name);
+    setSelectedMedication(med);
+    setQuery('');
+    setHasInteracted(false);
+  };
+
+  const displayValue =
+    hasInteracted || query.length > 0
+      ? query
+      : (selectedMedication?.name ?? '');
 
   return (
     <div className="space-y-2">
       <Command className="rounded-md border shadow-sm">
         <CommandInput
-          value={inputDisplayValue}
+          disabled={disabled}
+          value={displayValue}
           onValueChange={(val) => {
             setQuery(val);
             if (!hasInteracted) setHasInteracted(true);
@@ -66,7 +83,7 @@ export function AsyncMedicationSelect({ field, initialValue }: Props) {
           {isLoading && <CommandItem disabled>Loading...</CommandItem>}
 
           {hasInteracted &&
-            query.length >= 2 &&
+            debouncedQuery.length >= 2 &&
             !isLoading &&
             data.length === 0 && (
               <CommandEmpty>No medications found.</CommandEmpty>
@@ -76,12 +93,7 @@ export function AsyncMedicationSelect({ field, initialValue }: Props) {
             <CommandItem
               key={med._id}
               value={med.name}
-              onSelect={() => {
-                field.onChange(med._id);
-                setSelectedMedication(med);
-                setQuery('');
-                setHasInteracted(false); // Reset for display purposes
-              }}
+              onSelect={() => handleSelect(med)}
             >
               {med.name}
             </CommandItem>

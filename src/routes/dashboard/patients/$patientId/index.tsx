@@ -222,7 +222,7 @@ function PatientDetailPage() {
                       </Link>
                     </TableCell>
                     {user?.role === 'doctor' && (
-                      <TableCell>
+                      <TableCell className="px-8">
                         <Link to={`/dashboard/prescriptions/${p._id}/edit`}>
                           <Button
                             className="font-semibold border border-gray-300"

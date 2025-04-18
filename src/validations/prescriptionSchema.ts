@@ -7,7 +7,7 @@ const itemSchema = z.object({
     .string()
     .nonempty({ message: 'Medication is required.' })
     .regex(objectIdRegex, { message: 'Invalid medication format.' }),
-
+  medicationLabel: z.string().optional(),
   specificInstructions: z
     .string()
     .nonempty({ message: 'Specific instructions are required.' }),

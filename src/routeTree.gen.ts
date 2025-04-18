@@ -21,7 +21,6 @@ import { Route as DashboardIndexImport } from './routes/dashboard/index';
 import { Route as DashboardPrescriptionsIndexImport } from './routes/dashboard/prescriptions/index';
 import { Route as DashboardPatientsIndexImport } from './routes/dashboard/patients/index';
 import { Route as DashboardAppointmentsIndexImport } from './routes/dashboard/appointments/index';
-import { Route as DashboardPrescriptionsQuickPrescribeImport } from './routes/dashboard/prescriptions/quick-prescribe';
 import { Route as DashboardPrescriptionsCreateImport } from './routes/dashboard/prescriptions/create';
 import { Route as DashboardPatientsCreateImport } from './routes/dashboard/patients/create';
 import { Route as DashboardAppointmentsCreateImport } from './routes/dashboard/appointments/create';
@@ -96,13 +95,6 @@ const DashboardAppointmentsIndexRoute = DashboardAppointmentsIndexImport.update(
     getParentRoute: () => rootRoute,
   } as any
 );
-
-const DashboardPrescriptionsQuickPrescribeRoute =
-  DashboardPrescriptionsQuickPrescribeImport.update({
-    id: '/dashboard/prescriptions/quick-prescribe',
-    path: '/dashboard/prescriptions/quick-prescribe',
-    getParentRoute: () => rootRoute,
-  } as any);
 
 const DashboardPrescriptionsCreateRoute =
   DashboardPrescriptionsCreateImport.update({
@@ -240,13 +232,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardPrescriptionsCreateImport;
       parentRoute: typeof rootRoute;
     };
-    '/dashboard/prescriptions/quick-prescribe': {
-      id: '/dashboard/prescriptions/quick-prescribe';
-      path: '/dashboard/prescriptions/quick-prescribe';
-      fullPath: '/dashboard/prescriptions/quick-prescribe';
-      preLoaderRoute: typeof DashboardPrescriptionsQuickPrescribeImport;
-      parentRoute: typeof rootRoute;
-    };
     '/dashboard/appointments/': {
       id: '/dashboard/appointments/';
       path: '/dashboard/appointments';
@@ -326,7 +311,6 @@ export interface FileRoutesByFullPath {
   '/dashboard/appointments/create': typeof DashboardAppointmentsCreateRoute;
   '/dashboard/patients/create': typeof DashboardPatientsCreateRoute;
   '/dashboard/prescriptions/create': typeof DashboardPrescriptionsCreateRoute;
-  '/dashboard/prescriptions/quick-prescribe': typeof DashboardPrescriptionsQuickPrescribeRoute;
   '/dashboard/appointments': typeof DashboardAppointmentsIndexRoute;
   '/dashboard/patients': typeof DashboardPatientsIndexRoute;
   '/dashboard/prescriptions': typeof DashboardPrescriptionsIndexRoute;
@@ -349,7 +333,6 @@ export interface FileRoutesByTo {
   '/dashboard/appointments/create': typeof DashboardAppointmentsCreateRoute;
   '/dashboard/patients/create': typeof DashboardPatientsCreateRoute;
   '/dashboard/prescriptions/create': typeof DashboardPrescriptionsCreateRoute;
-  '/dashboard/prescriptions/quick-prescribe': typeof DashboardPrescriptionsQuickPrescribeRoute;
   '/dashboard/appointments': typeof DashboardAppointmentsIndexRoute;
   '/dashboard/patients': typeof DashboardPatientsIndexRoute;
   '/dashboard/prescriptions': typeof DashboardPrescriptionsIndexRoute;
@@ -373,7 +356,6 @@ export interface FileRoutesById {
   '/dashboard/appointments/create': typeof DashboardAppointmentsCreateRoute;
   '/dashboard/patients/create': typeof DashboardPatientsCreateRoute;
   '/dashboard/prescriptions/create': typeof DashboardPrescriptionsCreateRoute;
-  '/dashboard/prescriptions/quick-prescribe': typeof DashboardPrescriptionsQuickPrescribeRoute;
   '/dashboard/appointments/': typeof DashboardAppointmentsIndexRoute;
   '/dashboard/patients/': typeof DashboardPatientsIndexRoute;
   '/dashboard/prescriptions/': typeof DashboardPrescriptionsIndexRoute;
@@ -398,7 +380,6 @@ export interface FileRouteTypes {
     | '/dashboard/appointments/create'
     | '/dashboard/patients/create'
     | '/dashboard/prescriptions/create'
-    | '/dashboard/prescriptions/quick-prescribe'
     | '/dashboard/appointments'
     | '/dashboard/patients'
     | '/dashboard/prescriptions'
@@ -420,7 +401,6 @@ export interface FileRouteTypes {
     | '/dashboard/appointments/create'
     | '/dashboard/patients/create'
     | '/dashboard/prescriptions/create'
-    | '/dashboard/prescriptions/quick-prescribe'
     | '/dashboard/appointments'
     | '/dashboard/patients'
     | '/dashboard/prescriptions'
@@ -442,7 +422,6 @@ export interface FileRouteTypes {
     | '/dashboard/appointments/create'
     | '/dashboard/patients/create'
     | '/dashboard/prescriptions/create'
-    | '/dashboard/prescriptions/quick-prescribe'
     | '/dashboard/appointments/'
     | '/dashboard/patients/'
     | '/dashboard/prescriptions/'
@@ -466,7 +445,6 @@ export interface RootRouteChildren {
   DashboardAppointmentsCreateRoute: typeof DashboardAppointmentsCreateRoute;
   DashboardPatientsCreateRoute: typeof DashboardPatientsCreateRoute;
   DashboardPrescriptionsCreateRoute: typeof DashboardPrescriptionsCreateRoute;
-  DashboardPrescriptionsQuickPrescribeRoute: typeof DashboardPrescriptionsQuickPrescribeRoute;
   DashboardAppointmentsIndexRoute: typeof DashboardAppointmentsIndexRoute;
   DashboardPatientsIndexRoute: typeof DashboardPatientsIndexRoute;
   DashboardPrescriptionsIndexRoute: typeof DashboardPrescriptionsIndexRoute;
@@ -489,8 +467,6 @@ const rootRouteChildren: RootRouteChildren = {
   DashboardAppointmentsCreateRoute: DashboardAppointmentsCreateRoute,
   DashboardPatientsCreateRoute: DashboardPatientsCreateRoute,
   DashboardPrescriptionsCreateRoute: DashboardPrescriptionsCreateRoute,
-  DashboardPrescriptionsQuickPrescribeRoute:
-    DashboardPrescriptionsQuickPrescribeRoute,
   DashboardAppointmentsIndexRoute: DashboardAppointmentsIndexRoute,
   DashboardPatientsIndexRoute: DashboardPatientsIndexRoute,
   DashboardPrescriptionsIndexRoute: DashboardPrescriptionsIndexRoute,
@@ -526,7 +502,6 @@ export const routeTree = rootRoute
         "/dashboard/appointments/create",
         "/dashboard/patients/create",
         "/dashboard/prescriptions/create",
-        "/dashboard/prescriptions/quick-prescribe",
         "/dashboard/appointments/",
         "/dashboard/patients/",
         "/dashboard/prescriptions/",
@@ -567,9 +542,6 @@ export const routeTree = rootRoute
     },
     "/dashboard/prescriptions/create": {
       "filePath": "dashboard/prescriptions/create.tsx"
-    },
-    "/dashboard/prescriptions/quick-prescribe": {
-      "filePath": "dashboard/prescriptions/quick-prescribe.tsx"
     },
     "/dashboard/appointments/": {
       "filePath": "dashboard/appointments/index.tsx"
