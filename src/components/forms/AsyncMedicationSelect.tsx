@@ -100,13 +100,6 @@ export function AsyncMedicationSelect({
           ))}
         </CommandList>
       </Command>
-
-      {selectedMedication && (
-        <div className="text-md font-medium">
-          Selected:{' '}
-          <span className="font-semibold">{selectedMedication.name}</span>
-        </div>
-      )}
     </div>
   );
 }

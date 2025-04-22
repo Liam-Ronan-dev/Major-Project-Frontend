@@ -110,7 +110,7 @@ export function CreatePrescriptionForm({
   const onSubmit = () => {
     const allLocked = lockedItems.every(Boolean);
     if (!allLocked) {
-      toast.error('Please lock all items before submitting.');
+      toast.error('Please save all items before submitting.');
       return;
     }
     setShowConfirmModal(true);
@@ -334,7 +334,7 @@ export function CreatePrescriptionForm({
           </DialogHeader>
           <div className="space-y-3 max-h-80 overflow-y-auto">
             {watch('items').map((item, idx) => (
-              <div key={idx} className="border rounded p-5 text-sm space-y-3">
+              <div key={idx} className="border rounded p-5 text-sm space-y-2">
                 <p>
                   <strong>Medication: </strong>
                   {item.medicationLabel || item.medicationId}

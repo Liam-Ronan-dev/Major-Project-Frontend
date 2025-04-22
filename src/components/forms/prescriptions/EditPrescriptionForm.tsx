@@ -103,7 +103,7 @@ export function EditPrescriptionForm({
   const onSubmit = () => {
     const allLocked = lockedItems.every(Boolean);
     if (!allLocked) {
-      toast.error('Please lock all items before submitting.');
+      toast.error('Please save items before submitting.');
       return;
     }
     setShowConfirmModal(true);
@@ -183,6 +183,7 @@ export function EditPrescriptionForm({
             <h2 className="text-lg font-semibold">Prescription Items</h2>
             <Button
               type="button"
+              className="w-full sm:w-auto font-semibold cursor-pointer px-8"
               onClick={() => {
                 append({
                   medicationId: '',
@@ -208,6 +209,7 @@ export function EditPrescriptionForm({
                     <Button
                       type="button"
                       variant="destructive"
+                      className="w-full sm:w-auto font-semibold cursor-pointer px-8"
                       onClick={() => {
                         remove(index);
                         setLockedItems((prev) =>
@@ -218,7 +220,11 @@ export function EditPrescriptionForm({
                       Remove
                     </Button>
                   )}
-                  <Button type="button" onClick={() => toggleLock(index)}>
+                  <Button
+                    className="w-full sm:w-auto font-semibold cursor-pointer px-8"
+                    type="button"
+                    onClick={() => toggleLock(index)}
+                  >
                     {lockedItems[index] ? 'Unsave' : 'Save'}
                   </Button>
                 </div>
@@ -304,10 +310,7 @@ export function EditPrescriptionForm({
           </DialogHeader>
           <div className="space-y-3 max-h-80 overflow-y-auto text-sm">
             {watch('items').map((item, idx) => (
-              <div
-                key={idx}
-                className="border rounded p-3 space-y-1 text-muted-foreground"
-              >
+              <div key={idx} className="border rounded p-5 text-sm space-y-2">
                 <p>
                   <strong>Medication:</strong>{' '}
                   {item.medicationLabel || item.medicationId}
@@ -327,14 +330,20 @@ export function EditPrescriptionForm({
               </div>
             ))}
           </div>
-          <div className="flex justify-end gap-4 pt-4">
+          <div className="flex justify-end gap-5 pt-4">
             <Button
               variant="destructive"
+              className="w-full sm:w-auto font-semibold cursor-pointer px-8"
               onClick={() => setShowConfirmModal(false)}
             >
               Cancel
             </Button>
-            <Button onClick={handleFinalSubmit}>Confirm & Update</Button>
+            <Button
+              className="w-full sm:w-auto font-semibold cursor-pointer px-8"
+              onClick={handleFinalSubmit}
+            >
+              Confirm & Update
+            </Button>
           </div>
         </DialogContent>
       </Dialog>
