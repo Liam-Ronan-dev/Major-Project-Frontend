@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { DataTable } from '@/components/data-table';
-import { SectionCards } from '@/components/section-cards';
+import { SectionCards } from '@/components/PharmacistSectionCards';
 import { ChartAreaInteractive } from '@/components/chart-area-interactive';
 import { prescriptionColumns } from '@/columns/prescription';
 import { usePrescriptions } from '@/hooks/usePrescription';
@@ -8,6 +8,7 @@ import { toast } from 'sonner';
 import { useQueryClient, useMutation } from '@tanstack/react-query';
 import { deletePrescription } from '@/lib/api';
 import { useAuth } from '@/hooks/useAuth';
+import { DoctorSectionCards } from '@/components/DoctorSectionCards';
 
 export const Route = createFileRoute('/dashboard/')({
   component: DashboardOverview,
@@ -64,7 +65,10 @@ function DashboardOverview() {
     <div className="flex flex-1 flex-col">
       <div className="@container/main flex flex-1 flex-col gap-2">
         <div className="flex flex-col gap-4 py-4 md:gap-8 md:py-6">
-          <SectionCards />
+          {/* Conditionally show SectionCards only for pharmacists */}
+          {user?.role === 'pharmacist' && <SectionCards />}
+          {user?.role === 'doctor' && <DoctorSectionCards />}
+
           <div className="px-4 lg:px-6">
             <ChartAreaInteractive />
           </div>

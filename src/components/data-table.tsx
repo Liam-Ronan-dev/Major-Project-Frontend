@@ -242,7 +242,9 @@ export function DataTable<TData extends { id: string | number }>({
             <DropdownMenuTrigger asChild>
               <Button variant="outline" size="sm">
                 <IconLayoutColumns />
-                <span className="hidden lg:inline">Customize Columns</span>
+                <span className="hidden lg:inline capitalize">
+                  Customize {resourceType} columns
+                </span>
                 <span className="lg:hidden">Columns</span>
                 <IconChevronDown />
               </Button>

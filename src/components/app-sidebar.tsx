@@ -25,10 +25,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { extractNameFromEmail } from '@/helpers/ExtractEmail';
 import { Link } from '@tanstack/react-router';
 
-const commonNav = [
-  { title: 'Dashboard', url: '/dashboard', icon: Home },
-  { title: 'Settings', url: '/settings', icon: Settings2 },
-];
+const commonNav = [{ title: 'Dashboard', url: '/dashboard', icon: Home }];
 
 const doctorNav = [
   {

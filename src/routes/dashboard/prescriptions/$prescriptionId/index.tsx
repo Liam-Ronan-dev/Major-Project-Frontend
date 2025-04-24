@@ -20,6 +20,7 @@ import {
   Pill,
   History,
   ListChecks,
+  CheckCircle,
 } from 'lucide-react';
 import {
   usePrescriptionById,
@@ -155,6 +156,7 @@ function PrescriptionDetailPage() {
           Pharmacy: {pharmacistId?.email}
         </p>
         <div className="flex items-center gap-2">
+          <CheckCircle className="w-4 h-4" />
           <strong className="font-medium">Status:</strong>
           {user?.role === 'pharmacist' ? (
             <Select value={formStatus} onValueChange={setFormStatus}>
