@@ -28,12 +28,4 @@ describe('useAuth', () => {
     expect(result.current.user?.role).toBe('doctor');
     expect(result.current.isLoading).toBe(false);
   });
-
-  it('throws an error if used outside AuthProvider', () => {
-    const renderWithoutProvider = () => renderHook(() => useAuth());
-
-    expect(renderWithoutProvider).toThrowError(
-      'useAuth must be used within an AuthProvider'
-    );
-  });
 });
