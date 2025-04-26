@@ -37,12 +37,14 @@ function Inputtotp() {
   // Mutation for OTP Verification
   const otpMutation = useMutation({
     mutationFn: (data: totpFormData) => verifyOTP(data.totp),
-    onSuccess: () => {
-      const isPlaywright = navigator.userAgent.includes('Playwright');
-      if (isPlaywright) {
-        navigate({ to: '/dashboard' }); // Skip refetchUser
-      } else {
-        auth?.refetchUser().then(() => navigate({ to: '/dashboard' }));
+    onSuccess: async () => {
+      navigate({ to: '/dashboard' }); // Always navigate first
+
+      // refresh user silently in background
+      try {
+        await auth?.refetchUser();
+      } catch (err) {
+        console.warn('Background refetch failed, but user navigated.');
       }
     },
     onError: (error: { response?: { data?: { message?: string } } }) => {
