@@ -16,6 +16,7 @@ node_modules
 dist
 dist-ssr
 *.local
+tests/e2e/storageState.json
 
 # Editor directories and files
 .vscode/*
