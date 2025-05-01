@@ -2,6 +2,7 @@ import { createContext, useEffect, useState } from 'react';
 import socket from '@/lib/socket';
 import { useAuth } from '@/hooks/useAuth';
 
+// Create a new context to share socket-related state across the app
 export const SocketContext = createContext(undefined);
 
 export const SocketProvider = ({ children }) => {
@@ -13,9 +14,11 @@ export const SocketProvider = ({ children }) => {
   useEffect(() => {
     if (!user) return;
 
+    // Establish socket connection
     socket.connect();
     console.log('[socket.io] Attempting to connect');
 
+    // Called once the socket successfully connects
     const handleConnect = () => {
       console.log('[socket.io] Connected to server');
       socket.emit('register', user._id);
@@ -23,12 +26,14 @@ export const SocketProvider = ({ children }) => {
       setIsConnected(true);
     };
 
+    // Handle event: new prescription assigned to pharmacist
     const handleNewPrescription = (data) => {
       console.log('[socket.io] New prescription assigned:', data);
       setNotifications((prev) => [...prev, { type: 'new', ...data }]);
       setUnreadCount((prev) => prev + 1);
     };
 
+    // Handle event: doctor receives update from pharmacist
     const handlePrescriptionUpdated = (data) => {
       console.log('[socket.io] Prescription updated by pharmacist:', data);
       setNotifications((prev) => [...prev, { type: 'updated', ...data }]);
@@ -54,6 +59,7 @@ export const SocketProvider = ({ children }) => {
     };
   }, [user]);
 
+  // Reset unread count (e.g. when user opens notifications panel)
   const markAllAsRead = () => setUnreadCount(0);
 
   return (

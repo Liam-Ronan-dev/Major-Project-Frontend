@@ -43,15 +43,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     );
   }
 
-  // Optional: handle error
-  // if (isError) {
-  //   return (
-  //     <div className="min-h-screen flex items-center justify-center">
-  //       <p className="text-red-500">Failed to load user session.</p>
-  //     </div>
-  //   );
-  // }
-
   return (
     <AuthContext.Provider
       value={{ user, isLoading: false, refetchUser: refetch }}
