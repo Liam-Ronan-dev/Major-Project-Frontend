@@ -2,7 +2,7 @@ import axios from 'axios';
 
 const BASE_API_URL =
   import.meta.env.VITE_HEALTH_SERVICE_BASE_API ||
-  'https://health-service-api.click/api';
+  'https://major-project-backend-jl6x.onrender.com/api';
 
 // Configure Axios with credentials (cookies)
 export const api = axios.create({
